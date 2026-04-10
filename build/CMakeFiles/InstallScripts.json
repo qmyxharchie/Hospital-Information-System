@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/hospital-management/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
