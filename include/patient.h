@@ -1,0 +1,33 @@
+//--------------
+// 病人模块
+//--------------
+
+//功能
+//病人模块负责管理病人的基本信息：
+//-添加新病人（自动生成门诊卡号）
+//- 删除病人
+//- 修改病人信息
+//- 查询病人
+//- 列表显示所有病人
+
+#ifndef _PATIENT_H_
+#dendef _PATIENT_H_
+typedef struct PatientData {
+    char cardNo[20];          // 门诊卡号（唯一标识）
+    char name[50];            // 姓名
+    char gender[10];          // 性别
+    char idCard[20];          // 身份证号
+    char phone[15];           // 联系电话
+    int isActive;             // 是否住院（0=否，1=是）
+} PatientData;
+typedef struct Patient {
+    PatientData data;
+    struct Patient* next;     // 下一个节点
+    struct Patient* pre;      // 上一个节点
+} Patient;
+void buildPatientChain(Patient* head, Patient* tail);           //从文件加载数据
+void addPatient(Patient** head, Patient** tail,
+    char name[], char gender[], char idCard[], char phone[]);   //添加病人
+void delPatient(Patient** head, Patient** tail, Patient* p)     //删除病人
+
+#endif                          // !_PATIENT_H_
