@@ -9,8 +9,8 @@
 - 查询医生
 - 医生接诊数量限制*/
 
-#ifndef _DOCTER_H_
-#define _DOCTER_H_
+#ifndef _DOCTOR_H_
+#define _DOCTOR_H_
 typedef struct DoctorData {
     char empNo[20];              // 工号（如DOC001）
     char name[50];               // 姓名
@@ -32,4 +32,4 @@ void incrementPatientCount(Doctor d);
 void resetDailyPatients(Doctor head);                                   //重置每日接诊数
 void getDeptStats(Doctor head, char* dept, int* count);                 //科室统计
 
-#endif // !_DOCTER_H_
+#endif // !_DOCTOR_H_

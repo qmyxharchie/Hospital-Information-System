@@ -15,8 +15,8 @@
 2. 医生必须有剩余名额
 3. 同一医生同时只能有一个待就诊挂号
 */
-#ifndef _REGISTION_H_
-#define _REGISTION_H_
+#ifndef _REGISTRATION_H_
+#define _REGISTRATION_H_
 typedef struct RegistrationData {
     char regNo[20];               // 挂号单号（如REG001）
     char patientCardNo[20];       // 病人卡号
@@ -40,4 +40,4 @@ int cancelRegistration(Registration** head, Registration** tail,
 int completeRegistration(Registration* r);                                      //完成就诊                               
 
 
-#endif // !_REGISTION_H_
+#endif // !_REGISTRATION_H_
