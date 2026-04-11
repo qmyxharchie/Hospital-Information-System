@@ -16,7 +16,7 @@
 3. 同一医生同时只能有一个待就诊挂号
 */
 #ifndef _REGISTION_H_
-#dendef _REGISTION_H_
+#define _REGISTION_H_
 typedef struct RegistrationData {
     char regNo[20];               // 挂号单号（如REG001）
     char patientCardNo[20];       // 病人卡号

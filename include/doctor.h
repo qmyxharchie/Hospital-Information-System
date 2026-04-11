@@ -10,7 +10,7 @@
 - 医生接诊数量限制*/
 
 #ifndef _DOCTER_H_
-#dendef _DOCTER_H_
+#define _DOCTER_H_
 typedef struct DoctorData {
     char empNo[20];              // 工号（如DOC001）
     char name[50];               // 姓名

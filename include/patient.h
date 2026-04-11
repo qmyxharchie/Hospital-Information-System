@@ -11,7 +11,7 @@
 //- 列表显示所有病人
 
 #ifndef _PATIENT_H_
-#dendef _PATIENT_H_
+#define _PATIENT_H_
 typedef struct PatientData {
     char cardNo[20];          // 门诊卡号（唯一标识）
     char name[50];            // 姓名
@@ -28,6 +28,6 @@ typedef struct Patient {
 void buildPatientChain(Patient* head, Patient* tail);           //从文件加载数据
 void addPatient(Patient** head, Patient** tail,
     char name[], char gender[], char idCard[], char phone[]);   //添加病人
-void delPatient(Patient** head, Patient** tail, Patient* p)     //删除病人
+void delPatient(Patient* head, Patient* tail, PatientData p)     //删除病人
 
 #endif                          // !_PATIENT_H_
