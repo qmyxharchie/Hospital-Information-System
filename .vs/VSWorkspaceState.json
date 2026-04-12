@@ -8,8 +8,9 @@
   "ExpandedNodes": [
     "",
     "\\docs",
-    "\\HIS"
+    "\\include",
+    "\\src"
   ],
-  "SelectedNode": "\\docs\\05-病人模块.md",
+  "SelectedNode": "\\docs\\12-文件IO_.md",
   "PreviewInSolutionExplorer": false
 }

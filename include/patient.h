@@ -12,6 +12,7 @@
 
 #ifndef _PATIENT_H_
 #define _PATIENT_H_
+
 typedef struct PatientData {
     char cardNo[20];          // 门诊卡号（唯一标识）
     char name[50];            // 姓名
@@ -20,14 +21,19 @@ typedef struct PatientData {
     char phone[15];           // 联系电话
     int isActive;             // 是否住院（0=否，1=是）
 } PatientData;
+
 typedef struct Patient {
     PatientData data;
     struct Patient* next;     // 下一个节点
     struct Patient* pre;      // 上一个节点
 } Patient;
-void buildPatientChain(Patient* head, Patient* tail);           //从文件加载数据
-void addPatient(Patient** head, Patient** tail,
+
+void addPatient(Patient* head, Patient* tail,
     char name[], char gender[], char idCard[], char phone[]);   //添加病人
-void delPatient(Patient* head, Patient* tail, PatientData p)     //删除病人
+void delPatient(Patient* head, Patient* tail, PatientData p)    //删除病人
+void modifyPatient(Patient* p, char phone[]);                   //修改病人信息
+Patient* findPatientByCardNo(Patient* head, char* cardNo);      //按卡号精确查找
+Patient* findPatientByName(Patient* head, char* name);          //按姓名模糊/精确查找
+void listAllPatients(Patient* head);                            //列表显示
 
 #endif                          // !_PATIENT_H_
