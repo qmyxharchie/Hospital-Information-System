@@ -11,6 +11,10 @@
     "\\include",
     "\\src"
   ],
+<<<<<<< HEAD
   "SelectedNode": "\\docs\\07-药品模块_.md",
+=======
+  "SelectedNode": "\\docs\\04-数据结构.md",
+>>>>>>> 23a1ebaec0be8c497c43e68eed2f15885a0582a4
   "PreviewInSolutionExplorer": false
 }

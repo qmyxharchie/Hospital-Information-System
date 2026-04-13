@@ -1,8 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\",
+  "WorkspaceRootPath": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\07-\u836F\u54C1\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:docs\\07-\u836F\u54C1\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
@@ -40,6 +41,26 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+=======
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\12-\u6587\u4EF6IO_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:docs\\12-\u6587\u4EF6IO_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\include\\file_io.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:include\\file_io.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\13-\u5DE5\u5177\u51FD\u6570_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:docs\\13-\u5DE5\u5177\u51FD\u6570_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\include\\login.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:include\\login.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\10-\u767B\u5F55\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:docs\\10-\u767B\u5F55\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+>>>>>>> 23a1ebaec0be8c497c43e68eed2f15885a0582a4
     }
   ],
   "DocumentGroupContainers": [
@@ -53,16 +74,42 @@
           "Children": [
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             }
           ]
         },
         {
+<<<<<<< HEAD
           "DockedWidth": 200,
+=======
+          "DockedWidth": 215,
+>>>>>>> 23a1ebaec0be8c497c43e68eed2f15885a0582a4
           "SelectedChildIndex": 2,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
               "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "10-\u767B\u5F55\u6A21\u5757_.md",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\10-\u767B\u5F55\u6A21\u5757_.md",
+              "RelativeDocumentMoniker": "docs\\10-\u767B\u5F55\u6A21\u5757_.md",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\10-\u767B\u5F55\u6A21\u5757_.md",
+              "RelativeToolTip": "docs\\10-\u767B\u5F55\u6A21\u5757_.md",
+              "ViewState": "AgIAAKEAAAAAAAAAAAAAAKEAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-04-12T15:02:15.551Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 7,
               "Title": "patient.h",
               "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\patient.h",
@@ -73,10 +120,22 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-04-12T07:02:23.01Z",
               "IsPinned": true,
+=======
+              "DocumentIndex": 0,
+              "Title": "12-\u6587\u4EF6IO_.md",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\12-\u6587\u4EF6IO_.md",
+              "RelativeDocumentMoniker": "docs\\12-\u6587\u4EF6IO_.md",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\12-\u6587\u4EF6IO_.md",
+              "RelativeToolTip": "docs\\12-\u6587\u4EF6IO_.md",
+              "ViewState": "AgIAABcAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-04-12T08:16:18.128Z",
+>>>>>>> 23a1ebaec0be8c497c43e68eed2f15885a0582a4
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 6,
               "Title": "05-\u75C5\u4EBA\u6A21\u5757_.md",
               "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
@@ -126,11 +185,23 @@
               "ViewState": "AgIAACcAAAAAAAAAAADwvygAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2026-04-13T06:18:18.233Z",
+=======
+              "DocumentIndex": 2,
+              "Title": "13-\u5DE5\u5177\u51FD\u6570_.md",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\13-\u5DE5\u5177\u51FD\u6570_.md",
+              "RelativeDocumentMoniker": "docs\\13-\u5DE5\u5177\u51FD\u6570_.md",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\docs\\13-\u5DE5\u5177\u51FD\u6570_.md",
+              "RelativeToolTip": "docs\\13-\u5DE5\u5177\u51FD\u6570_.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-04-12T15:00:55.702Z",
+>>>>>>> 23a1ebaec0be8c497c43e68eed2f15885a0582a4
               "EditorCaption": ""
             }
           ]
         },
         {
+<<<<<<< HEAD
           "DockedWidth": 200,
           "SelectedChildIndex": 3,
           "Children": [
@@ -195,6 +266,36 @@
               "ViewState": "AgIAAB4AAAAAAAAAAADwvyoAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-04-13T06:25:29.07Z",
+=======
+          "DockedWidth": 185,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "file_io.h",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\include\\file_io.h",
+              "RelativeDocumentMoniker": "include\\file_io.h",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\include\\file_io.h",
+              "RelativeToolTip": "include\\file_io.h",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACEAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-04-12T15:01:55.855Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "login.h",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\include\\login.h",
+              "RelativeDocumentMoniker": "include\\login.h",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Hospital-Information-System\\include\\login.h",
+              "RelativeToolTip": "include\\login.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-04-12T15:01:40.175Z",
+>>>>>>> 23a1ebaec0be8c497c43e68eed2f15885a0582a4
               "EditorCaption": ""
             }
           ]

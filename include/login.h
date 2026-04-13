@@ -23,7 +23,13 @@ typedef enum {
     LOGIN_SUCCESS_ADMIN = 2,
     LOGIN_EXIT = 3
 } LoginStatus;
-login(char username[], char password[]);            //用户登录
-registerUser(char username[], char password[], int role);            //用户注册
-buildUserChain(User* head, User* tail);           //用户链表
-rebuildUserFile(User head)；            //重建用户链表
+LoginStatus login(char username[], char password[]);                         //用户登录
+int registerUser(char username[], char password[], int role);                //用户注册
+void buildUserChain(User** head, User** tail);                               // 从文件加载用户列表
+void rebuildUserFile(User* head);                                            // 保存用户列表到文件（团队头文件中参数为 User 而非 User*）
+void freeUserChain(User* head);                                              // 释放用户链表内存
+User* findUserByName(User* head, char* username);                            //用户查询
+extern char g_currentUsername[50];                                           // 当前登录用户名
+extern int g_currentUserRole;                                                // 当前用户角色：0=用户, 1=管理员
+extern bool g_isLoggedIn;                                                    // 是否已登录
+#endif 
