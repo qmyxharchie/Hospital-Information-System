@@ -1,2 +1,7 @@
 !.gitkeep
 .vs/
+out/
+build/
+CMakeCache.txt
+*.db
+*.ipch
