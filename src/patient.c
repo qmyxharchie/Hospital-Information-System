@@ -41,7 +41,7 @@ void addPatient(Patient** head, Patient** tail,
 
 //--------------------
 //以下为删除病人函数
-void delPatient(Patient* head, Patient* tail, PatientData p)    
+void delPatient(Patient* head, Patient* tail, PatientData p);
 void modifyPatient(Patient* p, char phone[]);                   //修改病人信息
 Patient* findPatientByCardNo(Patient* head, char* cardNo);      //按卡号精确查找
 Patient* findPatientByName(Patient* head, char* name);          //按姓名模糊/精确查找
