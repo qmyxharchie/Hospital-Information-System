@@ -15,13 +15,13 @@ typedef struct HospitalizationData {
     double totalCost;           // 总费用
     char admissionDate[20];     // 入院日期
     char status[20];            // 状态（在院/已出院）
-} Hospitalization;
+} HospitalizationData;
 
-struct HospitalizationNode {
-    Hospitalization data;
+typedef struct Hospitalization {
+    HospitalizationData data;
     struct Hospitalization* next;
     struct Hospitalization* pre;
-};
+}Hospitalization;
 
 //床位信息
 typedef struct BedData {
@@ -38,12 +38,8 @@ struct BedNode {
     struct Bed* pre;
 };
 
-allocateBed(Bed* head, char* patientCardNo, char* patientName);              //自动分配床位
-
-freeBed(Bed* b);                                                             //释放床位
-
-addHospitalization(Hospitalization** head, Hospitalization** tail, ...);    //入院登记
-
+void addHospitalization(Hospitalization** head,                             //入院登记
+    Hospitalization** tail, ...);
 dischargePatient(Hospitalization* h, double totalCost);                     //出院结算
 
 findHospitalizationByCardNo(Hospitalization* head, char* cardNo);           //查询住院信息

@@ -3,16 +3,31 @@
   "WorkspaceRootPath": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\patient.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:include\\patient.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\2022-JLU-SE-Cpracticum-main\\Sources\\CartChain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:docs\\05-\u75C5\u4EBA\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:docs\\05-\u75C5\u4EBA\u6A21\u5757.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\doctor.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:include\\doctor.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\09-\u6302\u53F7\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:docs\\09-\u6302\u53F7\u6A21\u5757_.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\registration.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:include\\registration.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,55 +37,112 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CMakeLists.txt",
-              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\CMakeLists.txt",
-              "RelativeDocumentMoniker": "CMakeLists.txt",
-              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\CMakeLists.txt",
-              "RelativeToolTip": "CMakeLists.txt",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2026-04-11T13:18:13.675Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "09-\u6302\u53F7\u6A21\u5757_.md",
+              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\09-\u6302\u53F7\u6A21\u5757_.md",
+              "RelativeDocumentMoniker": "docs\\09-\u6302\u53F7\u6A21\u5757_.md",
+              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\09-\u6302\u53F7\u6A21\u5757_.md",
+              "RelativeToolTip": "docs\\09-\u6302\u53F7\u6A21\u5757_.md",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAFEAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-04-12T07:38:43.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "05-\u75C5\u4EBA\u6A21\u5757_.md",
+              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
+              "RelativeDocumentMoniker": "docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
+              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
+              "RelativeToolTip": "docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-04-11T12:08:01.21Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "doctor.h",
+              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\doctor.h",
+              "RelativeDocumentMoniker": "include\\doctor.h",
+              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\doctor.h",
+              "RelativeToolTip": "include\\doctor.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-04-12T07:26:45.1Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "05-\u75C5\u4EBA\u6A21\u5757.md",
-              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757.md",
-              "RelativeDocumentMoniker": "docs\\05-\u75C5\u4EBA\u6A21\u5757.md",
-              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757.md",
-              "RelativeToolTip": "docs\\05-\u75C5\u4EBA\u6A21\u5757.md",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAAAAkAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-04-11T12:08:08.56Z",
+              "Title": "CartChain.cpp",
+              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\2022-JLU-SE-Cpracticum-main\\Sources\\CartChain.cpp",
+              "RelativeDocumentMoniker": "..\\2022-JLU-SE-Cpracticum-main\\Sources\\CartChain.cpp",
+              "ToolTip": "C:\\Users\\TEST\\Desktop\\2022-JLU-SE-Cpracticum-main\\Sources\\CartChain.cpp",
+              "RelativeToolTip": "..\\2022-JLU-SE-Cpracticum-main\\Sources\\CartChain.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-04-13T06:02:31.574Z",
               "EditorCaption": ""
             }
           ]
         },
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "05-\u75C5\u4EBA\u6A21\u5757_.md",
-              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
-              "RelativeDocumentMoniker": "docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
-              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
-              "RelativeToolTip": "docs\\05-\u75C5\u4EBA\u6A21\u5757_.md",
-              "ViewState": "AgIAALoAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "registration.h",
+              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\registration.h",
+              "RelativeDocumentMoniker": "include\\registration.h",
+              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\registration.h",
+              "RelativeToolTip": "include\\registration.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-04-12T07:40:06.261Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md",
+              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md",
+              "RelativeDocumentMoniker": "\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md",
+              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md",
+              "RelativeToolTip": "\u56E2\u961F\u5F00\u53D1\u534F\u4F5C\u6307\u5357.md",
+              "ViewState": "AgIAAPYAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-04-11T12:08:01.21Z",
+              "WhenOpened": "2026-04-12T07:08:48.23Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "patient.h",
+              "DocumentMoniker": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\patient.h",
+              "RelativeDocumentMoniker": "include\\patient.h",
+              "ToolTip": "C:\\Users\\TEST\\Desktop\\Hospital-Information-System\\include\\patient.h",
+              "RelativeToolTip": "include\\patient.h",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAuwCAAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-04-12T07:02:23.01Z",
               "EditorCaption": ""
             }
           ]
