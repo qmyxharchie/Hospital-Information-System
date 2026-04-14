@@ -1,6 +1,13 @@
 //===============
-//文件IO
+//	  文件IO
 //===============
+
+/*读取文件（从文件加载到链表）
+ -写入文件（从链表保存到文件）
+ -数据备份*/
+
+#ifndef _FILE_IO
+#define _FILE_IO
 
 #define DATA_DIR "data/"
 #define BACKUP_DIR "backup/"
@@ -36,3 +43,5 @@ void rebuildUserFile(User* head);												// 保存用户列表
 //数据备份
 int backupAllData();								 // 备份所有数据文件
 int copyFile(char* source, char* dest);				 // 复制单个文件
+
+#endif
