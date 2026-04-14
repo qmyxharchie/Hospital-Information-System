@@ -2,12 +2,19 @@
 //住院模块
 //---------------
 
+/*
+**住院管理**：
+入院登记（自动分配床位）
+出院结算（计算费用、释放床位）
+住院状态跟踪。
+*/
+
 #ifndef _HOSPITALIZATION_H_
 #define _HOSPITALIZATION_H_
 
 //住院记录
-typedef struct HospitalizationData {
-<<<<<<< HEAD
+typedef struct HospitalizationData 
+{
     char recordNo[20];       // 住院单号（如"HOS001"）
     char patientCardNo[20];  // 病人卡号
     char patientName[50];   // 病人姓名
@@ -20,10 +27,10 @@ typedef struct HospitalizationData {
 
 typedef struct HospitalizationNode {
     HospitalizationData data;
-    struct Hospitalization* next;
-    struct Hospitalization* pre;
+    Hospitalization* next;
+    Hospitalization* pre;
 } Hospitalization;
-=======
+
     char recordNo[20];           // 住院单号（如HOS001）
     char patientCardNo[20];      // 病人卡号
     char patientName[50];       // 病人姓名
@@ -39,29 +46,13 @@ typedef struct Hospitalization {
     struct Hospitalization* next;
     struct Hospitalization* pre;
 }Hospitalization;
->>>>>>> 1ce3e5a8ce9248a9bd6bf01fae9c36890b09dc2a
 
-
-void addHospitalization(Hospitalization** head, Hospitalization** tail, ...);    //入院登记
-
-<<<<<<< HEAD
+void addHospitalization(Hospitalization** head,Hospitalization** tail, ...);    //入院登记
 void dischargePatient(Hospitalization* h, double totalCost);                     //出院结算
-
+//查找病人
 Hospitalization* findHospitalizationByCardNo(Hospitalization* head, char* cardNo);  // 按病人卡号查住院记录
-
+Hospitalization* findHospitalizationByNo(Hospitalization* head, char* recordNo);    // 按住院单号查住院记录
+Hospitalization* findCurrentHospitalizations(Hospitalization* head);                  // 查找当前在院病人
 void listAllHospitalizations(Hospitalization* head);  // 所有住院记录列表
-=======
-void addHospitalization(Hospitalization** head,                             //入院登记
-    Hospitalization** tail, ...);
-dischargePatient(Hospitalization* h, double totalCost);                     //出院结算
-
-findHospitalizationByCardNo(Hospitalization* head, char* cardNo);           //查询住院信息
-
-listAllHospitalizations(Hospitalization* head);                             //住院信息列表
-
-listAllBeds(Bed* head);                                                     //床位信息列表
-
-listBedsByWard(Bed* head, char* ward);                                      //分病区床位列表
->>>>>>> 1ce3e5a8ce9248a9bd6bf01fae9c36890b09dc2a
 
 #endif

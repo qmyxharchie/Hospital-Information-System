@@ -3,6 +3,18 @@
 //---------------
 
 
+
+/*
+药品模块负责管理药品的库存信息：
+- 添加新药品
+- 删除药品
+- 修改药品信息
+- 补充库存
+- 库存预警检查
+- 购药（扣减库存）
+- 购药记录管理
+*/
+
 #ifndef _MEDICINE_H_
 #define _MEDICINE_H_
 
@@ -19,8 +31,8 @@ typedef struct MedicineData {
 
 typedef struct MedicineNode {
     MedicineData data;          // 药品数据
-    struct Medicine* next;
-    struct Medicine* pre;
+    Medicine* next;
+    Medicine* pre;
 } Medicine;
 
 //购药记录
@@ -34,25 +46,18 @@ typedef struct PurchaseData {
 } PurchaseData;
 
 typedef struct PurchaseNode {
-    Purchase data;
-    struct Purchase* next;
-    struct Purchase* pre;
+    PurchaseData data;
+    Purchase* next;
+    Purchase* pre;
 } Purchase;
 
-void checkLowStock(Medicine* head);                                      //库存检查
-
+void checkLowStock(Medicine* head);                                          //库存检查
 void purchaseMedicine(Medicine* head, char* medNo, int quantity);            //购药（扣减库存）
-
 void replenishStock(Medicine* head, char* medNo, int quantity);              //补充库存
-
 void addPurchaseRecord(Purchase** head, Purchase** tail, ...);               //购药记录（扣减药品库存）
-
-
-//查询函数
+//查询药品
 Medicine* findMedicineByNo(Medicine* head, char* medNo);       // 按药品编号查找
-
 Medicine* findMedicineByName(Medicine* head, char* name);     // 按药品名查找
-
 void listAllMedicines(Medicine* head);    //列出所有药品
 
 #endif

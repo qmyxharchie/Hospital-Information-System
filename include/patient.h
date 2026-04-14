@@ -28,12 +28,15 @@ typedef struct Patient {
     struct Patient* pre;      // 上一个节点
 } Patient;
 
-void addPatient(Patient* head, Patient* tail,
-    char name[], char gender[], char idCard[], char phone[]);   //添加病人
-void delPatient(Patient* head, Patient* tail, PatientData p);    //删除病人
-void modifyPatient(Patient* p, char phone[]);                   //修改病人信息
-Patient* findPatientByCardNo(Patient* head, char* cardNo);      //按卡号精确查找
-Patient* findPatientByName(Patient* head, char* name);          //按姓名模糊/精确查找
-void listAllPatients(Patient* head);                            //列表显示
+Patient* getPatientHead(void);                                      // Getter 函数实现
+Patient* getPatientTail(void);
+void addPatient(Patient** head, Patient** tail,
+    char name[], char gender[], char idCard[], char phone[]);       //添加病人
+void delPatient(Patient** head, Patient** tail, PatientData p);     //删除病人
+int modifyPatient(Patient* head, char* cardNo, PatientData newData);  //修改病人信息
+//查找
+Patient* findPatientByCardNo(Patient* head, char* cardNo);          //按卡号精确查找
+Patient* findPatientByName(Patient* head, char* name);              //按姓名模糊/精确查找
+void listAllPatients(Patient* head);                                //列表显示
 
 #endif                          // !_PATIENT_H_
