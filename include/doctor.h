@@ -11,6 +11,7 @@
 
 #ifndef _DOCTOR_H_
 #define _DOCTOR_H_
+
 typedef struct DoctorData {
     char empNo[20];              // 工号（如DOC001）
     char name[50];               // 姓名
@@ -40,4 +41,4 @@ void resetDailyPatients(Doctor head);                                   //重置每
 void getDeptStats(Doctor head, char* dept, int* count);                 //科室统计
 void listAllDoctors(Doctor* head);                                      //列表显示
 
-#endif // !_DOCTOR_H_
+#endif 

@@ -15,3 +15,4 @@ bool isValidPhone(const char* phone);														//手机号验证
 bool isValidIdCard(const char* idCard);														//身份证号验证
 bool isValidDate(int year, int month, int day);												//日期有效性验证
 void pause(const char* message);															//提示与验证
+#endif
