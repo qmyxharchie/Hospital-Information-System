@@ -15,7 +15,7 @@ void getCurrentTime(int* year, int* month, int* day) {
 	}
 
 	time_t now = time(NULL);		//获取时间戳
-	struct tm* t = localime(&now);	//转换为本地时间
+	struct tm* t = localtime(&now);	//转换为本地时间
 
 	if (t == NULL) return;
 

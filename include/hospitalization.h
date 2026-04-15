@@ -31,16 +31,6 @@ typedef struct HospitalizationNode {
     Hospitalization* pre;
 } Hospitalization;
 
-    char recordNo[20];           // 住院单号（如HOS001）
-    char patientCardNo[20];      // 病人卡号
-    char patientName[50];       // 病人姓名
-    char bedNo[20];             // 床位号
-    double prepay;              // 预交金额
-    double totalCost;           // 总费用
-    char admissionDate[20];     // 入院日期
-    char status[20];            // 状态（在院/已出院）
-} HospitalizationData;
-
 typedef struct Hospitalization {
     HospitalizationData data;
     struct Hospitalization* next;
