@@ -83,3 +83,89 @@ void dischargePatient(HospitalizationNode* h, double totalCost)
 	freeBed(b);
 	return;
 }
+
+//-------------------------
+//以下为查询函数
+//按照病人卡号查询住院记录
+Hospitalization* findHospitalizationByCardNo(Hospitalization* head,char* cardNo)
+{
+	Hospitalization* h = head;
+	while (h != NULL)
+	{
+		if (strcmp(h->data.patientCardNo, cardNo) == 0) 
+		{
+			return h;
+		}
+		h = h->next;
+	}
+	return NULL;
+ }
+//按照住院单号进行查询
+Hospitalization* findHospitalizationByNo(Hospitalization* head, char* recordNo)
+{
+	Hospitalization* h = head;
+	while (h != NULL)
+	{
+		if (strcmp(h->data.recordNo, recordNo) == 0)
+		{
+			return h;
+		}
+		h = h->next;
+	}
+	return NULL;
+}
+//查找当前住院病人
+Hospitalization* findAllCurrentHospitalizations(Hospitalization* head)
+{
+	Hospitalization* h = head;
+	Hospitalization* resultHead = NULL;  // 新链表头
+	Hospitalization* tail = NULL;
+
+	while (h != NULL)
+	{
+		if (strcmp(h->data.status, "在院") == 0)
+		{
+			// 创建新节点
+			Hospitalization* newNode = (Hospitalization*)malloc(sizeof(Hospitalization));
+			*newNode = *h;
+			newNode->next = NULL;
+
+			if (resultHead == NULL)
+			{
+				resultHead = tail = newNode;
+			}
+			else
+			{
+				tail->next = newNode;
+				tail = newNode;
+			}
+		}
+		h = h->next;
+	}
+
+	return resultHead;
+}
+//---------------------
+
+//---------------------
+//以下为住院列表函数
+void listAllHospitalizations(Hospitalization* head)
+{
+	Hospitalization* h= head;//创建指针以遍历链表
+	printf("===住院记录列表===\n");
+	printf("%-20s  %-20s %-50s %-20s %-15s %-15s %-20s %-20s\n ",
+		"住院单号", "病人卡号", "姓名", "床位号", "预交金额", "总费用", "入院日期","住院状态");
+	while (h->next != NULL)
+	{
+		printf("%-20s %-20s %-50s %-20s %-15f %-15f %-20s %-20s",
+			h->data.admissionDate,
+			h->data.bedNo,
+			h->data.patientCardNo,
+			h->data.patientName,
+			h->data.prepay,
+			h->data.recordNo,
+			h->data.status,
+			h->data.totalCost
+	}
+	return;
+}

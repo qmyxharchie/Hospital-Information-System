@@ -162,7 +162,7 @@ void listAllMedicines(MedicineNode* head)
 			cur->data.spec,
 			cur->data.price,
 			cur->data.stock,
-			cur->data.minStock);
+			cur->data.minStock;
 		cur = cur->next;
 	}
 	return;
