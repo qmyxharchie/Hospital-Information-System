@@ -1,0 +1,348 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "doctor.h"         // 医生模块头文件
+#include "file_io.h"        // 文件输入输出模块
+#include "utils.h"          // 工具函数模块
+
+//--------------------
+
+// 全局变量定义 - 医生链表的头指针和尾指针
+static Doctor* g_doctorHead = NULL;  // 医生链表头指针 - 指向链表的第一个节点
+static Doctor* g_doctorTail = NULL;  // 医生链表尾指针 - 指向链表的最后一个节点
+//--------------------
+
+//--------------------
+// Getter 函数实现 - 用于其他模块访问本模块的全局变量
+// 功能：获取医生链表头指针
+// 参数：无
+// 返回值：医生链表头指针
+Doctor* getDoctorHead(void) {
+    // 获取医生链表头指针的函数
+    return g_doctorHead;
+}
+
+// 功能：获取医生链表尾指针
+// 参数：无
+// 返回值：医生链表尾指针
+Doctor* getDoctorTail(void) {
+    // 获取医生链表尾指针的函数
+    return g_doctorTail;
+}
+//--------------------
+
+//--------------------
+//以下为添加医生函数
+// 功能：向医生链表中添加一个新的医生节点
+// 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
+//      name - 姓名，dept - 科室，schedule - 出诊时间，maxPatients - 每日最大接诊数
+void addDoctor(Doctor** head, Doctor** tail,
+    char name[], char dept[], char schedule[], int maxPatients) {
+    // 1. 为新节点分配内存空间
+    Doctor* newNode = (Doctor*)malloc(sizeof(Doctor));
+
+    // 2. 初始化新节点的指针域，防止野指针
+    newNode->next = newNode->pre = NULL;                // 申请新节点第一件事就是指针初始化！非常重要
+
+    // 3. 生成唯一的工号
+    char id[20];
+    generateUniqueId("DOC", id);                        // 生成以"DOC"开头的唯一ID
+
+    // 4. 保存医生具体信息到新节点的数据域
+    strcpy(newNode->data.empNo, id);                    // 工号
+    strcpy(newNode->data.name, name);                   // 姓名
+    strcpy(newNode->data.dept, dept);                   // 科室
+    strcpy(newNode->data.schedule, schedule);           // 出诊时间
+    newNode->data.maxPatients = maxPatients;            // 每日最大接诊次数
+    newNode->data.currentPatients = 0;                  // 设置今日接诊数为0
+
+    // 5. 将新节点插入到链表尾部
+    if (*tail == NULL) {
+        // 如果链表为空（尾指针为NULL），则新节点既是头节点也是尾节点
+        *head = newNode;                                // 设置头指针指向新节点
+        *tail = newNode;                                // 设置尾指针指向新节点
+    }
+    else {
+        // 如果链表不为空，则将新节点连接到尾节点之后
+        (*tail)->next = newNode;                        // 当前尾节点的next指向新节点
+        newNode->pre = *tail;                           // 新节点的pre指向前一个尾节点
+        *tail = newNode;                                // 更新尾指针指向新节点
+    }
+
+    // 6. 将更新后的链表数据保存到文件
+    rebuildDoctorFile(*head);
+    printf("添加成功,工号为%s。\n", id);
+}
+//--------------------
+
+//--------------------
+//以下为删除医生函数
+// 功能：从医生链表中删除指定的医生节点
+// 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
+//      d - 要删除的医生数据（根据empNo匹配）
+void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
+    // 1. 检查链表是否为空
+    if (*head == NULL) {
+        printf("暂无医生数据。\n");
+        return;
+    }
+
+    // 2. 遍历链表寻找要删除的节点
+    Doctor* cur = *head;                                // 当前节点指针
+    Doctor* pre = NULL;                                 // 前一个节点指针
+    while (cur != NULL) {
+        if (strcmp(cur->data.empNo, d.empNo) == 0) {    // 当工号匹配的时候
+            break;                                      // 跳出循环
+        }
+        pre = cur;                                      // 记录前一个节点
+        cur = cur->next;                                // 移动到下一个节点
+    }
+
+    // 3. 检查是否找到要删除的节点
+    if (cur == NULL) {
+        printf("未找到该医生，无法删除。\n");
+        return;
+    }
+
+    // 4. 根据要删除节点的位置执行不同的删除操作
+    if (cur == *head && cur == *tail) {
+        *head = NULL;                                   // 1.链表只有一个节点，删除后链表变空
+        *tail = NULL;
+    }
+    else if (cur == *head) {
+        *head = cur->next;                              // 2.删除头节点，头指针指向下一个节点
+        if (*head != NULL) (*head)->pre = NULL;         // 新头节点的前驱设为NULL
+    }
+    else if (cur == *tail) {
+        *tail = cur->pre;                               // 3.删除尾节点，尾指针指向前一个节点
+        if (*tail != NULL) (*tail)->next = NULL;        // 新尾节点的后继设为NULL
+    }
+    else {
+        pre->next = cur->next;                          // 4.删除中间节点，前节点的next指向后节点
+        if (cur->next != NULL) cur->next->pre = pre;    // 后节点的pre指向前节点
+    }
+
+    // 5. 释放被删除节点的内存
+    free(cur);
+
+    // 6. 输出删除成功的提示信息
+    printf("删除成功。\n");
+
+    // 7. 将更新后的链表数据保存到文件
+    rebuildDoctorFile(*head);
+}
+//--------------------
+
+//--------------------
+//以下为修改医生信息函数
+// 功能：修改指定工号的医生信息
+// 参数：head - 链表头指针，empNo - 要修改的医生工号，newData - 新的医生数据
+// 返回值：1-修改成功，0-修改失败
+int modifyDoctor(Doctor* head, char empNo, DoctorData newData) {
+    Doctor* target = NULL;
+
+    // 1. 根据工号查找要修改的医生节点
+    target = findDoctorByEmpNo(head, empNo);
+
+    // 2. 检查是否找到要修改的医生
+    if (target == NULL) {
+        printf("未找到工号为%s的医生。\n", empNo);
+        return 0;                                       // 返回0表示修改失败
+    }
+
+    // 3. 显示当前医生信息
+    printf("当前医生信息为：\n");
+    printf("工号：%s\n", target->data.empNo);
+    printf("姓名：%s\n", target->data.name);
+    printf("科室：%s\n", target->data.dept);
+    printf("出诊时间：%s\n", target->data.schedule);
+    printf("每日最大接诊次数：%d\n", target->data.maxPatients);
+    printf("今日已接诊数：%d\n", target->data.currentPatients);
+
+    // 4. 更新医生信息
+    safeStringCopy(target->data.name, newData.name, 50);        // 安全复制姓名
+    safeStringCopy(target->data.dept, newData.dept, 50);        // 安全复制科室
+    safeStringCopy(target->data.schedule, newData.schedule, 100); // 安全复制出诊时间
+    target->data.maxPatients = newData.maxPatients;             // 更新每日最大接诊数
+    target->data.currentPatients = newData.currentPatients;     // 更新今日已接诊数
+
+    // 5. 将更新后的链表数据保存到文件
+    rebuildDoctorFile(head);
+
+    // 6. 输出修改成功的提示信息
+    printf("医生信息修改成功！\n");
+
+    return 1;                                             // 返回1表示修改成功
+}
+//--------------------
+
+//--------------------
+//以下为查找医生信息函数
+
+//按工号精确查找
+// 功能：根据工号精确查找医生
+// 参数：head - 链表头指针，empNo - 要查找的工号
+// 返回值：找到的医生节点指针，未找到返回NULL
+Doctor* findDoctorByEmpNo(Doctor* head, char* empNo) {
+    Doctor* d = head;                                     // 从头节点开始查找
+    while (d != NULL) {
+        if (strcmp(d->data.empNo, empNo) == 0) {         // 比较工号是否匹配
+            return d;                                     // 找到则返回该节点指针
+        }
+        d = d->next;                                      // 移动到下一个节点
+    }
+    return NULL;                                          // 未找到返回NULL
+}
+
+//按姓名模糊/精确查找
+// 功能：根据姓名模糊查找医生（查找姓名中包含指定字符串的医生）
+// 参数：head - 链表头指针，name - 要查找的姓名片段
+// 返回值：如果找到返回头节点指针，未找到返回NULL
+Doctor* findDoctorByName(Doctor* head, char* name) {
+    Doctor* d = head;                                     // 从头节点开始查找
+    int found = 0;                                        // 标记是否找到匹配的医生
+
+    // 遍历整个链表
+    while (d != NULL) {
+        // 使用strstr函数检查当前节点姓名是否包含查找字符串
+        if (strstr(d->data.name, name) != NULL) {
+            // 找到匹配的医生，输出姓名和工号
+            printf("姓名：%s,工号：%s\n", d->data.name, d->data.empNo);
+            found = 1;                                    // 设置找到标记
+        }
+        d = d->next;                                      // 移动到下一个节点
+    }
+
+    // 如果没有找到匹配的医生，输出提示信息
+    if (!found) {
+        printf("未找到姓名包含'%s'的医生。\n", name);
+    }
+
+    // 返回值：如果找到匹配项返回头节点指针，否则返回NULL
+    return found ? head : NULL;                           // 注意：这里返回的是头节点而非匹配节点
+}
+
+//按科室查找（返回第一个匹配）
+// 功能：根据科室查找医生（返回第一个匹配的医生）
+// 参数：head - 链表头指针，dept - 要查找的科室
+// 返回值：找到的医生节点指针，未找到返回NULL
+Doctor* findDoctorsByDept(Doctor* head, char* dept) {
+    Doctor* d = head;                                     // 从头节点开始查找
+    while (d != NULL) {
+        if (strcmp(d->data.dept, dept) == 0) {            // 比较科室是否匹配
+            return d;                                     // 找到则返回该节点指针
+        }
+        d = d->next;                                      // 移动到下一个节点
+    }
+    return NULL;                                          // 未找到返回NULL
+}
+//--------------------
+
+//--------------------
+//以下为医生接诊检查函数
+
+//医生是否还能接诊（1=能, 0=不能）
+// 功能：检查医生是否还能接诊（是否达到最大接诊数）
+// 参数：d - 医生节点指针
+// 返回值：1-还能接诊，0-已达最大接诊数
+int canAcceptPatient(Doctor* d) {
+    if (d == NULL) return 0;                            // 边界检查
+    if (d->data.currentPatients < d->data.maxPatients) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+//挂号成功后接诊数+1
+// 功能：挂号成功后增加医生的接诊数
+// 参数：d - 医生节点指针
+void incrementPatientCount(Doctor* d) {
+    if (d == NULL) return;                              // 边界检查
+    if (canAcceptPatient(d)) {
+        d->data.currentPatients++;
+        printf("挂号成功，当前接诊数：%d/%d\n", d->data.currentPatients, d->data.maxPatients);
+    }
+    else {
+        printf("此医生已达每日最大接诊次数\n");
+    }
+}
+//--------------------
+
+//--------------------
+//以下为重置每日接诊数函数
+// 功能：重置所有医生的每日接诊数为0
+// 参数：head - 链表头指针
+void resetDailyPatients(Doctor* head) {
+    Doctor* cur = head;
+    while (cur != NULL) {
+        cur->data.currentPatients = 0;
+        cur = cur->next;
+    }
+    printf("所有医生的接诊数已重置为0。\n");
+}
+//--------------------
+
+//--------------------
+//以下为科室统计函数
+// 功能：统计指定科室在当前日期的总接待量
+// 参数：head - 链表头指针，dept - 科室名称，count - 指向统计结果的指针
+void getDeptStats(Doctor* head, char* dept, int* count) {
+    if (head == NULL || dept == NULL || count == NULL) {
+        printf("参数错误：头指针、科室名称或计数指针为空\n");
+        return;
+    }
+    
+    Doctor* cur = head;
+    *count = 0;  // 初始化该科室在指定日期的总接待量
+    
+    printf("=== %s科室接待量统计 ===\n", dept);
+    
+    // 遍历链表，统计指定科室所有医生的接诊数
+    while (cur != NULL) {
+        if (strcmp(cur->data.dept, dept) == 0) {
+            // 累加该科室所有医生的当前接诊数
+            *count += cur->data.currentPatients;
+        }
+        cur = cur->next;
+    }
+    
+    if (*count == 0) {
+        printf("%s科室今日暂无接诊记录。\n", dept);
+    } else {
+        printf("%s科室今日总接待量：%d 人次\n", dept, *count);
+    }
+}
+//--------------------
+
+//--------------------
+//以下为列表显示函数
+// 功能：遍历并显示所有医生信息
+// 参数：head - 链表头指针
+void listAllDoctors(Doctor* head) {
+    // 1. 检查链表是否为空
+    if (head == NULL) {
+        printf("暂无医生信息\n");
+        return;
+    }
+
+    // 2. 输出表头信息
+    printf("=== 医生列表 ===\n");
+    printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
+        "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
+
+    // 3. 遍历链表并输出每个医生的信息
+    Doctor* current = head;                              // 从头节点开始
+    while (current != NULL) {
+        // 格式化输出当前医生的各项信息
+        printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+            current->data.empNo,                         // 工号
+            current->data.name,                          // 姓名
+            current->data.dept,                          // 科室
+            current->data.schedule,                      // 出诊时间
+            current->data.maxPatients,                   // 每日最大接诊数
+            current->data.currentPatients);              // 今日已接诊数
+        current = current->next;                         // 移动到下一个节点
+    }
+}
