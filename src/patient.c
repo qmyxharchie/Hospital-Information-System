@@ -215,7 +215,7 @@ Patient* findPatientByName(Patient* head, char* name) {
     }
     
     // 返回值：如果找到匹配项返回头节点指针，否则返回NULL
-    return found ? head : NULL;;                          // 注意：这里返回的是头节点而非匹配节点
+    return found ? head : NULL;                           // 注意：这里返回的是头节点而非匹配节点
 }
 //--------------------
 
@@ -232,14 +232,14 @@ void listAllPatients(Patient* head) {
     
     // 2. 输出表头信息
     printf("=== 病人列表 ===\n");
-    printf("%-15s %-20s %-10s %-18s %-15s %-10s\n",
+    printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
         "卡号", "姓名", "性别", "身份证", "电话", "住院状态");
 
     // 3. 遍历链表并输出每个病人的信息
     Patient* current = head;                              // 从头节点开始
     while (current != NULL) {
         // 格式化输出当前病人的各项信息
-        printf("%-15s %-20s %-10s %-18s %-15s %-10s\n",
+        printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
             current->data.cardNo,                         // 门诊卡号
             current->data.name,                           // 姓名
             current->data.gender,                         // 性别

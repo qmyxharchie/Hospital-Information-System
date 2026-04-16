@@ -2,9 +2,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
-#include <string,h>
 #include <ctype.h> 
-#include<stdbool.h>
+#include <stdbool.h>
 #include "utils.h"
 
 //-----------------
@@ -21,7 +20,7 @@ void getCurrentTime(int* year, int* month, int* day) {
 
 	*year = t->tm_year + 1900;		//年份从1900开始算
 	*month = t->tm_mon + 1;			//月份从0开始算
-	*day = t->tm_wday;
+	*day = t->tm_mday;
 }
 //-----------------
 
@@ -44,7 +43,7 @@ void generateUniqueId(const char* prefix, char* id) {
 	int min = t->tm_min;
 	int sec = t->tm_sec；
 
-	sprintf(id, % s % 04d % 02d % 02d % 02d % 02d % 02d % 02d,
+	sprintf(id, %s %04d %02d %02d %02d %02d %02d %02d,
 		prefix, year, month, day, hour, min, sec, counter);		//防止缓冲区溢出
 }
 //-----------------
@@ -52,11 +51,11 @@ void generateUniqueId(const char* prefix, char* id) {
 //-----------------
 //比较两个日期（逐级比较，相同返回0，1<2返回负数，否则返回正数）
 int compareDate(int year1, int month1, int day1,
-	int year2, int month2, int day2); {
+	int year2, int month2, int day2) {
 	if (month < 1 || month2 < 1 || month1 >12 || month2 >12) {
 		return 0;
 	}
-	if (day1 < 1 || day2 < 1 || day1 >12 || day2 >12) {
+	if (day1 < 1 || day2 < 1 || day1 >31 || day2 >31) {
 		return 0;
 	}
 	if (year1 != year2) {
@@ -71,7 +70,7 @@ int compareDate(int year1, int month1, int day1,
 
 //-----------------
 //安全字符串复制
-void safeStringCopy(char* dest, const char* src, int maxLen); {
+void safeStringCopy(char* dest, const char* src, int maxLen){
 	if (dest == NULL || maxLen <= 0) return;
 	if (src == NULL) {
 		dest[0] = '\0';
@@ -161,7 +160,7 @@ bool isValidIdCard(const char* idCard) {
 //-----------------
 
 //-----------------
-//日期有效性验证
+//  日期有效性验证
 bool isValidDate(int year, int month, int day) {
 	if (year < 1900 || year > 2100) {
 		return false;
