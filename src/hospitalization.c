@@ -157,7 +157,7 @@ void listAllHospitalizations(Hospitalization* head)
 		"住院单号", "病人卡号", "姓名", "床位号", "预交金额", "总费用", "入院日期","住院状态");
 	while (h->next != NULL)
 	{
-		printf("%-20s %-20s %-50s %-20s %-15f %-15f %-20s %-20s",
+		printf("%-20s %-20s %-50s %-20s %-15f %-15f %-20s %-20s\n",
 			h->data.admissionDate,
 			h->data.bedNo,
 			h->data.patientCardNo,
@@ -165,7 +165,8 @@ void listAllHospitalizations(Hospitalization* head)
 			h->data.prepay,
 			h->data.recordNo,
 			h->data.status,
-			h->data.totalCost
+			h->data.totalCost);
+		h = h->next;
 	}
 	return;
 }

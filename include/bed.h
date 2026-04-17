@@ -14,19 +14,20 @@
 
 
 typedef struct BedData {
-    char ward[30];               // 病区
-    char bedNo[20];             // 床位号
-    char patientCardNo[20];    // 病人卡号（空=无病人）
-    char patientName[50];      // 病人姓名
-    char status[20];           // 状态（空闲/占用/维修）
+    char ward[30];           // 病区
+    char bedNo[20];          // 床位号
+    char patientCardNo[20];  // 病人卡号（空=无病人）
+    char patientName[50];    // 病人姓名
+    char status[20];         // 状态（空闲/占用/维修）
 } BedData;
 
+// 先声明结构体标签
 typedef struct BedNode {
     BedData data;
+    // 用 struct BedNode* 声明指针，而不是直接用 Bed*
     Bed* next;
     Bed* pre;
-}Bed;
-
+} Bed; // 最后再 typedef 成 Bed
 
 char* allocateBed(Bed* head, char* patientCardNo, char* patientName);    //自动分配床位
 void freeBed(Bed* b);                                                    //释放床位
