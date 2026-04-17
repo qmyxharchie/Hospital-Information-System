@@ -22,24 +22,24 @@ typedef struct BedData {
 } BedData;
 
 // 先声明结构体标签
-typedef struct BedNode {
+typedef struct Bed {
     BedData data;
-    // 用 struct BedNode* 声明指针，而不是直接用 Bed*
-    Bed* next;
-    Bed* pre;
+    // 用 struct Bed* 声明指针，而不是直接用 Bed*
+    struct Bed* next;
+    struct Bed* pre;
 } Bed; // 最后再 typedef 成 Bed
 
 char* allocateBed(Bed* head, char* patientCardNo, char* patientName);    //自动分配床位
 void freeBed(Bed* b);                                                    //释放床位
-void addBed(BedNode** head, BedNode** tail, char* ward, char* bedNo);    // 添加床位
+void addBed(Bed** head, Bed** tail, char* ward, char* bedNo);    // 添加床位
 void delBed(Bed** head, Bed** tail, Bed* b);                                //删除床位
 //查找床位
 Bed* findBedByNo(Bed* head, char* bedNo);              // 按床位号精确查找
 Bed* findBedsByWard(Bed* head, char* ward);            // 按病区查找（返回第一个匹配）
 Bed* findAvailableBeds(Bed* head);                      // 查找第一个空闲床位
-void getWardStats(BedNode* head, char* ward, int* total, int* occupied);//病区统计
+void getWardStats(Bed* head, char* ward, int* total, int* occupied);//病区统计
 //床位列表
-void listAllBeds(Bed** head, Bed** tail, char* ward, char* bedNo);      //床位信息列表
+void listAllBeds(Bed*head);      //床位信息列表
 void listBedsByWard(Bed* head, char* ward);                  // 指定病区床位列表
 
 
