@@ -43,8 +43,8 @@ void generateUniqueId(const char* prefix, char* id) {
 	int min = t->tm_min;
 	int sec = t->tm_sec£»
 
-	sprintf(id, %s %04d %02d %02d %02d %02d %02d %02d,
-		prefix, year, month, day, hour, min, sec, counter);		//·ÀÖ¹»º³åÇøÒç³ö
+		sprintf(id, "%s %04d %02d %02d %02d %02d %02d %02d",
+			prefix, year, month, day, hour, min, sec, counter);		//·ÀÖ¹»º³åÇøÒç³ö
 }
 //-----------------
 

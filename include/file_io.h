@@ -40,6 +40,20 @@ void rebuildBedFile(BedNode* head);												// 保存床位列表
 void rebuildRegistrationFile(Registration* head);								// 保存挂号记录
 void rebuildUserFile(User* head);												// 保存用户列表
 
+//释放内存
+void freePatientChain(Patient* head);											// 释放病人列表
+void freeDoctorChain(Doctor* head);												// 释放医生列表
+void freeMedicineChain(MedicineNode* head);										// 释放药品列表
+void freePurchaseChain(PurchaseNode* head);										// 释放购药记录
+void freeHospitalizationChain(HospitalizationNode* head);						// 释放住院记录
+void freeBedChain(BedNode* head);												// 释放床位列表
+void freeRegistrationChain(Registration* head);									// 释放挂号记录
+void freeUserChain(User* head);													// 释放用户列表
+void freeRegistrationResultChain(Registration* head);							// 释放挂号查询列表
+void freeDoctorsResultChain(Doctor* head);										// 释放医生查询列表
+void freePatientsResultChain(Patient* head);									// 释放病人查询列表
+
+
 //数据备份
 int backupAllData();								 // 备份所有数据文件
 int copyFile(char* source, char* dest);				 // 复制单个文件

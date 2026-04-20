@@ -36,7 +36,7 @@ void delPatient(Patient** head, Patient** tail, PatientData p);      //删除病人
 int modifyPatient(Patient* head, char* cardNo, PatientData newData); //修改病人信息
 //查找
 Patient* findPatientByCardNo(Patient* head, char* cardNo);           //按卡号精确查找
-Patient* findPatientByName(Patient* head, char* name);               //按姓名模糊/精确查找
+Patient* findPatientsByName(Patient* head, char* name);              //按姓名模糊/精确查找
 void listAllPatients(Patient* head);                                 //列表显示
 
 #endif                        

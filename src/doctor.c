@@ -7,11 +7,12 @@
 
 //--------------------
 
+//--------------------
 // 全局变量定义 - 医生链表的头指针和尾指针
 static Doctor* g_doctorHead = NULL;  // 医生链表头指针 - 指向链表的第一个节点
 static Doctor* g_doctorTail = NULL;  // 医生链表尾指针 - 指向链表的最后一个节点
 //--------------------
-
+newNode->data.
 //--------------------
 // Getter 函数实现 - 用于其他模块访问本模块的全局变量
 Doctor* getDoctorHead(void) {
@@ -50,14 +51,14 @@ void addDoctor(Doctor** head, Doctor** tail,
     // 5. 将新节点插入到链表尾部
     if (*tail == NULL) {
         // 如果链表为空（尾指针为NULL），则新节点既是头节点也是尾节点
-        *head = newNode;                                // 设置头指针指向新节点
-        *tail = newNode;                                // 设置尾指针指向新节点
+        *head = newNode;                                
+        *tail = newNode;                                
     }
     else {
         // 如果链表不为空，则将新节点连接到尾节点之后
-        (*tail)->next = newNode;                        // 当前尾节点的next指向新节点
-        newNode->pre = *tail;                           // 新节点的pre指向前一个尾节点
-        *tail = newNode;                                // 更新尾指针指向新节点
+        (*tail)->next = newNode;                        
+        newNode->pre = *tail;                           
+        *tail = newNode;                                
     }
 
     // 6. 将更新后的链表数据保存到文件
@@ -75,14 +76,14 @@ void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
     }
 
     // 2. 遍历链表寻找要删除的节点
-    Doctor* cur = *head;                                // 当前节点指针
-    Doctor* pre = NULL;                                 // 前一个节点指针
+    Doctor* cur = *head;                                
+    Doctor* pre = NULL;                                 
     while (cur != NULL) {
         if (strcmp(cur->data.empNo, d.empNo) == 0) {    // 当卡号匹配的时候
             break;                                      // 跳出循环
         }
-        pre = cur;                                      // 记录前一个节点
-        cur = cur->next;                                // 移动到下一个节点
+        pre = cur;                                      
+        cur = cur->next;                                
     }
 
     // 3. 检查是否找到要删除的节点
@@ -164,39 +165,41 @@ int modifyDoctor(Doctor* head, char empNo, DoctorData newData) {
 
 //按工号精确查找
 Doctor* findDoctorByEmpNo(Doctor* head, char* empNo) {
-    Doctor* d = head;                                     // 从头节点开始查找
+    Doctor* d = head;                                     
     while (d != NULL) {
-        if (strcmp(d->data.empNo, empNo) == 0) {         // 比较工号是否匹配
+        if (strcmp(d->data.empNo, empNo) == 0) {          // 比较工号是否匹配
             return d;                                     // 找到则返回该节点指针
         }
-        d = d->next;                                      // 移动到下一个节点
+        d = d->next;                                      
     }
-    return NULL;                                          // 未找到返回NULL
+    return NULL;                                          
 }
 
-//按姓名模糊/精确查找
-Doctor* findDoctorByName(Doctor* head, char* name) {
+//按姓名模糊
+Doctor* findDoctorsByName(Doctor* head, char* name) {
     Doctor* d = head;                                     // 从头节点开始查找
-    int found = 0;                                        // 标记是否找到匹配的医生
-
+    Doctor* resultHead = NULL;
+    Doctor* resultTail = NULL;
     // 遍历整个链表
     while (d != NULL) {
-        // 使用strstr函数检查当前节点姓名是否包含查找字符串
-        if (strstr(d->data.name, name) != NULL) {
-            // 找到匹配的医生，输出姓名和工号
-            printf("姓名：%s,工号：%s\n", d->data.name, d->data.empNo);
-            found = 1;                                    // 设置找到标记
+        if ((strstr(d->data.name, name) != NULL) {
+            Doctor* newNode = (Doctor*)malloc(sizeof(Doctor));
+            newNode->data = d->data;
+            newNode->next = NULL;
+            newNode->pre = NULL;
+            if (resultHead == NULL) {
+                resultHead = newNode;
+                resultTail = newNode;
+            }
+            else {
+                resultTail->next = newNode;
+                newNode->pre = resultTail;
+                resultTail = newNode;
+            }
         }
         d = d->next;                                      // 移动到下一个节点
     }
-
-    // 如果没有找到匹配的医生，输出提示信息
-    if (!found) {
-        printf("未找到姓名包含'%s'的医生。\n", name);
-    }
-
-    // 返回值：如果找到匹配项返回头节点指针，否则返回NULL
-    return found ? head : NULL;                           // 注意：这里返回的是头节点而非匹配节点
+    return resultHead;    
 }
 
 //按科室查找（返回第一个匹配）

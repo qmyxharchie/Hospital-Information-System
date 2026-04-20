@@ -36,20 +36,20 @@ typedef struct Registration {
     struct Registration* pre;
 } Registration;
 
-int addRegistration(Registration* head, Registration* tail,
+int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
     char* doctorEmpNo, char* doctorName, char* dept);                   //挂号
 int cancelRegistration(Registration** head, Registration** tail,
     Registration* r);                                                   //取消挂号
 int completeRegistration(Registration* r);                              //完成就诊                               
 //查询函数
-Registration* findRegistrationByNo(Registration* head, char* regNo);    //按挂号单号查
+Registration* findRegistrationByNo(Registration* head, char* regNo);    //按挂号单号查询
 Registration* findRegistrationsByPatient(Registration* head, 
-    char* patientCardNo);                                               //按病人卡号查
+    char* patientCardNo);                                               //按病人卡号查询
 Registration* findRegistrationsByDoctor(Registration* head, 
-    char* doctorEmpNo);                                                 //按医生查
+    char* doctorEmpNo);                                                 //按医生查询
 Registration* findRegistrationsByDateRange(Registration* head, int y1, 
-    int m1, int d1, int y2, int m2, int d2);                            // 时间范围查
+    int m1, int d1, int y2, int m2, int d2);                            //按时间范围查询
 void listAllRegistrations(Registration* head);                          //列表显示
 
 #endif // !_REGISTRATION_H_

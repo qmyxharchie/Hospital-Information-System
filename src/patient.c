@@ -7,6 +7,7 @@
 
 //--------------------
 
+//--------------------
 // 全局变量定义 - 病人链表的头指针和尾指针
 static Patient* g_patientHead = NULL;  // 病人链表头指针 - 指向链表的第一个节点
 static Patient* g_patientTail = NULL;  // 病人链表尾指针 - 指向链表的最后一个节点
@@ -190,32 +191,30 @@ Patient* findPatientByCardNo(Patient* head, char* cardNo) {
     return NULL;                                          // 未找到返回NULL
 }
 
-//按姓名模糊/精确查找
-// 功能：根据姓名模糊查找病人（查找姓名中包含指定字符串的病人）
-// 参数：head - 链表头指针，name - 要查找的姓名片段
-// 返回值：如果找到返回头节点指针，未找到返回NULL
-Patient* findPatientByName(Patient* head, char* name) {
+//按姓名模糊
+Patient* findPatientsByName(Patient* head, char* name) {
     Patient* p = head;                                    // 从头节点开始查找
-    int found = 0;                                        // 标记是否找到匹配的病人
-    
-    // 遍历整个链表
+    Patient* resultHead = NULL;
+    Patient* resultTail = NULL;
     while (p != NULL) {
-        // 使用strstr函数检查当前节点姓名是否包含查找字符串
         if (strstr(p->data.name, name) != NULL) {
-            // 找到匹配的病人，输出姓名和卡号
-            printf("姓名：%s,卡号：%s\n", p->data.name, p->data.cardNo);
-            found = 1;                                    // 设置找到标记
+            Patient* newNode = (Patient*)malloc(sizeof(Patient));
+            newNode->data = p->data;
+            newNode->next = NULL;
+            newNode->pre = NULL;
+            if (resultHead == NULL) {
+                resultHead = newNode;
+                resultTail = newNode;
+            }
+            else {
+                resultTail->next = newNode;
+                newNode->pre = resultTail;
+                resultTail = newNode;
+            }
         }           
         p = p->next;                                      // 移动到下一个节点
     }
-    
-    // 如果没有找到匹配的病人，输出提示信息
-    if (!found) {  
-        printf("未找到姓名包含'%s'的病人。\n", name);
-    }
-    
-    // 返回值：如果找到匹配项返回头节点指针，否则返回NULL
-    return found ? head : NULL;                           // 注意：这里返回的是头节点而非匹配节点
+    return resultHead;
 }
 //--------------------
 

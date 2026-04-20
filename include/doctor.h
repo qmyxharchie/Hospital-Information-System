@@ -35,7 +35,7 @@ void delDoctor(Doctor** head, Doctor** tail, DoctorData d);             //删除医
 int modifyDoctor(Doctor* head, char empNo, DoctorData newData);         //修改医生信息
 //查询医生
 Doctor* findDoctorByEmpNo(Doctor* head, char* empNo);                   //按工号精确查找
-Doctor* findDoctorByName(Doctor* head, char* name);                     //按姓名查找
+Doctor* findDoctorsByName(Doctor* head, char* name);                    //按姓名查找
 Doctor* findDoctorsByDept(Doctor* head, char* dept);                    //按科室查找（返回第一个匹配）
 //医生接诊检查
 int canAcceptPatient(Doctor* d);                                        //医生是否还能接诊（1=能, 0=不能）
