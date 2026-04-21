@@ -7,6 +7,8 @@
 
 //-------------------------
 //以下为库存检查预警函数
+// 功能：检查药品库存是否低于最低库存并发出预警
+// 参数：head - 药品链表头指针
 void checkLowStock(Medicine* head)
 {
 	Medicine* cur = head;
@@ -26,6 +28,8 @@ void checkLowStock(Medicine* head)
 
 //-------------------------
 //以下为购药（扣减库存）函数
+// 功能：购买药品并扣减相应库存
+// 参数：head - 药品链表头指针，medNo - 药品编号，quantity - 购买数量
 void purchaseMedicine(Medicine* head, char* medNo, int quantity)
 {
 	Medicine* cur = findMedicineByNo(head, medNo);//创建一个指针获得药品信息
@@ -57,7 +61,11 @@ void purchaseMedicine(Medicine* head, char* medNo, int quantity)
 
 //-------------------------
 //以下为查询药品函数
+
 //按照编号查询药品
+// 功能：根据药品编号查找药品信息
+// 参数：head - 药品链表头指针，medNo - 要查找的药品编号
+// 返回值：找到的药品节点指针，未找到返回NULL
 Medicine* findMedicineByNo(Medicine* head, char* medNo)
 {
 	Medicine* cur = head;//创建指针进行遍历
@@ -73,6 +81,9 @@ Medicine* findMedicineByNo(Medicine* head, char* medNo)
 }
 
 //按照药品名查询药品
+// 功能：根据药品名称（通用名或商品名）查找药品信息
+// 参数：head - 药品链表头指针，name - 要查找的药品名称
+// 返回值：找到的药品节点指针，未找到返回NULL
 Medicine* findMedicineByName(Medicine* head, char* name)
 {
 	Medicine* cur = head;//创建指针进行遍历
@@ -90,6 +101,8 @@ Medicine* findMedicineByName(Medicine* head, char* name)
 
 //-------------------------
 //以下为补充库存函数
+// 功能：为指定药品补充库存
+// 参数：head - 药品链表头指针，medNo - 药品编号，quantity - 补充数量
 void replenishStock(Medicine* head, char* medNo, int quantity)
 {
 	Medicine* cur = findMedicineByNo(head, medNo);//创建指针获取药品信息
@@ -109,6 +122,10 @@ void replenishStock(Medicine* head, char* medNo, int quantity)
 
 //-------------------------
 //以下为购药记录创建函数
+// 功能：创建购药记录并保存到链表
+// 参数：head - 指向购药记录链表头指针的指针，tail - 指向购药记录链表尾指针的指针
+//      patientCardNo - 病人卡号，medNo - 药品编号，quantity - 购买数量
+//      totalCost - 总费用，date - 购药日期
 void addPurchaseRecord(Purchase** head, Purchase** tail,char patientCardNo[20],
 	char medNo[20],int quantity,double totalCost,char date[20])
 {
@@ -147,6 +164,8 @@ void addPurchaseRecord(Purchase** head, Purchase** tail,char patientCardNo[20],
 
 //-------------------------
 //以下为药品列表函数
+// 功能：列出所有药品信息
+// 参数：head - 药品链表头指针
 void listAllMedicines(MedicineNode* head)
 {
 	Medicine* cur = head;//创建指针以遍历链表

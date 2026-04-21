@@ -27,7 +27,9 @@ Doctor* getDoctorTail(void) {
 //--------------------
 
 //--------------------
-//以下为添加医生函数
+//以下为添加医生函数// 功能：向医生链表中添加一个新的医生节点
+// 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
+//      name - 姓名，dept - 科室，schedule - 出诊时间，maxPatients - 每日最大接诊数
 void addDoctor(Doctor** head, Doctor** tail,
     char name[], char dept[], char schedule[], int maxPatients) {
     // 1. 为新节点分配内存空间
@@ -68,6 +70,9 @@ void addDoctor(Doctor** head, Doctor** tail,
 
 //--------------------
 //以下为删除医生函数
+// 功能：从医生链表中删除指定的医生节点
+// 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
+//      d - 要删除的医生数据（根据empNo匹配）
 void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
     // 1. 检查链表是否为空
     if (*head == NULL) {
@@ -122,6 +127,9 @@ void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
 
 //--------------------
 //以下为修改医生信息函数
+// 功能：修改指定工号的医生信息
+// 参数：head - 链表头指针，empNo - 要修改的医生工号，newData - 新的医生数据
+// 返回值：1-修改成功，0-修改失败
 int modifyDoctor(Doctor* head, char empNo, DoctorData newData) {
     Doctor* target = NULL;
 
@@ -164,6 +172,9 @@ int modifyDoctor(Doctor* head, char empNo, DoctorData newData) {
 //以下为查找医生信息函数
 
 //按工号精确查找
+// 功能：根据工号精确查找医生
+// 参数：head - 链表头指针，empNo - 要查找的工号
+// 返回值：找到的医生节点指针，未找到返回NULL
 Doctor* findDoctorByEmpNo(Doctor* head, char* empNo) {
     Doctor* d = head;                                     
     while (d != NULL) {
@@ -176,6 +187,9 @@ Doctor* findDoctorByEmpNo(Doctor* head, char* empNo) {
 }
 
 //按姓名模糊
+// 功能：根据姓名模糊查找医生（查找姓名中包含指定字符串的医生）
+// 参数：head - 链表头指针，name - 要查找的姓名片段
+// 返回值：如果找到返回头节点指针，未找到返回NULL
 Doctor* findDoctorsByName(Doctor* head, char* name) {
     Doctor* d = head;                                     // 从头节点开始查找
     Doctor* resultHead = NULL;
@@ -203,6 +217,9 @@ Doctor* findDoctorsByName(Doctor* head, char* name) {
 }
 
 //按科室查找（返回第一个匹配）
+// 功能：根据科室查找医生（返回第一个匹配的医生）
+// 参数：head - 链表头指针，dept - 要查找的科室
+// 返回值：找到的医生节点指针，未找到返回NULL
 Doctor* findDoctorsByDept(Doctor* head, char* dept) {
     Doctor* d = head;                                     // 从头节点开始查找
     while (d != NULL) {
@@ -219,6 +236,9 @@ Doctor* findDoctorsByDept(Doctor* head, char* dept) {
 //以下为医生接诊检查函数
 
 //医生是否还能接诊（1=能, 0=不能）
+// 功能：检查医生是否还能接诊（是否达到最大接诊数）
+// 参数：d - 医生节点指针
+// 返回值：1-还能接诊，0-已达最大接诊数
 int canAcceptPatient(Doctor* d) {
     if (d->data.currentPatients < d->data.maxPatients) {
         return 1;
@@ -229,7 +249,10 @@ int canAcceptPatient(Doctor* d) {
 }
 
 //挂号成功后接诊数+1
+// 功能：挂号成功后增加医生的接诊数
+// 参数：d - 医生节点指针
 void incrementPatientCount(Doctor* d) {
+    if (d == NULL) return;                              // 边界检查
     if (canAcceptPatient(d)) {
         d->data.currentPatients++;
     }
@@ -241,6 +264,8 @@ void incrementPatientCount(Doctor* d) {
 
 //--------------------
 //以下为重置每日接诊数函数
+// 功能：重置所有医生的每日接诊数为0
+// 参数：head - 链表头指针
 void resetDailyPatients(Doctor* head) {
     Doctor* cur = head;
     while (cur != NULL) {
@@ -252,6 +277,8 @@ void resetDailyPatients(Doctor* head) {
 
 //--------------------
 //以下为科室统计函数
+// 功能：统计指定科室在当前日期的总接待量
+// 参数：head - 链表头指针，dept - 科室名称，count - 指向统计结果的指针
 void getDeptStats(Doctor* head, char* dept, char* date, int* count) {
     if (head == NULL || dept == NULL || count == NULL) {
         printf("参数错误：头指针、科室名称或计数指针为空\n");
@@ -274,16 +301,18 @@ void getDeptStats(Doctor* head, char* dept, char* date, int* count) {
         cur = cur->next;
     }
     if (*count == 0) {
-        printf("%s科室在%s日暂无接诊记录。\n", dept, date);
+        printf("%s科室在%s暂无接诊记录。\n", dept, date);
     }
     else {
-        printf("%s科室在%s日总接待量：%d 人次\n", dept, date, *count);
+        printf("%s科室在%s总接待量：%d 人次\n", dept, date, *count);
     }
 }
 //--------------------
 
 //--------------------
 //以下为列表显示函数
+// 功能：遍历并显示所有医生信息
+// 参数：head - 链表头指针
 void listAllDoctors(Doctor* head) {
     // 1. 检查链表是否为空
     if (head == NULL) {

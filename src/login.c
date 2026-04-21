@@ -21,7 +21,10 @@ void md5Hash(const char* input, char* output);
 //-----------------
 
 //-----------------
-//	用户登录
+// 用户登录
+// 功能：验证用户登录信息并设置登录状态
+// 参数：username - 用户名，password - 密码
+// 返回值：LoginStatus类型的登录状态
 LoginStatus login(char username[], char password[]) {
 	buildUserChain(&g_userHead, &g_userTail);		//加载用户链表
 
@@ -54,7 +57,11 @@ LoginStatus login(char username[], char password[]) {
 //-----------------
 
 //-----------------
-//	用户注册
+// 用户注册
+// 功能：创建新用户账户
+// 参数：username - 用户名，password - 密码，role - 用户角色（0-管理员，1-普通用户）
+// 返回值：1-注册成功，0-注册失败
+
 registerUser(char username[], char password[], int role) {
 	buildUserChain(&g_userHead, &g_userTail);		//加载用户链表
 
@@ -95,7 +102,11 @@ registerUser(char username[], char password[], int role) {
 //-----------------
 
 //-----------------
-//	用户查询
+// 用户查询
+// 功能：根据用户名查找用户信息
+// 参数：head - 用户链表头指针，username - 要查找的用户名
+// 返回值：找到的用户节点指针，未找到返回NULL
+
 User* findUserByName(User* head, char* username) {
 	User* cur = head;
 	while (cur != NULL) {										//遍历链表

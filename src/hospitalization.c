@@ -8,6 +8,9 @@
 
 //-------------------------
 //以下为住院登记函数
+// 功能：为病人办理住院手续并分配床位
+// 参数：head - 指向住院记录链表头指针的指针，tail - 指向住院记录链表尾指针的指针
+//      recordNo - 住院单号，patientCardNo - 病人卡号，patientName - 病人姓名，prepay - 预交费用
 void addHospitalization(Hospitalization** head, Hospitalization** tail,
 	char recordNo[20],char patientCardNo[20],char patientName[50],
 	double prepay)
@@ -55,6 +58,8 @@ void addHospitalization(Hospitalization** head, Hospitalization** tail,
 
 //-------------------------
 //以下为出院结算函数
+// 功能：为病人办理出院手续并进行费用结算
+// 参数：h - 住院记录节点指针，totalCost - 总费用
 void dischargePatient(HospitalizationNode* h, double totalCost)
 {
 	if (h == NULL)//判断边界

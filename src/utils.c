@@ -8,6 +8,8 @@
 
 //-----------------
 //获取当前日期
+// 功能：获取当前系统的年、月、日
+// 参数：year - 年份指针，month - 月份指针，day - 日期指针
 void getCurrentTime(int* year, int* month, int* day) {
 	if (year == NULL || month == NULL || day == NULL) {
 		return;
@@ -20,12 +22,14 @@ void getCurrentTime(int* year, int* month, int* day) {
 
 	*year = t->tm_year + 1900;		//年份从1900开始算
 	*month = t->tm_mon + 1;			//月份从0开始算
-	*day = t->tm_mday;
+	*day = t->tm_mday;				//使用tm_mday（一月中的第几天）而不是tm_wday（星期几）
 }
 //-----------------
 
 //-----------------
 //生成唯一ID
+// 功能：生成带有指定前缀的唯一标识符
+// 参数：prefix - ID前缀，id - 存放生成ID的缓冲区
 void generateUniqueId(const char* prefix, char* id) {
 	if (!prefix || !id) return;
 
@@ -50,6 +54,9 @@ void generateUniqueId(const char* prefix, char* id) {
 
 //-----------------
 //比较两个日期（逐级比较，相同返回0，1<2返回负数，否则返回正数）
+// 功能：比较两个日期的大小
+// 参数：year1, month1, day1 - 第一个日期，year2, month2, day2 - 第二个日期
+// 返回值：相等返回0，第一个日期小于第二个返回负数，否则返回正数
 int compareDate(int year1, int month1, int day1,
 	int year2, int month2, int day2) {
 	if (month < 1 || month2 < 1 || month1 >12 || month2 >12) {
@@ -70,6 +77,8 @@ int compareDate(int year1, int month1, int day1,
 
 //-----------------
 //安全字符串复制
+// 功能：安全地将源字符串复制到目标缓冲区
+// 参数：dest - 目标缓冲区，src - 源字符串，maxLen - 最大长度
 void safeStringCopy(char* dest, const char* src, int maxLen){
 	if (dest == NULL || maxLen <= 0) return;
 	if (src == NULL) {
@@ -83,7 +92,8 @@ void safeStringCopy(char* dest, const char* src, int maxLen){
 
 //-----------------
 //去除两端空白字符
-//-----------------
+// 功能：去除字符串首尾的空白字符
+// 参数：str - 待处理的字符串
 void trim(char* str) {
 	if (str == NULL) return;
 
@@ -106,9 +116,13 @@ void trim(char* str) {
 	*(end + 1) = '\0';
 	memmove(str, start.end - start + 2);
 }
+//-----------------
 
 //-----------------
 //	字符串转数值
+// 功能：将字符串转换为整数或浮点数
+// 参数：str - 待转换的字符串
+// 返回值：转换后的数值
 int stringToInt(const char* str) {			//字符串转为整数
 	if (str == NULL) return 0;
 	return atoi(str);
@@ -121,6 +135,9 @@ double stringToDouble(const char* str) {	// 字符串转浮点数
 
 //-----------------
 //	手机号验证
+// 功能：验证手机号是否符合中国手机号格式
+// 参数：phone - 待验证的手机号
+// 返回值：true-有效，false-无效
 bool isValidPhone(const char* phone) {
 	if (phone == NULL) {							//判空
 		return false;
@@ -138,6 +155,9 @@ bool isValidPhone(const char* phone) {
 
 //-----------------
 //	身份证号验证
+// 功能：验证身份证号是否符合中国身份证格式
+// 参数：idCard - 待验证的身份证号
+// 返回值：true-有效，false-无效
 bool isValidIdCard(const char* idCard) {
 	if (idCard == NULL) {							//判空
 		return false;
@@ -161,6 +181,9 @@ bool isValidIdCard(const char* idCard) {
 
 //-----------------
 //  日期有效性验证
+// 功能：验证给定的年月日是否为有效日期
+// 参数：year - 年份，month - 月份，day - 日期
+// 返回值：true-有效，false-无效
 bool isValidDate(int year, int month, int day) {
 	if (year < 1900 || year > 2100) {
 		return false;
@@ -177,6 +200,8 @@ bool isValidDate(int year, int month, int day) {
 
 //-----------------
 //	提示与暂停
+// 功能：显示提示信息并等待用户按键
+// 参数：message - 提示信息
 void pause(const char* message) {
 	printf("%s\n", message);
 	int c;
