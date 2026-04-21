@@ -16,6 +16,7 @@
 typedef struct PatientData {
     char cardNo[20];          // 门诊卡号（唯一标识）
     char name[50];            // 姓名
+    int age                   // 年龄
     char gender[10];          // 性别
     char idCard[20];          // 身份证号
     char phone[15];           // 联系电话
@@ -28,15 +29,15 @@ typedef struct Patient {
     struct Patient* pre;      // 上一个节点
 } Patient;
 
-Patient* getPatientHead(void);                                       // Getter 函数实现
+Patient* getPatientHead(void);                                          // Getter 函数实现
 Patient* getPatientTail(void);
 void addPatient(Patient** head, Patient** tail,
-    char name[], char gender[], char idCard[], char phone[]);        //添加病人
-void delPatient(Patient** head, Patient** tail, PatientData p);      //删除病人
-int modifyPatient(Patient* head, char* cardNo, PatientData newData); //修改病人信息
+    char name[], int age, char gender[], char idCard[], char phone[]);  //添加病人
+void delPatient(Patient** head, Patient** tail, PatientData p);         //删除病人
+int modifyPatient(Patient* head, char* cardNo, PatientData newData);    //修改病人信息
 //查找
-Patient* findPatientByCardNo(Patient* head, char* cardNo);           //按卡号精确查找
-Patient* findPatientsByName(Patient* head, char* name);              //按姓名模糊/精确查找
-void listAllPatients(Patient* head);                                 //列表显示
+Patient* findPatientByCardNo(Patient* head, char* cardNo);              //按卡号精确查找
+Patient* findPatientsByName(Patient* head, char* name);                 //按姓名模糊/精确查找
+void listAllPatients(Patient* head);                                    //列表显示
 
 #endif                        

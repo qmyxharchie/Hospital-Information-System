@@ -30,9 +30,9 @@ Patient* getPatientTail(void) {
 //以下为添加病人函数
 // 功能：向病人链表中添加一个新的病人节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
-//      name - 姓名，gender - 性别，idCard - 身份证号，phone - 电话号码
+//      name - 姓名，age - 年龄， gender - 性别，idCard - 身份证号，phone - 电话号码
 void addPatient(Patient** head, Patient** tail,
-    char name[], char gender[], char idCard[], char phone[]) {
+    char name[], int age, char gender[], char idCard[], char phone[]) {
     // 1. 为新节点分配内存空间
     Patient* newNode = (Patient*)malloc(sizeof(Patient));
     
@@ -46,6 +46,7 @@ void addPatient(Patient** head, Patient** tail,
     // 4. 保存病人具体信息到新节点的数据域
     strcpy(newNode->data.cardNo, id);                   // 门诊卡号
     strcpy(newNode->data.name, name);                   // 姓名
+    newNode->data.age = age;                            // 年龄
     strcpy(newNode->data.gender, gender);               // 性别
     strcpy(newNode->data.idCard, idCard);               // 身份证号
     strcpy(newNode->data.phone, phone);                 // 电话号码
@@ -151,6 +152,7 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     printf("当前患者信息为：\n");
     printf("门诊卡号：%s\n", target->data.cardNo);
     printf("姓名：%s\n", target->data.name);
+    printf("年龄：%d\n", target->data.age);
     printf("性别：%s\n", target->data.gender);
     printf("身份证号：%s\n", target->data.idCard);
     printf("联系电话：%s\n", target->data.phone);
@@ -158,6 +160,7 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     
     // 4. 更新病人信息
     safeStringCopy(target->data.name, newData.name, 50);        // 安全复制姓名
+    target->data.age = newData.age;                             // 复制年龄
     safeStringCopy(target->data.gender, newData.gender, 10);    // 安全复制性别
     safeStringCopy(target->data.idCard, newData.idCard, 20);    // 安全复制身份证号
     safeStringCopy(target->data.phone, newData.phone, 15);      // 安全复制电话号码
@@ -231,8 +234,8 @@ void listAllPatients(Patient* head) {
     
     // 2. 输出表头信息
     printf("=== 病人列表 ===\n");
-    printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
-        "卡号", "姓名", "性别", "身份证", "电话", "住院状态");
+    printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
+        "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
 
     // 3. 遍历链表并输出每个病人的信息
     Patient* current = head;                              // 从头节点开始
@@ -241,6 +244,7 @@ void listAllPatients(Patient* head) {
         printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
             current->data.cardNo,                         // 门诊卡号
             current->data.name,                           // 姓名
+            current->data.age,                            // 年龄
             current->data.gender,                         // 性别
             current->data.idCard,                         // 身份证号
             current->data.phone,                          // 电话号码
