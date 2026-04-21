@@ -52,7 +52,9 @@ void freeUserChain(User* head);													// 释放用户列表
 void freeRegistrationResultChain(Registration* head);							// 释放挂号查询列表
 void freeDoctorsResultChain(Doctor* head);										// 释放医生查询列表
 void freePatientsResultChain(Patient* head);									// 释放病人查询列表
-
+void freeMedicineResultChain(Medicine* head);									// 释放药品查询列表
+void freeHOspitalizationResultChain(Hospitalization* head);						// 释放住院查询列表
+void freeBedResultChain(Bed* head);												// 释放床位查询列表
 
 //数据备份
 int backupAllData();								 // 备份所有数据文件
