@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "file_io.h"
+#include "utils.h"
 
 //-----------------
 //	读取文件
@@ -617,6 +618,10 @@ void rebuildUserFile(User* head) {
 
 	fclose(fp);
 }
+//-----------------
+
+//-----------------
+//	释放内存
 
 void freePatientChain(Patient* head) {
 	Patient* p = head;
@@ -715,4 +720,122 @@ void freeRegistrationResultChain(Registration* head) {
 		p = temp;
 	}
 	*head = NULL;
+}
+
+void freeDoctorsResultChain(Doctor* head) {
+	Doctor* p = head;
+
+	while (p != NULL) {
+		Doctor* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freePatientsResultChain(Patient* head) {
+	Patient* p = head;
+
+	while (p != NULL) {
+		Patient* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeMedicineResultChain(Medicine* head) {
+	Medicine* p = head;
+
+	while (p != NULL) {
+		Medicine* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeHospitalizationResultChain(Hospitalization* head）{
+		Medicine* p = head;
+
+	while (p != NULL) {
+		Medicine* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+	}
+
+void freeBedResultChain(Bed* head) {
+	Bed* p = head;
+
+	while (p != NULL) {
+		Bed* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+//-----------------
+
+//-----------------
+//	复制单个文件
+int copyFile(char* source, char* dest) {
+	FILE* src, * dst;
+	char buffer[1024];		 // 缓冲区
+	size_t bytesRead;
+
+	src = fopen(source, "r");
+	if (src == NULL) {
+		printf("无法打开源文件: %s\n", source);
+		return 0;
+	}
+
+	dst = fopen(dest, "w");
+	if (dst == NULL) {
+		printf("无法创建目标文件: %s\n", dest);
+		fclose(src);
+		return 0;
+	}
+
+	while ((bytesRead = fread(buffer, 1, sizeof(buffer), src)) > 0) {	//读到继续循环
+		fwrite(buffer, 1, bytesRead, dst);
+	}
+
+	fclose(src);			//关闭文件
+	fclose(dst);
+	return 1;
+}
+//-----------------
+
+//-----------------
+//	备份所有数据文件
+int backupAllData() {
+	int year, month, day;
+	getCurrentTime(&year, &month, &day);
+
+	char* files[] = {			//存放需要备份的文件
+		PATIENT_FILE,DOCTOR_FILE,MEDICINE_FILE,PURCHASE_FILE，
+		HOSPITAL_FILE，BED_FILE，REGISTRATION_FILE，USER_FILE
+	}
+	int fileCount =8 ;
+
+	char destPath[1024];			// 目标路径
+	int successCount = 0;
+
+	for (int i = 0; i < fileCount; i++) {		//循环备份
+		sprintf(destPath, "backup/%s_%04d%02d%02d.txt",
+			files[i], year, month, day);
+	}
+
+	if (copyFile(files[i], destPath)) {
+		printf("备份成功: %s -> %s\n", files[i], destPath);
+		successCount++;
+	}
+	else {
+		printf("备份失败: %s\n", files[i]);
+	}
+
+	printf("总共成功备份 %d/%d 个文件\n", successCount, fileCount);
+	return 1;
 }
