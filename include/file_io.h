@@ -11,14 +11,14 @@
 
 #define DATA_DIR "data/"
 #define BACKUP_DIR "backup/"
-#define PATIENT_FILE    DATA_DIR "patient.txt"
-#define DOCTOR_FILE     DATA_DIR "doctor.txt"
-#define MEDICINE_FILE   DATA_DIR "medicine.txt"
-#define PURCHASE_FILE   DATA_DIR "purchase.txt"
-#define HOSPITAL_FILE   DATA_DIR "hospitalization.txt"
-#define BED_FILE        DATA_DIR "bed.txt"
+#define PATIENT_FILE      DATA_DIR "patient.txt"
+#define DOCTOR_FILE       DATA_DIR "doctor.txt"
+#define MEDICINE_FILE     DATA_DIR "medicine.txt"
+#define PURCHASE_FILE     DATA_DIR "purchase.txt"
+#define HOSPITAL_FILE     DATA_DIR "hospitalization.txt"
+#define BED_FILE          DATA_DIR "bed.txt"
 #define REGISTRATION_FILE DATA_DIR "registration.txt"
-#define USER_FILE       DATA_DIR "user.txt"
+#define USER_FILE         DATA_DIR "user.txt"
 
 //读取文件
 void buildPatientChain(Patient* head, Patient* tail);										 // 加载病人列表
