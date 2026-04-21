@@ -1,0 +1,718 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "file_io.h"
+
+//-----------------
+//	读取文件
+void buildPatientChain(Patient** head, Patient** tail) {
+	FILE* fp = fopen(PATIENT_FILE, "r");
+	if (fp == NULL) {
+		fopen(PATIENT_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+	
+	*head = NULL;
+	*tail = NULL;
+	Patient* pre = NULL;
+
+	int opt;					//循环读取文件
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1) 
+			break;
+
+		if (opt == 1) {			//创建节点
+			Patient* node = (Patient*)malloc(sizeof(Patient));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.cardNo);
+			fscanf(fp, "%s", node->data.name);
+			fscanf(fp, "%s", node->data.gender);
+			fscanf(fp, "%s", node->data.idCard);
+			fscanf(fp, "%s", node->data.phone);
+			fscanf(fp, "%d", &node->data.isActive);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+
+void buildDoctorChain(Doctor** head, Doctor** tail) {
+	FILE* fp = fopen(DOCTOR_FILE, "r");
+	if (fp == NULL) {
+		fopen(DOCTOR_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+
+	*head = NULL;
+	*tail = NULL;
+	Doctor* pre = NULL;
+
+	int opt;					
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1)
+			break;
+
+		if (opt == 1) {			
+			Doctor* node = (Doctor*)malloc(sizeof(Doctor));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.empNo);
+			fscanf(fp, "%s", node->data.name);
+			fscanf(fp, "%s", node->data.dept);
+			fscanf(fp, "%s", node->data.schedule);
+			fscanf(fp, "%d", &node->data.maxPatients);
+			fscanf(fp, "%d", &node->currentPatients);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+
+void buildMedicineChain(MedicineNode** head, MedicineNode** tail) {
+	FILE* fp = fopen(MEDICINE_FILE, "r");
+	if (fp == NULL) {
+		fopen(MEDICINE_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+
+	*head = NULL;
+	*tail = NULL;
+	Medicine* pre = NULL;
+
+	int opt;					
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1)
+			break;
+
+		if (opt == 1) {			
+			Medicine* node = (Medicine*)malloc(sizeof(Medicine));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.medNo);
+			fscanf(fp, "%s", node->data.genericName);
+			fscanf(fp, "%s", node->data.brandName);
+			fscanf(fp, "%s", node->data.spec);
+			fscanf(fp, "%lf", &node->data.price);
+			fscanf(fp, "%d", &node->currentPatients);
+			fscanf(fp, "%d", &node->minStock);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+
+void buildPurchaseChain(PurchaseNode** head, PurchaseNode** tail) {
+	FILE* fp = fopen(PURCHASE_FILE, "r");
+	if (fp == NULL) {
+		fopen(PURCHASE_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+
+	*head = NULL;
+	*tail = NULL;
+	Purchase* pre = NULL;
+
+	int opt;
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1)
+			break;
+
+		if (opt == 1) {
+			Purchase* node = (Purchase*)malloc(sizeof(Purchase));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.purNo);
+			fscanf(fp, "%s", node->data.patientCardNo);
+			fscanf(fp, "%s", node->data.medNo);
+			fscanf(fp, "%d", &node->data.quantity);
+			fscanf(fp, "%lf", &node->data.totalCost);
+			fscanf(fp, "%s", node->date);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+
+void buildHospitalizationChain(HospitalizationNode** head, HospitalizationNode** tail) {
+	FILE* fp = fopen(HOSPITAL_FILE, "r");
+	if (fp == NULL) {
+		fopen(HOSPITAL_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+
+	*head = NULL;
+	*tail = NULL;
+	Hospitalization* pre = NULL;
+
+	int opt;
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1)
+			break;
+
+		if (opt == 1) {
+			Hospitalization* node = (Hospitalization*)malloc(sizeof(Hospitalization));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.recordNo);
+			fscanf(fp, "%s", node->data.patientCardNo);
+			fscanf(fp, "%s", node->data.patientName);
+			fscanf(fp, "%s", node->data.bedNo);
+			fscanf(fp, "%lf", &node->data.totalCost);
+			fscanf(fp, "%s", node->admissionDate);
+			fscanf(fp, "%s", node->status);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+
+void buildBedChain(BedNode** head, BedNode** tail) {
+	FILE* fp = fopen(BED_FILE, "r");
+	if (fp == NULL) {
+		fopen(BED_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+
+	*head = NULL;
+	*tail = NULL;
+	Bed* pre = NULL;
+
+	int opt;
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1)
+			break;
+
+		if (opt == 1) {
+			Bed* node = (Bed*)malloc(sizeof(Bed));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.ward);
+			fscanf(fp, "%s", node->data.bedNo);
+			fscanf(fp, "%s", node->data.patientCardNo);
+			fscanf(fp, "%s", node->data.patientName);
+			fscanf(fp, "%s", node->status);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+
+void buildRegistrationChain(Registration** head, Registration** tail) {
+	FILE* fp = fopen(REGISTRATION_FILE, "r");
+	if (fp == NULL) {
+		fopen(REGISTRATION_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+
+	*head = NULL;
+	*tail = NULL;
+	Registration* pre = NULL;
+
+	int opt;
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1)
+			break;
+
+		if (opt == 1) {
+			Registration* node = (Registration*)malloc(sizeof(Registration));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.regNo);
+			fscanf(fp, "%s", node->data.patientCardNo);
+			fscanf(fp, "%s", node->data.patientName);
+			fscanf(fp, "%s", node->data.doctorEmpNo);
+			fscanf(fp, "%s", node->data.doctorName);
+			fscanf(fp, "%s", node->data.dept);
+			fscanf(fp, "%s", node->data.date);
+			fscanf(fp, "%s", node->data.status);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+
+void buildUserChain(User** head, User** tail) {
+	FILE* fp = fopen(USER_FILE, "r");
+	if (fp == NULL) {
+		fopen(USER_FILE, "w");
+		fprintf(fp, "-1\n");
+		fclose(fp);
+
+		*head = NULL;
+		*tail = NULL;
+		return;
+	}
+
+	*head = NULL;
+	*tail = NULL;
+	User* pre = NULL;
+
+	int opt;
+	while (1) {
+		fscanf(fp, "%d", &opt);
+
+		if (opt == -1)
+			break;
+
+		if (opt == 1) {
+			User* node = (User*)malloc(sizeof(User));
+			node->next = NULL;
+			node->pre = NULL;
+			fscanf(fp, "%s", node->data.username);
+			fscanf(fp, "%s", node->data.password);
+			fscanf(fp, "%s", node->data.role);
+			fscanf(fp, "%d", &node->data.lastLogin);
+
+			if (head *= = NULL) {
+				*head = node;
+			}
+			else {
+				pre->next = node;
+				node->pre = pre;
+			}
+			pre = node;
+		}
+	}
+	*tail = pre;
+	fclose(fp)
+}
+//-----------------
+
+//-----------------
+//	写入文件
+void rebuildPatientFile(Patient* head) {
+	FILE* fp = fopen(PATIENT_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	Patient* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+		
+		fprintf(fp, "%s\n",p->data.cardNo);
+		fprintf(fp, "%s\n", p->data.name);
+		fprintf(fp, "%s\n", p->data.gender);
+		fprintf(fp, "%s\n", p->data.idCard);
+		fprintf(fp, "%s\n", p->data.phone);
+		fprintf(fp, "%d\n", p->data.isActive);
+
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void rebuildDoctorFile(Doctor* head) {
+	FILE* fp = fopen(DOCTOR_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	Doctor* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+
+		fprintf(fp, "%s\n", p->data.empNo);
+		fprintf(fp, "%s\n", p->data.name);
+		fprintf(fp, "%s\n", p->data.dept);
+		fprintf(fp, "%s\n", p->data.schedule);
+		fprintf(fp, "%d\n", p->data.maxPatients);
+		fprintf(fp, "%d\n", p->data.currentPatients);
+
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void rebuildMedicineFile(MedicineNode* head) {
+	FILE* fp = fopen(MEDICINE_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	Medicine* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+
+		fprintf(fp, "%s\n", p->data.medNo);
+		fprintf(fp, "%s\n", p->data.genericName);
+		fprintf(fp, "%s\n", p->data.brandName);
+		fprintf(fp, "%s\n", p->data.spec);
+		fprintf(fp, "%lf\n", p->data.price);
+		fprintf(fp, "%d\n", p->data.stock);
+		fprintf(fp, "%d\n", p->data.minStock);
+
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void rebuildPurchaseFile(PurchaseNode* head) {
+	FILE* fp = fopen(PURCHASE_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	Purchase* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+
+		fprintf(fp, "%s\n", p->data.purNo);
+		fprintf(fp, "%s\n", p->data.patientCardNo);
+		fprintf(fp, "%s\n", p->data.medNo);
+		fprintf(fp, "%d\n", p->data.quantity);
+		fprintf(fp, "%lf\n", p->data.totalCost);
+		fprintf(fp, "%s\n", p->data.date);
+
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void rebuildHospitalizationFile(HospitalizationNode* head) {
+	FILE* fp = fopen(HOSPITAL_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	Hospitalization* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+
+		fprintf(fp, "%s\n", p->data.recordNo);
+		fprintf(fp, "%s\n", p->data.patientCardNo);
+		fprintf(fp, "%s\n", p->data.patientName);
+		fprintf(fp, "%lf\n", p->data.prepay);
+		fprintf(fp, "%lf\n", p->data.totalCost);
+		fprintf(fp, "%s\n", p->data.admissionDate);
+		fprintf(fp, "%s\n", p->data.status);
+
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void rebuildBedFile(BedNode* head) {
+	FILE* fp = fopen(BED_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	Bed* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+
+		fprintf(fp, "%s\n", p->data.ward);
+		fprintf(fp, "%s\n", p->data.bedNo);
+		fprintf(fp, "%s\n", p->data.patientCardNo);
+		fprintf(fp, "%s\n", p->data.patientName);
+		fprintf(fp, "%s\n", p->data.status);
+
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void rebuildRegistrationFile(Registration* head) {
+	FILE* fp = fopen(REGISTRATION_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	Registration* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+
+		fprintf(fp, "%s\n", p->data.regNo);
+		fprintf(fp, "%s\n", p->data.patientCardNo);
+		fprintf(fp, "%s\n", p->data.patientName);
+		fprintf(fp, "%s\n", p->data.doctorEmpNo);
+		fprintf(fp, "%s\n", p->data.doctorName);
+		fprintf(fp, "%s\n", p->data.dept);
+		fprintf(fp, "%s\n", p->data.date);
+		fprintf(fp, "%s\n", p->data.status);
+
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void rebuildUserFile(User* head) {
+	FILE* fp = fopen(USER_FILE, "w");
+
+	if (fp == NULL)
+	{
+		printf("文件打开失败！\n");
+		return;
+	}
+	User* p = head;
+
+	while (p != NULL) {
+		fprintf(fp, "1\n");
+
+		fprintf(fp, "%s\n", p->data.username);
+		fprintf(fp, "%s\n", p->data.password);
+		fprintf(fp, "%d\n", p->data.role);
+		fprintf(fp, "%s\n", p->data.lastLogin);
+		fprintf(fp, "\n");
+		p = p->next;
+	}
+	fprintf(fp, "-1\n");
+
+	fclose(fp);
+}
+
+void freePatientChain(Patient* head) {
+	Patient* p = head;
+
+	while (p != NULL) {
+		Patient* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeDoctorChain(Doctor* head) {
+	Doctor* p = head;
+
+	while (p != NULL) {
+		Doctor* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeMedicineChain(MedicineNode* head) {
+	Medicine* p = head;
+
+	while (p != NULL) {
+		Medicine* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freePurchaseChain(PurchaseNode* head) {
+	Purchase* p = head;
+
+	while (p != NULL) {
+		Purchase* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeHospitalizationChain(HospitalizationNode* head) {
+	Hospitalization* p = head;
+
+	while (p != NULL) {
+		Hospitalization* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeBedChain(BedNode* head) {
+	Bed* p = head;
+
+	while (p != NULL) {
+		Bed* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeRegistrationChain(Registration* head) {
+	Registration* p = head;
+
+	while (p != NULL) {
+		Registration* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeUserChain(User* head) {
+	User* p = head;
+
+	while (p != NULL) {
+		User* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
+
+void freeRegistrationResultChain(Registration* head) {
+	Registration* p = head;
+
+	while (p != NULL) {
+		Registration* temp = p->next;
+		free(p);
+		p = temp;
+	}
+	*head = NULL;
+}
