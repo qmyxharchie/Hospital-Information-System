@@ -1,46 +1,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "hospitalization.h"
-#include "file_io.h"
-#include "utils.h"
-#include "bed.h"
+#include "hospitalization.h"  // ä½é™¢æ¨¡å—å¤´æ–‡ä»¶
+#include "file_io.h"          // æ–‡ä»¶è¾“å…¥è¾“å‡ºæ¨¡å—
+#include "utils.h"            // å·¥å…·å‡½æ•°æ¨¡å—
+#include "bed.h"              // åºŠä½æ¨¡å—
 
 //-------------------------
-//ÒÔÏÂÎª×¡ÔºµÇ¼Çº¯Êý
-// ¹¦ÄÜ£ºÎª²¡ÈË°ìÀí×¡ÔºÊÖÐø²¢·ÖÅä´²Î»
-// ²ÎÊý£ºhead - Ö¸Ïò×¡Ôº¼ÇÂ¼Á´±íÍ·Ö¸ÕëµÄÖ¸Õë£¬tail - Ö¸Ïò×¡Ôº¼ÇÂ¼Á´±íÎ²Ö¸ÕëµÄÖ¸Õë
-//      recordNo - ×¡Ôºµ¥ºÅ£¬patientCardNo - ²¡ÈË¿¨ºÅ£¬patientName - ²¡ÈËÐÕÃû£¬prepay - Ô¤½»·ÑÓÃ
+//å‡½æ•°åï¼šaddHospitalization
+//åŠŸèƒ½ï¼šä¸ºæ‚£è€…åŠžç†ä½é™¢æ‰‹ç»­ï¼Œè‡ªåŠ¨åˆ†é…åºŠä½
+//å‚æ•°ï¼šhead - æŒ‡å‘ä½é™¢è®°å½•é“¾è¡¨å¤´æŒ‡é’ˆçš„æŒ‡é’ˆ
+//     tail - æŒ‡å‘ä½é™¢è®°å½•é“¾è¡¨å°¾æŒ‡é’ˆçš„æŒ‡é’ˆ  
+//     recordNo - ä½é™¢å·
+//     patientCardNo - æ‚£è€…å¡å·
+//     patientName - æ‚£è€…å§“å
+//     prepay - é¢„ä»˜æ¬¾
+//è¿”å›žå€¼ï¼šæ— 
 void addHospitalization(Hospitalization** head, Hospitalization** tail,
 	char recordNo[20],char patientCardNo[20],char patientName[50],
 	double prepay)
 {
-	//·ÖÅä´²Î»
-	char bedNo1 = allocateBed(BedNode * head, char* patientCardNo, char* patientName);
+	//åˆ†é…åºŠä½
+	char* bedNo1 = allocateBed(g_bedHead, patientCardNo, patientName);
 	if (strcmp(bedNo1, "NULL") == 0)
 	{
-		printf("´²Î»²»×ã");
+		printf("åºŠä½ä¸è¶³");
 		return;
 	}
 	Hospitalization* h = (Hospitalization*)malloc(sizeof(Hospitalization));
-	if (!h)//´´½¨ÐÂ½Úµã
+	if (!h)//åˆ†é…æ–°èŠ‚ç‚¹
 	{
-		printf("ÄÚ´æ·ÖÅäÊ§°Ü\n");
+		printf("å†…å­˜ç”³è¯·å¤±è´¥\n");
 		return;
 	}
-	generateUniqueId("HOS", id);//Éú³É×¡Ôºµ¥ºÅ
+	char id[20];
+	generateUniqueId("HOS", id);//ç”Ÿæˆä½é™¢ç¼–å·
 	h->next = h->pre = NULL;
-	h->data.totalCost = 0;//½«×¡ÔºÐÅÏ¢Ìî³äµ½½á¹¹ÌåµÄ¸÷¸öÊý¾ÝÖÐÈ¥
-	strcpy(h->data.bedNo,bedNo1);
-	strcpy(h->data.patientCardNo,patientCardNo );
+	h->data.totalCost = 0;//å°†ä½é™¢ä¿¡æ¯å¡«å……åˆ°ç»“æž„ä½“çš„å„ä¸ªå­—æ®µä¸­åŽ»
+	strcpy(h->data.bedNo, bedNo1);
+	strcpy(h->data.patientCardNo, patientCardNo);
 	strcpy(h->data.patientName, patientName);
-	strcpy(h->data.prepay,prepay );
+	strcpy(h->data.prepay, prepay);
 	strcpy(h->data.recordNo, id);
-	strcpy(h->data.status, "ÔÚÔº");
+	strcpy(h->data.status, "ä½é™¢");
 	int year, month, day;
 	getCurrentTime(&year, &month, &day);
 	sprintf(h->data.admissionDate, "%04d-%02d-%02d", year, month, day);
-	if (*tail == NULL)//ÀûÓÃÎ²²å·¨Ìí¼Ó½Úµã
+	if (*tail == NULL)//å¦‚æžœå°¾æŒ‡é’ˆä¸ºç©ºåˆ™æ’å…¥èŠ‚ç‚¹
 	{
 		*head = h;
 		*tail = h;
@@ -57,41 +63,48 @@ void addHospitalization(Hospitalization** head, Hospitalization** tail,
 
 
 //-------------------------
-//ÒÔÏÂÎª³öÔº½áËãº¯Êý
-// ¹¦ÄÜ£ºÎª²¡ÈË°ìÀí³öÔºÊÖÐø²¢½øÐÐ·ÑÓÃ½áËã
-// ²ÎÊý£ºh - ×¡Ôº¼ÇÂ¼½ÚµãÖ¸Õë£¬totalCost - ×Ü·ÑÓÃ
-void dischargePatient(HospitalizationNode* h, double totalCost)
+//å‡½æ•°åï¼šdischargePatient
+//åŠŸèƒ½ï¼šä¸ºæ‚£è€…åŠžç†å‡ºé™¢æ‰‹ç»­ï¼Œè¿›è¡Œè´¹ç”¨ç»“ç®—
+//å‚æ•°ï¼šh - ä½é™¢è®°å½•èŠ‚ç‚¹æŒ‡é’ˆ
+//     totalCost - æ€»è´¹ç”¨
+//è¿”å›žå€¼ï¼šæ— 
+void dischargePatient(Hospitalization* h, double totalCost)
 {
-	if (h == NULL)//ÅÐ¶Ï±ß½ç
+	if (h == NULL)//è¾¹ç•Œåˆ¤æ–­
 	{
 		return;
 	}
-	h->data.totalCost = totalCost;//Ìî³ä×Ü·ÑÓÃ
-	strcpy(h->data.status, "ÒÑ³öÔº");
-	double returnCost = h->data.prepay - h->data.totalCost;//¼ÆËãÓ¦·µ»¹µÄ·ÑÓÃ
-	if (returnCost < 0)//ÈôÓ¦·µ»¹µÄ·ÑÓÃÎª¸ºÊý£¬ÔòÌáÐÑ²¡ÈË²¹½É×¡Ôº·Ñ
+	h->data.totalCost = totalCost;//è®¾ç½®æ€»è´¹ç”¨
+	strcpy(h->data.status, "å·²å‡ºé™¢");
+	double returnCost = h->data.prepay - h->data.totalCost;//è®¡ç®—åº”é€€è¿˜çš„è´¹ç”¨
+	if (returnCost < 0)//å¦‚æžœåº”é€€è¿˜çš„è´¹ç”¨ä¸ºè´Ÿæ•°ï¼Œè¯´æ˜Žæ‚£è€…è¿˜éœ€è¡¥äº¤ä½é™¢è´¹
 	{
-		printf("Çë²¹½É·ÑÓÃ %d Ôª", (-1) * returnCost);
+		printf("è¡¥äº¤è´¹ç”¨ %f å…ƒ", (-1) * returnCost);
 		returnCost = 0;
 	}
-	printf("====³öÔº½áËã====");
-	printf("%-20s %-50s %-20s %20s %-20s %-20s", 
-		"×¡Ôºµ¥ºÅ", "ÐÕÃû", "ÈëÔºÈÕÆÚ", "×Ü·ÑÓÃ", "Ô¤½»½ð¶î", "ÍË¿î½ð¶î");
-	printf("%-20s %-50s %-20s %20f %-20f %-20f",
+	printf("====å‡ºé™¢ä¿¡æ¯====\n");
+	printf("%-20s %-50s %-20s %20s %-20s %-20s\n", 
+		"ä½é™¢ç¼–å·", "å§“å", "å…¥é™¢æ—¥æœŸ", "æ€»è´¹ç”¨", "é¢„ä»˜æ¬¾", "é€€æ¬¾");
+	printf("%-20s %-50s %-20s %20f %-20f %-20f\n",
 		h->data.recordNo,
 		h->data.patientName,
 		h->data.admissionDate,
-		h->data.prepay,
 		h->data.totalCost,
+		h->data.prepay,
 		returnCost);
 	Bed* b = findBedByNo(g_bedHead, h->data.bedNo);
 	freeBed(b);
 	return;
 }
+//-------------------------
+
 
 //-------------------------
-//ÒÔÏÂÎª²éÑ¯º¯Êý
-//°´ÕÕ²¡ÈË¿¨ºÅ²éÑ¯×¡Ôº¼ÇÂ¼
+//å‡½æ•°åï¼šfindHospitalizationByCardNo
+//åŠŸèƒ½ï¼šæ ¹æ®æ‚£è€…å¡å·æŸ¥è¯¢ä½é™¢è®°å½•
+//å‚æ•°ï¼šhead - ä½é™¢è®°å½•é“¾è¡¨å¤´æŒ‡é’ˆ
+//     cardNo - æ‚£è€…å¡å·
+//è¿”å›žå€¼ï¼šè¿”å›žæ‰¾åˆ°çš„ä½é™¢è®°å½•èŠ‚ç‚¹æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›žNULL
 Hospitalization* findHospitalizationByCardNo(Hospitalization* head,char* cardNo)
 {
 	Hospitalization* h = head;
@@ -104,8 +117,16 @@ Hospitalization* findHospitalizationByCardNo(Hospitalization* head,char* cardNo)
 		h = h->next;
 	}
 	return NULL;
- }
-//°´ÕÕ×¡Ôºµ¥ºÅ½øÐÐ²éÑ¯
+}
+//-------------------------
+
+
+//-------------------------
+//å‡½æ•°åï¼šfindHospitalizationByNo
+//åŠŸèƒ½ï¼šæ ¹æ®ä½é™¢ç¼–å·æŸ¥è¯¢ä½é™¢è®°å½•
+//å‚æ•°ï¼šhead - ä½é™¢è®°å½•é“¾è¡¨å¤´æŒ‡é’ˆ
+//     recordNo - ä½é™¢ç¼–å·
+//è¿”å›žå€¼ï¼šè¿”å›žæ‰¾åˆ°çš„ä½é™¢è®°å½•èŠ‚ç‚¹æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›žNULL
 Hospitalization* findHospitalizationByNo(Hospitalization* head, char* recordNo)
 {
 	Hospitalization* h = head;
@@ -119,30 +140,39 @@ Hospitalization* findHospitalizationByNo(Hospitalization* head, char* recordNo)
 	}
 	return NULL;
 }
-//²éÕÒµ±Ç°×¡Ôº²¡ÈË
+//-------------------------
+
+
+//-------------------------
+//å‡½æ•°åï¼šfindAllCurrentHospitalizations
+//åŠŸèƒ½ï¼šæŸ¥æ‰¾å½“å‰ä½é™¢æ‚£è€…
+//å‚æ•°ï¼šhead - ä½é™¢è®°å½•é“¾è¡¨å¤´æŒ‡é’ˆ
+//è¿”å›žå€¼ï¼šè¿”å›žå½“å‰ä½é™¢æ‚£è€…é“¾è¡¨å¤´æŒ‡é’ˆ
 Hospitalization* findAllCurrentHospitalizations(Hospitalization* head)
 {
 	Hospitalization* h = head;
-	Hospitalization* resultHead = NULL;  // ÐÂÁ´±íÍ·
-	Hospitalization* tail = NULL;
+	Hospitalization* resultHead = NULL;  // ç»“æžœé“¾è¡¨å¤´
+	Hospitalization* resultTail = NULL;  // ç»“æžœé“¾è¡¨å°¾
 
 	while (h != NULL)
 	{
-		if (strcmp(h->data.status, "ÔÚÔº") == 0)
+		if (strcmp(h->data.status, "ä½é™¢") == 0)
 		{
-			// ´´½¨ÐÂ½Úµã
+			// åˆ›å»ºæ–°èŠ‚ç‚¹
 			Hospitalization* newNode = (Hospitalization*)malloc(sizeof(Hospitalization));
 			*newNode = *h;
 			newNode->next = NULL;
+			newNode->pre = NULL;
 
 			if (resultHead == NULL)
 			{
-				resultHead = tail = newNode;
+				resultHead = resultTail = newNode;
 			}
 			else
 			{
-				tail->next = newNode;
-				tail = newNode;
+				resultTail->next = newNode;
+				newNode->pre = resultTail;
+				resultTail = newNode;
 			}
 		}
 		h = h->next;
@@ -150,28 +180,39 @@ Hospitalization* findAllCurrentHospitalizations(Hospitalization* head)
 
 	return resultHead;
 }
-//---------------------
+//-------------------------
 
-//---------------------
-//ÒÔÏÂÎª×¡ÔºÁÐ±íº¯Êý
+
+//-------------------------
+//å‡½æ•°åï¼šlistAllHospitalizations
+//åŠŸèƒ½ï¼šæ˜¾ç¤ºæ‰€æœ‰ä½é™¢è®°å½•åˆ—è¡¨
+//å‚æ•°ï¼šhead - ä½é™¢è®°å½•é“¾è¡¨å¤´æŒ‡é’ˆ
+//è¿”å›žå€¼ï¼šæ— 
 void listAllHospitalizations(Hospitalization* head)
 {
-	Hospitalization* h= head;//´´½¨Ö¸ÕëÒÔ±éÀúÁ´±í
-	printf("===×¡Ôº¼ÇÂ¼ÁÐ±í===\n");
-	printf("%-20s  %-20s %-50s %-20s %-15s %-15s %-20s %-20s\n ",
-		"×¡Ôºµ¥ºÅ", "²¡ÈË¿¨ºÅ", "ÐÕÃû", "´²Î»ºÅ", "Ô¤½»½ð¶î", "×Ü·ÑÓÃ", "ÈëÔºÈÕÆÚ","×¡Ôº×´Ì¬");
-	while (h->next != NULL)
+	if(head == NULL)
+	{
+		printf("æš‚æ— ä½é™¢è®°å½•\n");
+		return;
+	}
+	
+	Hospitalization* h = head;//éåŽ†æŒ‡é’ˆç”¨äºŽéåŽ†é“¾è¡¨
+	printf("===ä½é™¢è®°å½•åˆ—è¡¨===\n");
+	printf("%-20s %-20s %-50s %-20s %-15s %-15s %-20s %-20s\n",
+		"ä½é™¢ç¼–å·", "æ‚£è€…å¡å·", "å§“å", "åºŠä½å·", "é¢„ä»˜æ¬¾", "æ€»è´¹ç”¨", "å…¥é™¢æ—¥æœŸ","ä½é™¢çŠ¶æ€");
+	while (h != NULL)
 	{
 		printf("%-20s %-20s %-50s %-20s %-15f %-15f %-20s %-20s\n",
-			h->data.admissionDate,
-			h->data.bedNo,
+			h->data.recordNo,
 			h->data.patientCardNo,
 			h->data.patientName,
+			h->data.bedNo,
 			h->data.prepay,
-			h->data.recordNo,
-			h->data.status,
-			h->data.totalCost);
+			h->data.totalCost,
+			h->data.admissionDate,
+			h->data.status);
 		h = h->next;
 	}
 	return;
 }
+//-------------------------
