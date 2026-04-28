@@ -149,8 +149,50 @@ void showPatientManagement(void) {
             printf("\n身份证号: "); scanf("%19s", newData.idCard);
             printf("\n联系电话: "); scanf("%14s", newData.phone);
             modifyPatient(g_patientHead, &cardNo,newData);
+            break;
 
         case 4://查找病人
+            printf("请选择查找方式：\n");
+            printf("1、按照卡号查找\n");
+            printf("2、按照姓名查找\n");
+            int choice1;
+            scanf("%d", &choice1);
+            switch (choice1)
+            {
+            case 1:
+                printf("请输入卡号："); scanf("%19s", cardNo);
+                Patient* pt = findPatientByCardNo(g_patientHead, cardNo);
+                printf("\n");
+                printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
+                    "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
+                printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
+                    pt->data.cardNo,                         // 门诊卡号
+                    pt->data.name,                           // 姓名
+                    pt->data.age,                            // 年龄
+                    pt->data.gender,                         // 性别
+                    pt->data.idCard,                         // 身份证号
+                    pt->data.phone,                          // 电话号码
+                    pt->data.isActive ? "住院" : "非住院");  // 住院状态（0=非住院，1=住院）
+                break;
+            case 2:
+                printf("请输入姓名："); scanf("%49s", name);
+                Patient* pt = findPatientsByName(g_patientHead, name);
+                printf("\n");
+                printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
+                    "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
+                printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
+                    pt->data.cardNo,                         // 门诊卡号
+                    pt->data.name,                           // 姓名
+                    pt->data.age,                            // 年龄
+                    pt->data.gender,                         // 性别
+                    pt->data.idCard,                         // 身份证号
+                    pt->data.phone,                          // 电话号码
+                    pt->data.isActive ? "住院" : "非住院");  // 住院状态（0=非住院，1=住院）
+                break;
+            default:
+                printf("[ERROR] 无效选择！\n");
+            }
+            break;
 
         case 5:
             listAllPatients(g_patientHead);
