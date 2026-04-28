@@ -26,8 +26,9 @@ typedef struct RegistrationData {
     char doctorEmpNo[20];        // 医生工号
     char doctorName[50];         // 医生姓名
     char dept[50];               // 科室
-    char date[20];               // 挂号日期
-    char status[20];             // 状态（待就诊/已完成/已取消）
+    char date[20];               // 挂号日期（格式：YYYY-MM-DD）
+    char time[20];               // 挂号时间（格式：HH:MM:SS）
+    char status[20];             // 状态（待就诊/就诊中/已完成/已取消）
 } RegistrationData;
 
 typedef struct Registration {

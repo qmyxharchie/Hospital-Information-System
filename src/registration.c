@@ -6,6 +6,10 @@
 #include "registration.h"	// 挂号模块头文件
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
+#include "log.h"            // 日志系统头文件
+
+// 外部全局变量（假设在其他地方定义）
+extern char g_currentUsername[50];  // 当前登录用户名
 
 //-------------------------
 //函数名：addRegistration
@@ -21,15 +25,20 @@
 int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
     char* doctorEmpNo, char* doctorName, char* dept) {
+    
+    LOG_INFO_MSG("REGISTRATION", "开始处理挂号请求，患者卡号: %s, 医生工号: %s", patientCardNo, doctorEmpNo);
+    
     // 查找指定医生是否存在
     Doctor* d = findDoctorByEmpNo(getDoctorHead(), doctorEmpNo);
     if (d == NULL) {
+        LOG_WARN_MSG("REGISTRATION", "挂号失败：未找到对应医生，医生工号: %s", doctorEmpNo);
         printf("未找到对应医生\n");
         return 0;
     }
     
     // 检查医生是否还能接收更多患者
     if (!canAcceptPatient(d)) {
+        LOG_WARN_MSG("REGISTRATION", "挂号失败：医生号源已满，医生工号: %s", doctorEmpNo);
         printf("该医生号已满\n");
         return 0;
     }
@@ -37,6 +46,7 @@ int addRegistration(Registration** head, Registration** tail,
     // 创建新的挂号记录节点
     Registration* newNode = (Registration*)malloc(sizeof(Registration));
     if (newNode == NULL) {
+        LOG_ERROR_MSG("REGISTRATION", "挂号失败：内存分配失败");
         printf("内存分配失败\n");
         return 0;
     }
@@ -56,13 +66,16 @@ int addRegistration(Registration** head, Registration** tail,
     strcpy(newNode->data.doctorName, doctorName);       // 医生姓名
     strcpy(newNode->data.dept, dept);                   // 科室
     
-    // 获取当前日期
-    int year, month, day;
-    char currentDate[20] = { 0 };
+    // 获取当前日期时间
+    int year, month, day, hour, minute, second;
     getCurrentTime(&year, &month, &day);
-    sprintf(currentDate, "%04d-%02d-%02d", year, month, day);
-    strcpy(newNode->data.date, currentDate);            // 挂号日期
-    
+    sprintf(newNode->data.date, "%04d-%02d-%02d", year, month, day);
+    time_t now = time(0);
+    struct tm* timeinfo = localtime(&now);
+    hour = timeinfo->tm_hour;
+    minute = timeinfo->tm_min;
+    second = timeinfo->tm_sec;
+    sprintf(newNode->data.time, "%02d:%02d:%02d", hour, minute, second);
     // 设置状态为"待就诊"
     strcpy(newNode->data.status, "待就诊");
     
@@ -84,9 +97,21 @@ int addRegistration(Registration** head, Registration** tail,
     rebuildRegistrationFile(*head);
     
     // 输出挂号成功信息
-    printf("挂号成功！挂号编号：%s，患者：%s，医生%s，科室：%s，日期：%s\n",
-        newNode->data.regNo, newNode->data.patientName,
-        newNode->data.doctorName, newNode->data.dept, newNode->data.date);
+    printf("挂号成功！挂号编号：%s，患者：%s，医生%s，科室：%s，日期：%s %s\n",
+        newNode->data.regNo, newNode->data.patientName, newNode->data.doctorName,
+        newNode->data.dept, newNode->data.date, newNode->data.time);
+    
+    // 记录操作日志
+    char logDetails[500];
+    snprintf(logDetails, sizeof(logDetails), 
+             "挂号成功 - 挂号号: %s, 患者: %s, 医生: %s, 科室: %s", 
+             newNode->data.regNo, newNode->data.patientName, 
+             newNode->data.doctorName, newNode->data.dept);
+    logOperation(g_currentUsername, "ADD_REGISTRATION", logDetails);
+    
+    LOG_INFO_MSG("REGISTRATION", "挂号成功，挂号号: %s, 患者: %s, 医生: %s", 
+                 newNode->data.regNo, newNode->data.patientName, newNode->data.doctorName);
+    
     return 1;
 }
 //-------------------------
@@ -101,20 +126,27 @@ int addRegistration(Registration** head, Registration** tail,
 //返回值：成功返回1，失败返回0
 int cancelRegistration(Registration** head, Registration** tail,
     Registration* r) {
+    
     if (r == NULL) {
+        LOG_WARN_MSG("REGISTRATION", "取消挂号失败：未找到对应记录");
         printf("未找到对应记录\n");
         return 0;
     }
     
-    // 检查挂号状态，已就诊的无法取消
-    if (strcmp(r->data.status, "已就诊") == 0) {
-        printf("已就诊的无法取消\n");
+    LOG_INFO_MSG("REGISTRATION", "开始处理取消挂号请求，挂号号: %s, 患者: %s", 
+                 r->data.regNo, r->data.patientName);
+    
+    // 检查挂号状态，只有"待就诊"状态的挂号才能取消
+    if (strcmp(r->data.status, "待就诊") != 0) {
+        LOG_WARN_MSG("REGISTRATION", "取消挂号失败：挂号状态不允许取消，挂号号: %s, 当前状态: %s", 
+                     r->data.regNo, r->data.status);
+        printf("只有待就诊状态的挂号才能取消\n");
         return 0;
     }
     
     // 查找对应医生并减少其当前患者数量
     Doctor* d = findDoctorByEmpNo(getDoctorHead(), r->data.doctorEmpNo);
-    if (d != NULL) {
+    if (d != NULL && d->data.currentPatients > 0) {
         d->data.currentPatients--;
     }
     
@@ -123,7 +155,19 @@ int cancelRegistration(Registration** head, Registration** tail,
     
     // 更新挂号记录文件
     rebuildRegistrationFile(*head);
+    
     printf("取消成功\n");
+    
+    // 记录操作日志
+    char logDetails[500];
+    snprintf(logDetails, sizeof(logDetails), 
+             "取消挂号成功 - 挂号号: %s, 患者: %s, 医生: %s", 
+             r->data.regNo, r->data.patientName, r->data.doctorName);
+    logOperation(g_currentUsername, "CANCEL_REGISTRATION", logDetails);
+    
+    LOG_INFO_MSG("REGISTRATION", "取消挂号成功，挂号号: %s, 患者: %s", 
+                 r->data.regNo, r->data.patientName);
+    
     return 1;
 }
 //-------------------------
@@ -136,19 +180,38 @@ int cancelRegistration(Registration** head, Registration** tail,
 //返回值：成功返回1，失败返回0
 int completeRegistration(Registration* r) {
     if (r == NULL) {
+        LOG_WARN_MSG("REGISTRATION", "完成就诊失败：挂号信息不能为空");
         printf("挂号信息不能为空\n");
         return 0;
     }
     
-    // 检查挂号状态是否为"待就诊"
-    if (strcmp(r->data.status, "待就诊") != 0) {
-        printf("挂号信息状态异常\n");
+    LOG_INFO_MSG("REGISTRATION", "开始处理完成就诊请求，挂号号: %s, 患者: %s", 
+                 r->data.regNo, r->data.patientName);
+    
+    // 检查挂号状态是否为"待就诊"或"就诊中"
+    if (strcmp(r->data.status, "待就诊") != 0 &&
+        strcmp(r->data.status, "就诊中") != 0) {
+        LOG_WARN_MSG("REGISTRATION", "完成就诊失败：挂号状态异常，挂号号: %s, 当前状态: %s", 
+                     r->data.regNo, r->data.status);
+        printf("挂号信息状态异常，无法完成就诊\n");
         return 0;
     }
     
-    // 修改状态为"已就诊"
-    strcpy(r->data.status, "已就诊");
+    // 修改状态为"已完成"
+    strcpy(r->data.status, "已完成");
+    
+    // 记录操作日志
+    char logDetails[500];
+    snprintf(logDetails, sizeof(logDetails), 
+             "完成就诊 - 挂号号: %s, 患者: %s, 医生: %s", 
+             r->data.regNo, r->data.patientName, r->data.doctorName);
+    logOperation(g_currentUsername, "COMPLETE_REGISTRATION", logDetails);
+    
     printf("患者%s就诊完成\n", r->data.patientName);
+    
+    LOG_INFO_MSG("REGISTRATION", "完成就诊成功，挂号号: %s, 患者: %s", 
+                 r->data.regNo, r->data.patientName);
+    
     return 1;
 }
 //-------------------------
@@ -164,10 +227,13 @@ Registration* findRegistrationByNo(Registration* head, char* regNo) {
     Registration* r = head;
     while (r != NULL) {
         if (strcmp(r->data.regNo, regNo) == 0) {          // 比较挂号编号是否匹配
+            LOG_INFO_MSG("REGISTRATION", "查询挂号成功，挂号号: %s, 患者: %s", 
+                         r->data.regNo, r->data.patientName);
             return r;                                     // 找到则返回该节点指针
         }
         r = r->next;                                      
     }
+    LOG_WARN_MSG("REGISTRATION", "查询挂号失败：未找到挂号号 %s", regNo);
     return NULL;
 }
 //-------------------------
@@ -184,10 +250,13 @@ Registration* findRegistrationsByPatient(Registration* head,
     Registration* r = head;
     while (r != NULL) {
         if (strcmp(r->data.patientCardNo, patientCardNo) == 0) { // 比较患者卡号是否匹配
+            LOG_INFO_MSG("REGISTRATION", "查询患者挂号成功，患者卡号: %s, 挂号号: %s", 
+                         patientCardNo, r->data.regNo);
             return r;                                            // 找到则返回该节点指针
         }
         r = r->next;
     }
+    LOG_WARN_MSG("REGISTRATION", "查询患者挂号失败：患者卡号 %s 无挂号记录", patientCardNo);
     return NULL;
 }
 //-------------------------
@@ -204,6 +273,8 @@ Registration* findRegistrationsByDoctor(Registration* head,
     Registration* r = head;
     Registration* resultHead = NULL;
     Registration* resultTail = NULL;
+    
+    int count = 0;
     while (r != NULL) {
         if (strcmp(r->data.doctorEmpNo, doctorEmpNo) == 0){
             // 创建新节点并复制数据
@@ -221,10 +292,14 @@ Registration* findRegistrationsByDoctor(Registration* head,
                     newNode->pre = resultTail;
                     resultTail = newNode;
                 }
+                count++;
             }
         }
         r = r->next;
     }
+    
+    LOG_INFO_MSG("REGISTRATION", "查询医生挂号列表完成，医生工号: %s, 找到 %d 条记录", doctorEmpNo, count);
+    
     return resultHead;
 }
 //-------------------------
@@ -246,6 +321,8 @@ Registration* findRegistrationsByDateRange(Registration* head, int y1,
     Registration* r = head;
     Registration* resultHead = NULL;
     Registration* resultTail = NULL;
+    
+    int count = 0;
     while (r != NULL) {
         int regYear, regMonth, regDay;
         sscanf(r->data.date, "%d-%d-%d", &regYear, &regMonth, &regDay);
@@ -267,10 +344,18 @@ Registration* findRegistrationsByDateRange(Registration* head, int y1,
                     newNode->pre = resultTail;
                     resultTail = newNode;
                 }
+                count++;
             }
         }
         r = r->next;
     }
+    
+    char startDate[20], endDate[20];
+    sprintf(startDate, "%04d-%02d-%02d", y1, m1, d1);
+    sprintf(endDate, "%04d-%02d-%02d", y2, m2, d2);
+    
+    LOG_INFO_MSG("REGISTRATION", "按日期范围查询完成，范围: %s 到 %s, 找到 %d 条记录", startDate, endDate, count);
+    
     return resultHead;
 }
 //-------------------------
@@ -285,16 +370,25 @@ void listAllRegistrations(Registration* head) {
     // 1. 检查链表是否为空
     if (head == NULL) {
         printf("暂无挂号信息\n");
+        LOG_INFO_MSG("REGISTRATION", "查询挂号列表：暂无挂号信息");
         return;
     }
 
-    // 2. 输出表头信息
+    // 2. 统计记录数量
+    int count = 0;
+    Registration* current = head;
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+
+    // 3. 输出表头信息
     printf("=== 挂号列表 ===\n");
     printf("%-20s %-20s %-20s %-20s %-20s %-20s\n",
         "挂号编号", "患者姓名", " 医生姓名", "科室", "挂号日期", "状态");
 
-    // 3. 遍历链表输出每条挂号信息
-    Registration* current = head;                              // 从头节点开始
+    // 4. 遍历链表输出每条挂号信息
+    current = head;                              // 从头节点开始
     while (current != NULL) {
         // 格式化输出当前挂号的各项信息
         printf("%-20s %-20s %-20s %-20s %-20s %-20s\n",
@@ -306,5 +400,9 @@ void listAllRegistrations(Registration* head) {
             current->data.status);                       // 就诊状态
         current = current->next;                         // 移动到下一个节点
     }
+    
+    printf("总计: %d 条记录\n", count);
+    
+    LOG_INFO_MSG("REGISTRATION", "显示所有挂号列表完成，共 %d 条记录", count);
 }
 //-------------------------
