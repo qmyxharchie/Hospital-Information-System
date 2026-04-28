@@ -12,7 +12,7 @@
 #define _UTILS_H	
 
 extern int g_currentYear;										//系统当前年份
-extern int g_currentMonth；										//系统当前月份
+extern int g_currentMonth;										//系统当前月份
 extern int g_currentDay;										//系统当前日期
 
 void getCurrentTime(int* year, int* month, int* day);			//获取当前时间

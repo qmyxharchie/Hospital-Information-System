@@ -59,7 +59,7 @@ void generateUniqueId(const char* prefix, char* id) {
 // 返回值：相等返回0，第一个日期小于第二个返回负数，否则返回正数
 int compareDate(int year1, int month1, int day1,
 	int year2, int month2, int day2) {
-	if (month < 1 || month2 < 1 || month1 >12 || month2 >12) {
+	if (month1 < 1 || month2 < 1 || month1 >12 || month2 >12) {
 		return 0;
 	}
 	if (day1 < 1 || day2 < 1 || day1 >31 || day2 >31) {
@@ -114,7 +114,7 @@ void trim(char* str) {
 		end--;
 	}
 	*(end + 1) = '\0';
-	memmove(str, start.end - start + 2);
+	memmove(str, start,end - start + 2);		//目标地址、源地址、拷贝字节数
 }
 //-----------------
 
@@ -172,7 +172,7 @@ bool isValidIdCard(const char* idCard) {
 	}
 
 	char last = idCard[17];
-	if (!(isdigit(unsigned char)last) || last == 'X' || last == 'x') {	//第18位
+	if (!(isdigit((unsigned char)last) && last != 'X' && last != 'x')) {	//第18位
 		return false;
 	}
 	return true;

@@ -150,7 +150,7 @@ void buildMedicineChain(MedicineNode** head, MedicineNode** tail) {
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 
 void buildPurchaseChain(PurchaseNode** head, PurchaseNode** tail) {
@@ -198,7 +198,7 @@ void buildPurchaseChain(PurchaseNode** head, PurchaseNode** tail) {
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 
 void buildHospitalizationChain(HospitalizationNode** head, HospitalizationNode** tail) {
@@ -247,7 +247,7 @@ void buildHospitalizationChain(HospitalizationNode** head, HospitalizationNode**
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 
 void buildBedChain(BedNode** head, BedNode** tail) {
@@ -294,7 +294,7 @@ void buildBedChain(BedNode** head, BedNode** tail) {
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 
 void buildRegistrationChain(Registration** head, Registration** tail) {
@@ -344,7 +344,7 @@ void buildRegistrationChain(Registration** head, Registration** tail) {
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 
 void buildUserChain(User** head, User** tail) {
@@ -390,7 +390,7 @@ void buildUserChain(User** head, User** tail) {
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 //-----------------
 
@@ -831,25 +831,38 @@ int backupAllData() {
 	getCurrentTime(&year, &month, &day);
 
 	char* files[] = {			//存放需要备份的文件
-		PATIENT_FILE,DOCTOR_FILE,MEDICINE_FILE,PURCHASE_FILE，
-		HOSPITAL_FILE，BED_FILE，REGISTRATION_FILE，USER_FILE
+		PATIENT_FILE,
+		DOCTOR_FILE,
+		MEDICINE_FILE,
+		PURCHASE_FILE,
+		HOSPITAL_FILE,
+		BED_FILE,
+		REGISTRATION_FILE,
+		USER_FILE
 	}
-	int fileCount =8 ;
+	int fileCount = 8;
 
 	char destPath[1024];			// 目标路径
 	int successCount = 0;
 
+	//循环必须包住 copyFile
 	for (int i = 0; i < fileCount; i++) {		//循环备份
+
+		const char* fileName = strrchr(files[i], '/');		//从右往左找最后一次出现的某个字符
+		if (fileName) fileName++;				//变成纯文件名
+		else fileName = files[i];
+
 		sprintf(destPath, "backup/%s_%04d%02d%02d.txt",
 			files[i], year, month, day);
-	}
 
-	if (copyFile(files[i], destPath)) {
-		printf("备份成功: %s -> %s\n", files[i], destPath);
-		successCount++;
-	}
-	else {
-		printf("备份失败: %s\n", files[i]);
+
+		if (copyFile(files[i], destPath)) {
+			printf("备份成功: %s -> %s\n", files[i], destPath);
+			successCount++;
+		}
+		else {
+			printf("备份失败: %s\n", files[i]);
+		}
 	}
 
 	printf("总共成功备份 %d/%d 个文件\n", successCount, fileCount);
