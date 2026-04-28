@@ -44,6 +44,7 @@ Hospital-Information-System/
 - [已删除] `include/ui.h`, `src/ui.c`, `src/main_gui.cpp` - UI模块相关文件已被删除，需参考教程 `docs/18-1-UI模块开发教程.md` 重新创建
 - [新增] `docs/18-7-主程序入口开发教程.md` - 指导如何实现main.c程序入口文件
 - [新增] `docs/18-8-GUI主程序入口开发教程.md` - 指导如何实现main_gui.cpp GUI主程序入口文件
+- [新增] `docs/18-9-项目完成综合指南.md` - 项目完成的综合指导文档，整合所有教程
 
 #### 2. 修复的语法错误
 - 修复了 `patient.h` 中 `int age` 缺少分号的问题
