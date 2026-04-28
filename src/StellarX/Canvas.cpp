@@ -1,5 +1,5 @@
 ﻿#include "Canvas.h"
-#include "SxLog.h"
+
 
 static bool SxIsNoisyMsg(UINT m)
 {
@@ -131,14 +131,10 @@ bool Canvas::handleEvent(const ExMessage& msg)
 
 	if (firstConsumer && !SxIsNoisyMsg(msg.message))
 	{
-		SX_LOGD("Event") << SX_T("Canvas 消耗消息: ","Canvas consumed: msg=") << msg.message
-			<< SX_T("子控件"," by child")<<" id=" << firstConsumer->getId();
 	}
 
 	if (anyDirty)
 	{
-		if (!SxIsNoisyMsg(msg.message))
-			SX_LOGD("Dirty") << SX_T("Canvas检测有控件为脏状态 -> 请求重绘, ","Canvas anyDirty -> requestRepaint, ")<<"id = " << id;
 		requestRepaint(parent);
 	}
 
@@ -153,15 +149,6 @@ void Canvas::addControl(std::unique_ptr<Control> control)
 	control->setX(control->getLocalX() + this->x);
 	control->setY(control->getLocalY() + this->y);
 	control->setParent(this);
-	SX_LOGI("Canvas")
-		<< SX_T("添加子控件：父=Canvas 子id=", "addControl: parent=Canvas childId=")
-		<< control->getId()
-		<< SX_T(" 相对坐标=(", " local=(")
-		<< control->getLocalX() << "," << control->getLocalY()
-		<< SX_T(") 绝对坐标=(", ") abs=(")
-		<< control->getX() << "," << control->getY()
-		<< ")";
-
 
 	controls.push_back(std::move(control));
 	dirty = true;
@@ -420,18 +407,10 @@ void Canvas::requestRepaint(Control* parent)
 		//   => 禁止局部重绘，直接升级为一次完整 draw（先把 dirty 置真，避免 draw() 早退）
 		if (dirty || !hasSnap || !saveBkImage)
 		{
-			SX_LOGD("Dirty")
-				<< SX_T("Canvas 局部重绘降级为全量重绘: id=", "Canvas partial->full draw: id=")
-				<< id
-				<< " dirty=" << (dirty ? 1 : 0)
-				<< " hasSnap=" << (hasSnap ? 1 : 0);
-
 			this->dirty = true;
 			this->draw();
 			return;
 		}
-
-		SX_LOGD("Dirty") << SX_T("Canvas 请求局部重绘：id=", "Canvas::requestRepaint(partial): id=") << id;
 
 		for (auto& control : controls)
 			if (control->isDirty() && control->IsVisible())
@@ -439,8 +418,6 @@ void Canvas::requestRepaint(Control* parent)
 
 		return;
 	}
-
-	SX_LOGD("Dirty") << SX_T("Canvas 请求根级重绘：id=", "Canvas::requestRepaint(root): id=") << id;
 	onRequestRepaintAsRoot();
 }
 

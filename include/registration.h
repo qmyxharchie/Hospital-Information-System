@@ -28,7 +28,10 @@ typedef struct RegistrationData {
     char dept[50];               // 科室
     char date[20];               // 挂号日期（格式：YYYY-MM-DD）
     char time[20];               // 挂号时间（格式：HH:MM:SS）
+    char appointmentDate[20];    // 预约日期（格式：YYYY-MM-DD，如果是现场挂号则与挂号日期相同）
+    char appointmentTime[20];    // 预约时间（格式：HH:MM，如果是现场挂号则与挂号时间相同）
     char status[20];             // 状态（待就诊/就诊中/已完成/已取消）
+    UserType createdBy;          // 挂号方式（PATIENT-预约挂号, NURSE-现场挂号）
 } RegistrationData;
 
 typedef struct Registration {

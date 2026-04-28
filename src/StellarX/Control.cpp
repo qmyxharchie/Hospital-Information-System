@@ -1,5 +1,5 @@
 ﻿#include "Control.h"
-#include "SxLog.h"
+
 #include<assert.h>
 
 StellarX::ControlText& StellarX::ControlText::operator=(const ControlText& text)
@@ -45,10 +45,6 @@ bool StellarX::ControlText::operator!=(const ControlText& text)
 }
 void Control::setIsVisible(bool show)
 {
-	SX_LOGD("Control") << SX_T("重置可见状态: id=", "setIsVisible: id=")
-		<< id
-		<< " show=" << (show ? 1 : 0);
-
 	if (this->show == show)
 		return;
 
@@ -70,9 +66,6 @@ void Control::setIsVisible(bool show)
 
 void Control::onWindowResize()
 {
-	SX_LOGD("Layout") << SX_T("尺寸变化：id=", "onWindowResize: id=") << id
-		<< SX_T(" -> 丢背景快照 + 标脏", " -> discardSnap + dirty");
-
 	// 自己：丢快照 + 标脏
 	discardBackground();
 	setDirty(true);
@@ -129,17 +122,10 @@ void Control::requestRepaint(Control* parent)
 	//   此时我们改为向更上层冒泡，直到根重绘。
 	if (parent == this)
 	{
-		SX_LOGW("Dirty")
-			<< SX_T("requestRepaint（默认容器兜底）：id=", "requestRepaint(default-container-fallback): id=")
-			<< id
-			<< SX_T("，parent==this，向上层 parent 继续冒泡", " parent==this, bubble to upper parent");
-
 		if (this->parent) this->parent->requestRepaint(this->parent);
 		else onRequestRepaintAsRoot();
 		return;
 	}
-
-	SX_LOGD("Dirty") << SX_T("请求重绘：id=","requestRepaint: id=") << id << " parent=" << (parent ? parent->getId() : "null");
 
 	if (parent) parent->requestRepaint(parent);   // 交给容器处理（容器可局部重绘）
 	else        onRequestRepaintAsRoot();         // 根兜底
