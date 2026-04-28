@@ -38,7 +38,7 @@ void addDoctor(Doctor** head, Doctor** tail,
     // 2. 初始化新节点的指针域，防止野指针
     newNode->next = newNode->pre = NULL;                // 申请新节点第一件事就是指针初始化！非常重要
 
-    // 3. 生成唯一的门诊卡号
+    // 3. 生成唯一的工号
     char id[20];
     generateUniqueId("DOC", id);                        // 生成以"DOC"开头的唯一ID
 

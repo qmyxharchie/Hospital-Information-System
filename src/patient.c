@@ -69,7 +69,7 @@ void addPatient(Patient** head, Patient** tail,
     rebuildPatientFile(*head);
     
     // 7. 输出添加成功的提示信息
-    printf("添加成功,卡号为%s。\n", id);
+    printf("[OK] 添加成功,卡号为%s。\n", id);
 }
 //--------------------
 
