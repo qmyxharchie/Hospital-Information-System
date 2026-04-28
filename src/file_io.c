@@ -36,12 +36,13 @@ void buildPatientChain(Patient** head, Patient** tail) {
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.cardNo);
 			fscanf(fp, "%s", node->data.name);
+			fscanf(fp, "%d", &node->data.age);
 			fscanf(fp, "%s", node->data.gender);
 			fscanf(fp, "%s", node->data.idCard);
 			fscanf(fp, "%s", node->data.phone);
 			fscanf(fp, "%d", &node->data.isActive);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -52,7 +53,7 @@ void buildPatientChain(Patient** head, Patient** tail) {
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 
 void buildDoctorChain(Doctor** head, Doctor** tail) {
@@ -89,7 +90,7 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 			fscanf(fp, "%d", &node->data.maxPatients);
 			fscanf(fp, "%d", &node->currentPatients);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -100,7 +101,7 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 		}
 	}
 	*tail = pre;
-	fclose(fp)
+	fclose(fp);
 }
 
 void buildMedicineChain(MedicineNode** head, MedicineNode** tail) {
@@ -138,7 +139,7 @@ void buildMedicineChain(MedicineNode** head, MedicineNode** tail) {
 			fscanf(fp, "%d", &node->currentPatients);
 			fscanf(fp, "%d", &node->minStock);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -186,7 +187,7 @@ void buildPurchaseChain(PurchaseNode** head, PurchaseNode** tail) {
 			fscanf(fp, "%lf", &node->data.totalCost);
 			fscanf(fp, "%s", node->date);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -235,7 +236,7 @@ void buildHospitalizationChain(HospitalizationNode** head, HospitalizationNode**
 			fscanf(fp, "%s", node->admissionDate);
 			fscanf(fp, "%s", node->status);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -282,7 +283,7 @@ void buildBedChain(BedNode** head, BedNode** tail) {
 			fscanf(fp, "%s", node->data.patientName);
 			fscanf(fp, "%s", node->status);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -332,7 +333,7 @@ void buildRegistrationChain(Registration** head, Registration** tail) {
 			fscanf(fp, "%s", node->data.date);
 			fscanf(fp, "%s", node->data.status);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -378,7 +379,7 @@ void buildUserChain(User** head, User** tail) {
 			fscanf(fp, "%s", node->data.role);
 			fscanf(fp, "%d", &node->data.lastLogin);
 
-			if (head *= = NULL) {
+			if (*head == NULL) {
 				*head = node;
 			}
 			else {
@@ -410,6 +411,7 @@ void rebuildPatientFile(Patient* head) {
 		
 		fprintf(fp, "%s\n",p->data.cardNo);
 		fprintf(fp, "%s\n", p->data.name);
+		fprintf(fp, "%d\n", p->data.age);
 		fprintf(fp, "%s\n", p->data.gender);
 		fprintf(fp, "%s\n", p->data.idCard);
 		fprintf(fp, "%s\n", p->data.phone);
@@ -623,8 +625,9 @@ void rebuildUserFile(User* head) {
 //-----------------
 //	ÊÍ·ÅÄÚ´æ
 
-void freePatientChain(Patient* head) {
-	Patient* p = head;
+void freePatientChain(Patient** head) {
+	if (!head || !*head) return;
+	Patient* p = *head;
 
 	while (p != NULL) {
 		Patient* temp = p->next;
@@ -634,8 +637,9 @@ void freePatientChain(Patient* head) {
 	*head = NULL;
 }
 
-void freeDoctorChain(Doctor* head) {
-	Doctor* p = head;
+void freeDoctorChain(Doctor** head) {
+	if (!head || !*head) return;
+	Doctor* p = *head;
 
 	while (p != NULL) {
 		Doctor* temp = p->next;
@@ -645,8 +649,9 @@ void freeDoctorChain(Doctor* head) {
 	*head = NULL;
 }
 
-void freeMedicineChain(MedicineNode* head) {
-	Medicine* p = head;
+void freeMedicineChain(MedicineNode** head) {
+	if (!head || !*head) return;
+	Medicine* p = *head;
 
 	while (p != NULL) {
 		Medicine* temp = p->next;
@@ -656,8 +661,9 @@ void freeMedicineChain(MedicineNode* head) {
 	*head = NULL;
 }
 
-void freePurchaseChain(PurchaseNode* head) {
-	Purchase* p = head;
+void freePurchaseChain(PurchaseNode** head) {
+	if (!head || !*head) return;
+	Purchase* p = *head;
 
 	while (p != NULL) {
 		Purchase* temp = p->next;
@@ -667,8 +673,9 @@ void freePurchaseChain(PurchaseNode* head) {
 	*head = NULL;
 }
 
-void freeHospitalizationChain(HospitalizationNode* head) {
-	Hospitalization* p = head;
+void freeHospitalizationChain(HospitalizationNode** head) {
+	if (!head || !*head) return;
+	Hospitalization* p = *head;
 
 	while (p != NULL) {
 		Hospitalization* temp = p->next;
@@ -678,8 +685,9 @@ void freeHospitalizationChain(HospitalizationNode* head) {
 	*head = NULL;
 }
 
-void freeBedChain(BedNode* head) {
-	Bed* p = head;
+void freeBedChain(BedNode** head) {
+	if (!head || !*head) return;
+	Bed* p = *head;
 
 	while (p != NULL) {
 		Bed* temp = p->next;
@@ -689,8 +697,9 @@ void freeBedChain(BedNode* head) {
 	*head = NULL;
 }
 
-void freeRegistrationChain(Registration* head) {
-	Registration* p = head;
+void freeRegistrationChain(Registration** head) {
+	if (!head || !*head) return;
+	Registration* p = *head;
 
 	while (p != NULL) {
 		Registration* temp = p->next;
@@ -700,8 +709,9 @@ void freeRegistrationChain(Registration* head) {
 	*head = NULL;
 }
 
-void freeUserChain(User* head) {
-	User* p = head;
+void freeUserChain(User** head) {
+	if (!head || !*head) return;
+	User* p = *head;
 
 	while (p != NULL) {
 		User* temp = p->next;
@@ -711,8 +721,9 @@ void freeUserChain(User* head) {
 	*head = NULL;
 }
 
-void freeRegistrationResultChain(Registration* head) {
-	Registration* p = head;
+void freeRegistrationResultChain(Registration** head) {
+	if (!head || !*head) return;
+	Registration* p = *head;
 
 	while (p != NULL) {
 		Registration* temp = p->next;
@@ -722,8 +733,9 @@ void freeRegistrationResultChain(Registration* head) {
 	*head = NULL;
 }
 
-void freeDoctorsResultChain(Doctor* head) {
-	Doctor* p = head;
+void freeDoctorsResultChain(Doctor** head) {
+	if (!head || !*head) return;
+	Doctor* p = *head;
 
 	while (p != NULL) {
 		Doctor* temp = p->next;
@@ -733,8 +745,9 @@ void freeDoctorsResultChain(Doctor* head) {
 	*head = NULL;
 }
 
-void freePatientsResultChain(Patient* head) {
-	Patient* p = head;
+void freePatientsResultChain(Patient** head) {
+	if (!head || !*head) return;
+	Patient* p = *head;
 
 	while (p != NULL) {
 		Patient* temp = p->next;
@@ -744,8 +757,9 @@ void freePatientsResultChain(Patient* head) {
 	*head = NULL;
 }
 
-void freeMedicineResultChain(Medicine* head) {
-	Medicine* p = head;
+void freeMedicineResultChain(Medicine** head) {
+	if (!head || !*head) return;
+	Medicine* p = *head;
 
 	while (p != NULL) {
 		Medicine* temp = p->next;
@@ -755,8 +769,9 @@ void freeMedicineResultChain(Medicine* head) {
 	*head = NULL;
 }
 
-void freeHospitalizationResultChain(Hospitalization* head£©{
-		Medicine* p = head;
+void freeHospitalizationResultChain(Hospitalization** head£©{
+	if (!head || !*head) return;
+		Medicine* p = *head;
 
 	while (p != NULL) {
 		Medicine* temp = p->next;
@@ -766,8 +781,9 @@ void freeHospitalizationResultChain(Hospitalization* head£©{
 	*head = NULL;
 	}
 
-void freeBedResultChain(Bed* head) {
-	Bed* p = head;
+void freeBedResultChain(Bed** head) {
+	if (!head || !*head) return;
+	Bed* p = *head;
 
 	while (p != NULL) {
 		Bed* temp = p->next;

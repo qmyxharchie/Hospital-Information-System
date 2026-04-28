@@ -34,7 +34,7 @@ void generateUniqueId(const char* prefix, char* id) {
 	if (!prefix || !id) return;
 
 	time_t now = time(NULL);
-	struct tm* t = localime(&now);
+	struct tm* t = localtime(&now);
 	if (!t) return;
 
 	static int counter = 0;			//避免同一时间执行时产生相同ID
@@ -45,9 +45,9 @@ void generateUniqueId(const char* prefix, char* id) {
 	int day = t->tm_mday;			//一月中的第几天，范围从1到31
 	int hour = t->tm_hour;
 	int min = t->tm_min;
-	int sec = t->tm_sec；
+	int sec = t->tm_sec;
 
-		sprintf(id, "%s %04d %02d %02d %02d %02d %02d %02d",
+		sprintf(id, "%s%04d%02d%02d%02d%02d%02d%02d",
 			prefix, year, month, day, hour, min, sec, counter);		//防止缓冲区溢出
 }
 //-----------------
