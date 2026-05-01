@@ -1,5 +1,5 @@
 ﻿#include "TabControl.h"
-#include "SxLog.h"
+
 inline void TabControl::initTabBar()
 {
 	if (controls.empty())return;
@@ -266,8 +266,7 @@ void TabControl::add(std::pair<std::unique_ptr<Button>, std::unique_ptr<Canvas>>
 			}
 			
 		
-			SX_LOGI("Tab") << SX_T("激活选项卡：","activate tab: ") << prevIdx << "->" << (int)idx
-				<< " text=" << controls[idx].first->getButtonText();
+
 			controls[idx].second->onWindowResize();
 			controls[idx].second->setIsVisible(true);
 			dirty = true;
@@ -276,8 +275,7 @@ void TabControl::add(std::pair<std::unique_ptr<Button>, std::unique_ptr<Canvas>>
 		});
 	controls[idx].first->setOnToggleOffListener([this, idx]()
 		{
-			SX_LOGI("Tab") << SX_T("关闭选项卡：id=","deactivate tab: idx=") << (int)idx
-				<< " text=" << controls[idx].first->getButtonText();
+
 
 			controls[idx].second->setIsVisible(false);
 			dirty = true;

@@ -13,7 +13,7 @@
 #define _DOCTOR_H_
 
 typedef struct DoctorData {
-    char empNo[20];              // 工号（如DOC001）
+    char empNo[20];              // 工号
     char name[50];               // 姓名
     char dept[50];               // 科室
     char schedule[100];          // 出诊时间

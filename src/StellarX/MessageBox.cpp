@@ -1,13 +1,11 @@
 ﻿#include "MessageBox.h"
-#include "SxLog.h"
+
 namespace StellarX
 {
 	MessageBoxResult MessageBox::showModal(Window& wnd, const std::string& text, const std::string& caption,
 		MessageBoxType type)
 	{
 		Dialog dlg(wnd, caption, text, type, true); // 模态
-		SX_LOGI("MessageBox") << "show: Message=" << dlg.GetText()
-			<< " modal=" << (dlg.model() ? 1 : 0);
 
 		dlg.setInitialization(true);
 		dlg.Show();
@@ -25,8 +23,6 @@ namespace StellarX
 		}
 		auto dlg = std::make_unique<Dialog>(wnd, caption, text,
 			type, false); // 非模态
-		SX_LOGI("MessageBox") << "show: Message=" << dlg->GetText()
-			<< " modal=" << (dlg->model() ? 1 : 0);
 		Dialog* dlgPtr = dlg.get();
 		dlgPtr->setInitialization(true);
 		// 设置回调

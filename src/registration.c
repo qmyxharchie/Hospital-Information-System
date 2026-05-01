@@ -24,7 +24,8 @@ extern char g_currentUsername[50];  // 当前登录用户名
 //返回值：成功返回1，失败返回0
 int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
-    char* doctorEmpNo, char* doctorName, char* dept) {
+    char* doctorEmpNo, char* doctorName, char* dept,
+    char* appointmentDate, char* appointmentTime, int createdBy){
     
     // 查找指定医生是否存在
     Doctor* d = findDoctorByEmpNo(getDoctorHead(), doctorEmpNo);

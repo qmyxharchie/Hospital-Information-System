@@ -118,7 +118,7 @@ void Control::requestRepaint(Control* parent)
 {
 	// 说明：
 	// - 常规路径：子控件调用 requestRepaint(this->parent)，然后 parent 负责局部重绘（Canvas/TabControl override）
-	// - 兜底路径：如果某个“容器控件”没 override requestRepaint，就会出现 parent==this 的递归风险
+	// - 兜底路径：如果某个"容器控件"没 override requestRepaint，就会出现 parent==this 的递归风险
 	//   此时我们改为向更上层冒泡，直到根重绘。
 	if (parent == this)
 	{
@@ -133,19 +133,14 @@ void Control::requestRepaint(Control* parent)
 
 void Control::onRequestRepaintAsRoot()
 {
-	SX_LOGI("Dirty")
-		<< SX_T("触发根重绘：id=", "onRequestRepaintAsRoot: id=") << id
-		<< SX_T("（从根节点开始重画）", " (root repaint)");
-
-
 	discardBackground();
 	setDirty(true);
-	draw();    // 只有“无父”时才允许立即画，不会被谁覆盖
+	draw();    // 只有"无父"时才允许立即画，不会被谁覆盖
 }
 
 void Control::saveBackground(int x, int y, int w, int h)
 {
-	
+
 	if (w <= 0 || h <= 0) return;
 	saveBkX = x; saveBkY = y; saveWidth = w; saveHeight = h;
 	if (saveBkImage)
@@ -153,13 +148,9 @@ void Control::saveBackground(int x, int y, int w, int h)
 		//尺寸变了才重建，避免反复 new/delete
 		if (saveBkImage->getwidth() != w || saveBkImage->getheight() != h)
 		{
-			SX_LOGD("Snap") <<SX_T("重新保存背景快照：id=", "saveBackground rebuild: id=") << id << " size=(" << w << "x" << h << ")";
-
 			delete saveBkImage; saveBkImage = nullptr;
 		}
 	}
-	else
-		SX_LOGD("Snap") << SX_T("保存背景快照：id=", "saveBackground rebuild: id=") << id << " size=(" << w << "x" << h << ")";
 	if (!saveBkImage) saveBkImage = new IMAGE(w, h);
 
 	SetWorkingImage(nullptr);                 // ★抓屏幕
@@ -180,7 +171,6 @@ void Control::discardBackground()
 	if (saveBkImage)
 	{
 		restBackground();
-		SX_LOGD("Snap") << SX_T("丢弃背景快照：id=","discardBackground: id=") << id << " hasSnap=" << (hasSnap ? 1 : 0);
 		delete saveBkImage;
 		saveBkImage = nullptr;
 	}
