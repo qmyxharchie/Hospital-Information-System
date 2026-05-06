@@ -34,7 +34,7 @@ void generateUniqueId(const char* prefix, char* id) {
 	if (!prefix || !id) return;
 
 	time_t now = time(NULL);
-	struct tm* t = localime(&now);
+	struct tm* t = localtime(&now);
 	if (!t) return;
 
 	static int counter = 0;			//避免同一时间执行时产生相同ID
@@ -45,9 +45,9 @@ void generateUniqueId(const char* prefix, char* id) {
 	int day = t->tm_mday;			//一月中的第几天，范围从1到31
 	int hour = t->tm_hour;
 	int min = t->tm_min;
-	int sec = t->tm_sec；
+	int sec = t->tm_sec;
 
-		sprintf(id, "%s %04d %02d %02d %02d %02d %02d %02d",
+		sprintf(id, "%s%04d%02d%02d%02d%02d%02d%02d",
 			prefix, year, month, day, hour, min, sec, counter);		//防止缓冲区溢出
 }
 //-----------------
@@ -59,7 +59,7 @@ void generateUniqueId(const char* prefix, char* id) {
 // 返回值：相等返回0，第一个日期小于第二个返回负数，否则返回正数
 int compareDate(int year1, int month1, int day1,
 	int year2, int month2, int day2) {
-	if (month < 1 || month2 < 1 || month1 >12 || month2 >12) {
+	if (month1 < 1 || month2 < 1 || month1 >12 || month2 >12) {
 		return 0;
 	}
 	if (day1 < 1 || day2 < 1 || day1 >31 || day2 >31) {
@@ -114,7 +114,7 @@ void trim(char* str) {
 		end--;
 	}
 	*(end + 1) = '\0';
-	memmove(str, start.end - start + 2);
+	memmove(str, start,end - start + 2);		//目标地址、源地址、拷贝字节数
 }
 //-----------------
 
@@ -172,7 +172,7 @@ bool isValidIdCard(const char* idCard) {
 	}
 
 	char last = idCard[17];
-	if (!(isdigit(unsigned char)last) || last == 'X' || last == 'x') {	//第18位
+	if (!(isdigit((unsigned char)last) && last != 'X' && last != 'x')) {	//第18位
 		return false;
 	}
 	return true;

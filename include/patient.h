@@ -16,7 +16,7 @@
 typedef struct PatientData {
     char cardNo[20];          // 门诊卡号（唯一标识）
     char name[50];            // 姓名
-    int age                   // 年龄
+    int age;                   // 年龄
     char gender[10];          // 性别
     char idCard[20];          // 身份证号
     char phone[15];           // 联系电话

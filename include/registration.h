@@ -20,7 +20,7 @@
 #define _REGISTRATION_H_
 
 typedef struct RegistrationData {
-    char regNo[20];              // 挂号单号（如REG001）
+    char regNo[20];              // 挂号单号
     char patientCardNo[20];      // 病人卡号
     char patientName[50];        // 病人姓名
     char doctorEmpNo[20];        // 医生工号
@@ -28,7 +28,12 @@ typedef struct RegistrationData {
     char dept[50];               // 科室
     char date[20];               // 挂号日期（格式：YYYY-MM-DD）
     char time[20];               // 挂号时间（格式：HH:MM:SS）
-    char status[20];             // 状态（待就诊/就诊中/已完成/已取消）
+    char appointmentDate[20];    // 预约日期（格式：YYYY-MM-DD，如果是现场挂号则与挂号日期相同）
+    char appointmentTime[20];    // 预约时间（格式：HH:MM，如果是现场挂号则与挂号时间相同）
+    int status;                  // 状态（0-待就诊, 1-就诊中, 2-已完成, 3-已取消）
+    int createdBy;               // 挂号方式（0-预约挂号, 1-现场挂号）
+    float consultationFee;       // 诊疗费用
+    char remarks[100];           // 备注信息
 } RegistrationData;
 
 typedef struct Registration {
@@ -39,7 +44,8 @@ typedef struct Registration {
 
 int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
-    char* doctorEmpNo, char* doctorName, char* dept);                   //挂号
+    char* doctorEmpNo, char* doctorName, char* dept,
+    char* appointmentDate, char* appointmentTime, int createdBy);                   //挂号
 int cancelRegistration(Registration** head, Registration** tail,
     Registration* r);                                                   //取消挂号
 int completeRegistration(Registration* r);                              //完成就诊                               

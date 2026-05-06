@@ -6,7 +6,7 @@
 #include "patient.h"
 #include "doctor.h"
 #include "file_io.h"
-#include "log.h"
+
 
 // 全局变量声明
 char g_currentUsername[50] = {0};  // 当前登录用户名
@@ -32,9 +32,7 @@ void adminMenu(void);
 int main() {
     printf("=== 医疗信息管理系统 ===\n");
     
-    // 初始化日志系统
-    initLogging();
-    LOG_INFO_MSG("MAIN", "系统启动");
+
     
     // 加载所有数据
     buildUserChain(&g_userHead, &g_userTail);
@@ -65,17 +63,11 @@ int main() {
                 LoginStatus status = login(username, password);
                 
                 if (status == LOGIN_SUCCESS_USER || status == LOGIN_SUCCESS_ADMIN) {
-                    LOG_INFO_MSG("AUTH", "用户 %s 登录成功", username);
-                    logUserLogin(username);
                     
                     // 显示主菜单
                     showMainMenu();
                     
-                    // 登出时记录日志
-                    logUserLogout(username);
-                    LOG_INFO_MSG("AUTH", "用户 %s 登出", username);
                 } else if (status == LOGIN_FAILED) {
-                    LOG_WARN_MSG("AUTH", "用户 %s 登录失败", username);
                     printf("登录失败！用户名或密码错误。\n");
                 }
                 break;
@@ -91,10 +83,8 @@ int main() {
                 scanf("%d", &role);
                 
                 if (registerUser(username, password, role)) {
-                    LOG_INFO_MSG("AUTH", "用户 %s 注册成功", username);
                     printf("注册成功！\n");
                 } else {
-                    LOG_WARN_MSG("AUTH", "用户 %s 注册失败", username);
                     printf("注册失败！\n");
                 }
                 break;
@@ -108,9 +98,7 @@ int main() {
         }
     } while (choice != 0);
     
-    // 清理日志系统
-    LOG_INFO_MSG("MAIN", "系统关闭");
-    cleanupLogging();
+
     
     return 0;
 }

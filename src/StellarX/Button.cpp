@@ -1,5 +1,5 @@
 ﻿#include "Button.h"
-#include "SxLog.h"
+
 
 Button::Button(int x, int y, int width, int height, const std::string text, StellarX::ButtonMode mode, StellarX::ControlShape shape)
 	: Control(x, y, width, height)
@@ -312,9 +312,7 @@ bool Button::handleEvent(const ExMessage& msg)
 	}
 	if (hover != oldHover)
 	{
-		SX_LOGD("Button") << SX_T("悬停变化: ","hover change: ") << "id=" << id
-			<< " text= " << text
-			<< " " << (oldHover ? 1 : 0) << "->" << (hover ? 1 : 0);
+
 	}
 	// 处理鼠标点击事件
 	if (msg.message == WM_LBUTTONDOWN && hover && mode != StellarX::ButtonMode::DISABLED)
@@ -322,7 +320,7 @@ bool Button::handleEvent(const ExMessage& msg)
 		if (mode == StellarX::ButtonMode::NORMAL)
 		{
 			click = true;
-			SX_LOGD("Button") << SX_T("被点击: ","lbtn - down:")<< "id = " << id <<"  text = "<<text << " mode = " << (int)mode;
+
 
 			dirty = true;
 			consume = true;
@@ -340,7 +338,6 @@ bool Button::handleEvent(const ExMessage& msg)
 		if (mode == StellarX::ButtonMode::NORMAL && click)
 		{
 			if (onClickCallback) onClickCallback();
-			SX_LOGI("Button") << "click: id=" << id << " (NORMAL) callback=" << (onClickCallback ? "Y" : "N");
 
 			click = false;
 			dirty = true;
@@ -354,10 +351,6 @@ bool Button::handleEvent(const ExMessage& msg)
 			click = !click;
 			if (click && onToggleOnCallback) onToggleOnCallback();
 			else if (!click && onToggleOffCallback) onToggleOffCallback();
-			SX_LOGI("Button") << "toggle: id=" << id
-				<< " " << (oldClick ? 1 : 0) << "->" << (click ? 1 : 0)
-				<< " onCb=" << (onToggleOnCallback ? "Y" : "N")
-				<< " offCb=" << (onToggleOffCallback ? "Y" : "N");
 
 			dirty = true;
 			consume = true;
@@ -398,7 +391,7 @@ bool Button::handleEvent(const ExMessage& msg)
 			// 到点就显示
 			if (GetTickCount64() - tipHoverTick >= (ULONGLONG)tipDelayMs)
 			{
-				SX_LOGD("Button") << SX_T("提示信息显示: ","tooltip show:")<<" id = " << id <<SX_T("延时时间: ", " delayMs = ") << tipDelayMs;
+	
 
 				tipVisible = true;
 
