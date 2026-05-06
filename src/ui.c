@@ -2,6 +2,7 @@
 
 
 //--------------------
+//登录界面
 int showLoginPage(void) {
     char username[50] = { 0 };
     char password[50] = { 0 };
@@ -205,5 +206,127 @@ void showPatientManagement(void) {
             printf("[ERROR] 无效选择！\n");
         }
     }
+}
+//--------------------
+
+//--------------------
+// 以下为医生管理菜单显示函数
+void showDoctorManagement(void) {
+    int choice;
+    char name[50], dept[50], schedule[100], empNo[20];
+    int maxPatients;
+    Doctor* d;
+
+    while (1) {
+        printf("\n-------- 医生信息管理 --------\n");
+        printf("1. 添加医生   4. 查找医生\n");
+        printf("2. 删除医生   5. 显示所有医生\n");
+        printf("3. 修改医生信息\n");
+        printf("0. 返回上级菜单\n");
+        printf("请选择: ");
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice) {
+        case 1:  // 添加
+            printf("\n请输入医生信息:");
+            printf("\n姓名: ");      scanf("%49s", name);
+            printf("\n科室: ");      scanf("%49s", dept);
+            printf("\n出诊时间: ");  scanf("%99s", schedule);
+            printf("\n每日最大接诊数: "); scanf("%d", &maxPatients);
+            addDoctor(&g_doctorHead, &g_doctorTail,
+                name, dept, schedule, maxPatients);
+            rebuildDoctorFile(g_doctorHead);  // ★ 写回文件
+            printf("[OK] 医生添加成功！\n");
+            break;
+           
+        case 2://删除
+            printf("请输入要删除的医生工号：\n");
+            scanf("%19s", empNo);
+            d = findDoctorByEmpNo(g_doctorHead, empNo);
+            delDoctor(&g_doctorHead, &g_doctorTail, d);
+            rebuildDoctorFile(g_doctorHead);
+            break;
+        case 3://修改医生信息
+            DoctorData newData;
+            printf("\n请输入医生信息:");
+            printf("\n姓名: ");      scanf("%49s", newData.name);
+            printf("\n科室: ");      scanf("%49s", newData.dept);
+            printf("\n出诊时间: ");  scanf("%99s", newData.schedule);
+            printf("\n每日最大接诊数: "); scanf("%d", &newData.maxPatients);
+            modifyDoctor(&g_doctorHead, &empNo, newData);
+            break;
+
+        case 4://查找
+            printf("请选择查找方式：\n");
+            printf("1、按照工号查找\n");
+            printf("2、按照姓名查找\n");
+            printf("3、按照科室查找\n");
+            int choice2;
+            scanf("%d", &choice2);
+            switch (choice2)
+            {
+            case 1://按工号
+                printf("请输入要查找医生的工号:\n"); scanf("%19s", empNo);
+                Doctor* d = findDoctorsByDept(g_doctorHead, empNo);
+                printf("\n");
+                printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
+                    "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
+                printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+                    d->data.empNo,                         // 工号
+                    d->data.name,                          // 姓名
+                    d->data.dept,                          // 科室
+                    d->data.schedule,                      // 出诊时间
+                    d->data.maxPatients,                   // 每日最大接诊数
+                    d->data.currentPatients);              // 今日已接诊数
+                break;
+            case 2://按姓名
+                printf("请输入要查找医生的姓名:\n"); scanf("%49s", name);
+                Doctor* d = findDoctorsByDept(g_doctorHead, name);
+                printf("\n");
+                printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
+                    "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
+                printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+                    d->data.empNo,                         // 工号
+                    d->data.name,                          // 姓名
+                    d->data.dept,                          // 科室
+                    d->data.schedule,                      // 出诊时间
+                    d->data.maxPatients,                   // 每日最大接诊数
+                    d->data.currentPatients);              // 今日已接诊数
+                break;
+            case 3://按科室
+                printf("请输入要查找医生的科室:\n"); scanf("%49s", dept);
+                Doctor* d = findDoctorsByDept(g_doctorHead, dept);
+                printf("\n");
+                printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
+                    "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
+                printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+                    d->data.empNo,                         // 工号
+                    d->data.name,                          // 姓名
+                    d->data.dept,                          // 科室
+                    d->data.schedule,                      // 出诊时间
+                    d->data.maxPatients,                   // 每日最大接诊数
+                    d->data.currentPatients);              // 今日已接诊数
+                break;
+            default:
+                printf("[ERROR] 无效选择！");
+            }
+        case 5:
+            listAllDoctors(g_doctorHead);
+            break;
+        case 0:
+            return;
+        default:
+            printf("[ERROR] 无效选择！");
+            break;
+        }
+    }
+}
+//--------------------
+
+//--------------------
+//以下为挂号管理菜单显示函数
+void showRegistrationManagement()
+{
 }
 //--------------------
