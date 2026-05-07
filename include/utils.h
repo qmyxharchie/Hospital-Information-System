@@ -28,7 +28,7 @@ void safeStringCopy(char* dest, const char* src, int maxLen);	//安全字符串复制
 
 void trim(char* str);											//去除两端空白字符
 /*   去掉头尾的空格   */
-
+int compareDateStr(char* date1, char* date2);					//比较两个 YYYY-MM-DD 格式的日期字符串
 int stringToInt(const char* str);								//字符串转整数
 double stringToDouble(const char* str);							//字符串转浮点数
 bool isValidPhone(const char* phone);							//11位手机号验证

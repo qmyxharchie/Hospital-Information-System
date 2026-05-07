@@ -119,6 +119,16 @@ void trim(char* str) {
 //-----------------
 
 //-----------------
+// 比较两个 YYYY-MM-DD 格式的日期字符串
+int compareDateStr(char* date1, char* date2) {
+	int y1, m1, d1, y2, m2, d2;
+	sscanf(date1, "%d-%d-%d", &y1, &m1, &d1);
+	sscanf(date2, "%d-%d-%d", &y2, &m2, &d2);
+	return compareDate(y1, m1, d1, y2, m2, d2);
+}
+//-----------------
+
+//-----------------
 //	字符串转数值
 // 功能：将字符串转换为整数或浮点数
 // 参数：str - 待转换的字符串
