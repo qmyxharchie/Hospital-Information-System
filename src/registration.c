@@ -4,6 +4,7 @@
 #include "patient.h"        // 患者模块头文件
 #include "doctor.h"         // 医生模块头文件
 #include "registration.h"	// 挂号模块头文件
+#include "login.h"          // 登录模块头文件
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
 
@@ -25,7 +26,7 @@ extern char g_currentUsername[50];  // 当前登录用户名
 int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
     char* doctorEmpNo, char* doctorName, char* dept,
-    char* appointmentDate, char* appointmentTime, int createdBy){
+    char* appointmentDate, char* appointmentTime, UserRole createdBy){
     
     // 查找指定医生是否存在
     Doctor* d = findDoctorByEmpNo(getDoctorHead(), doctorEmpNo);

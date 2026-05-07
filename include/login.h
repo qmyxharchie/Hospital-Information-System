@@ -11,9 +11,9 @@
 #ifndef _LOGIN_H_
 #define _LOGIN_H_
 
-extern char g_currentUsername[50];                                    // 当前登录用户名
-extern int g_currentUserRole;                                         // 当前用户角色：0=用户, 1=管理员
-extern bool g_isLoggedIn;                                             // 是否已登录
+extern char g_currentUsername[50];        // 当前登录用户名
+extern UserRole g_currentUserRole;        // 当前用户角色：0=用户, 1=护士, 2=医生, 3=管理员
+extern bool g_isLoggedIn;                 // 是否已登录
 
 typedef enum {
     PATIENT = 0, // 患者

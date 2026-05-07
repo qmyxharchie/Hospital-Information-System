@@ -19,6 +19,15 @@
 #ifndef _REGISTRATION_H_
 #define _REGISTRATION_H_
 
+#include "login.h"
+
+typedef enum {
+    PENDING = 0,     // 待就诊
+    IN_PROGRESS = 1, // 就诊中
+    COMPLETED = 2,   // 已完成
+    CANCELLED = 3    // 已取消
+} RegStatus;
+
 typedef struct RegistrationData {
     char regNo[20];              // 挂号单号
     char patientCardNo[20];      // 病人卡号
@@ -30,8 +39,8 @@ typedef struct RegistrationData {
     char time[20];               // 挂号时间（格式：HH:MM:SS）
     char appointmentDate[20];    // 预约日期（格式：YYYY-MM-DD，如果是现场挂号则与挂号日期相同）
     char appointmentTime[20];    // 预约时间（格式：HH:MM，如果是现场挂号则与挂号时间相同）
-    int status;                  // 状态（0-待就诊, 1-就诊中, 2-已完成, 3-已取消）
-    int createdBy;               // 挂号方式（0-预约挂号, 1-现场挂号）
+    RegStatus status;            // 状态
+    UserRole createdBy;          // 挂号方式（PATIENT-预约挂号, NURSE-现场挂号）
     float consultationFee;       // 诊疗费用
     char remarks[100];           // 备注信息
 } RegistrationData;
@@ -42,13 +51,17 @@ typedef struct Registration {
     struct Registration* pre;
 } Registration;
 
+//挂号操作
 int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
     char* doctorEmpNo, char* doctorName, char* dept,
-    char* appointmentDate, char* appointmentTime, int createdBy);                   //挂号
+    char* appointmentDate, char* appointmentTime, UserRole createdBy);  //添加挂号记录
 int cancelRegistration(Registration** head, Registration** tail,
     Registration* r);                                                   //取消挂号
 int completeRegistration(Registration* r);                              //完成就诊                               
+int callNextPatient(Registration** head, Registration** tail,
+    char* doctorEmpNo, UserRole userRole);                      // 叫号
+
 //查询函数
 Registration* findRegistrationByNo(Registration* head, char* regNo);    //按挂号单号查询
 Registration* findRegistrationsByPatient(Registration* head, 
