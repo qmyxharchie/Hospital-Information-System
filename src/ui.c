@@ -553,5 +553,140 @@ void showHospitalizationManagement(void) {
 
 //--------------------
 // 以下是床位管理菜单函数
+void showBedManagement(void) {
+    int choice;
+    char ward[30], bedNo[20];
+    int total, occupied;
+    Bed* b;
 
+    while (1) {
+        printf("\n-------- 床位管理 --------\n");
+        printf("1. 添加床位     5. 查找空闲床位\n");
+        printf("2. 删除床位     6. 病区统计\n");
+        printf("3. 按床位号查询 7. 显示所有床位\n");
+        printf("4. 按病区查询   0. 返回上级菜单\n");
+        printf("请选择: ");
+
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice) {
+        case 1:  // 添加
+            printf("\n请输入床位信息:\n");
+            printf("病区: ");   scanf("%29s", ward);
+            printf("床位号: "); scanf("%19s", bedNo);
+            addBed(&g_bedHead, &g_bedTail, ward, bedNo);
+            printf("[OK] 床位添加成功！\n");
+            break;
+
+        case 2:  // 删除
+            printf("请输入要删除的床位号: ");
+            scanf("%19s", bedNo);
+            b = findBedByNo(g_bedHead, bedNo);
+            if (b) {
+                delBed(&g_bedHead, &g_bedTail, b);
+                printf("[OK] 床位已删除！\n");
+            }
+            else {
+                printf("[ERROR] 未找到该床位！\n");
+            }
+            break;
+
+        case 3:  // 按床位号查询
+            printf("请输入床位号: "); scanf("%19s", bedNo);
+            b = findBedByNo(g_bedHead, bedNo);
+            if (b) {
+                printf("%-10s %-10s %-12s %-10s %-10s\n",
+                    "病区", "床位号", "病人卡号", "病人姓名", "状态");
+                printf("%-10s %-10s %-12s %-10s %-10s\n",
+                    b->data.ward, b->data.bedNo, b->data.patientCardNo,
+                    b->data.patientName, b->data.status);
+            }
+            else {
+                printf("[ERROR] 未找到该床位！\n");
+            }
+            break;
+
+        case 4:  // 按病区查询
+            printf("请输入病区: "); scanf("%29s", ward);
+            listBedsByWard(g_bedHead, ward);
+            break;
+
+        case 5:  // 查找空闲床位
+            b = findAvailableBeds(g_bedHead);
+            if (b) {
+                printf("空闲床位: %s (病区: %s)\n", b->data.bedNo, b->data.ward);
+            }
+            else {
+                printf("当前无空闲床位。\n");
+            }
+            break;
+
+        case 6:  // 病区统计
+            printf("请输入病区: "); scanf("%29s", ward);
+            getWardStats(g_bedHead, ward, &total, &occupied);
+            printf("病区 %s：总床位 %d，已占用 %d，空闲 %d\n",
+                ward, total, occupied, total - occupied);
+            break;
+
+        case 7:
+            listAllBeds(g_bedHead);
+            break;
+
+        case 0:
+            return;
+
+        default:
+            printf("[ERROR] 无效选择！\n");
+        }
+    }
+}
 //--------------------
+
+
+//以下为主函数
+int main(void) {
+    initUI();
+
+    while (1) {
+        int status = showLoginPage();
+
+        if (status == LOGIN_EXIT) {
+            printf("感谢使用，再见！\n");
+            break;
+        }
+        if (status == LOGIN_FAILED) {
+            printf("登录失败，请重试。\n");
+            continue;
+        }
+
+        // 登录成功后进入主循环
+        while (1) {
+            showMainMenu();
+            printf("请选择功能模块: ");
+            int module;
+            scanf("%d", &module);
+            getchar();
+
+            switch (module) {
+            case 1: showPatientManagement();         break;
+            case 2: showDoctorManagement();          break;
+            case 3: showRegistrationManagement();    break;
+            case 4: showMedicineManagement();         break;
+            case 5: showHospitalizationManagement(); break;
+            case 6: showBedManagement();             break;
+            case 7: showStatisticsMenu();           break;
+            case 8: showQueryMenu();                 break;
+            case 0:
+                printf("正在退出系统...\n");
+                closeUI();
+                return 0;
+            default:
+                printf("[ERROR] 无效选择！\n");
+            }
+        }
+    }
+
+    closeUI();
+    return 0;
+}
