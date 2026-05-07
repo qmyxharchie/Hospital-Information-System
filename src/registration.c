@@ -16,12 +16,12 @@ extern char g_currentUsername[50];  // 当前登录用户名
 //函数名：addRegistration
 //功能：为患者办理挂号手续，将患者与医生关联
 //参数：head - 指向挂号记录链表头部的指针的指针
-//      tail - 指向挂号记录链表尾部的指针的指针
-//      patientCardNo - 患者卡号
-//      patientName - 患者姓名
-//      doctorEmpNo - 医生工号
-//      doctorName - 医生姓名
-//      dept - 科室
+//   tail - 指向挂号记录链表尾部的指针的指针
+//   patientCardNo - 患者卡号，patientName - 患者姓名
+//   doctorEmpNo - 医生工号，doctorName - 医生姓名，dept - 科室
+//   appointmentDate — 预约日期（YYYY-MM-DD），现场挂号时传当天日期
+//   appointmentTime — 预约时间（HH:MM），现场挂号时传当前时间
+//   createdBy — PATIENT（患者预约）或 NURSE（护士现场挂号）
 //返回值：成功返回1，失败返回0
 int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
@@ -31,52 +31,79 @@ int addRegistration(Registration** head, Registration** tail,
     // 查找指定医生是否存在
     Doctor* d = findDoctorByEmpNo(getDoctorHead(), doctorEmpNo);
     if (d == NULL) {
-        printf("未找到对应医生\n");
+        printf("[ERROR] 未找到工号为 %s 医生\n", doctorEmpNo);
         return 0;
     }
     
-    // 检查医生是否还能接收更多患者
-    if (!canAcceptPatient(d)) {
-        printf("该医生号已满\n");
-        return 0;
+    // 2. 检查医生是否还有名额（仅对当天挂号进行号源检查）
+    int year, month, day;
+    getCurrentTime(&year, &month, &day);
+    char today[20];
+    sprintf(today, "%04d-%02d-%02d", year, month, day);
+
+    if (strcmp(appointmentDate, today) == 0) {
+        if (!canAcceptPatient(d)) {
+            printf("[ERROR] 该医生今日号源已满（最大接诊 %d 人）\n", d->data.maxPatients);
+            return 0;
+        }
     }
     
-    // 创建新的挂号记录节点
+    // 3. 重复挂号检查：同患者同一天同医生不能重复挂 PENDING 状态
+    Registration* temp = *head;
+    while (temp != NULL) {
+        if (strcmp(temp->data.patientCardNo, patientCardNo) == 0 &&
+            strcmp(temp->data.doctorEmpNo, doctorEmpNo) == 0 &&
+            strcmp(temp->data.appointmentDate, appointmentDate) == 0 &&
+            (temp->data.status == PENDING || temp->data.status == IN_PROGRESS)) {
+            printf("[ERROR] 该患者已在 %s 预约了该医生，不能重复挂号\n", appointmentDate);
+            return 0;
+        }
+        temp = temp->next;
+    }
+
+    // 4. 分配新节点
     Registration* newNode = (Registration*)malloc(sizeof(Registration));
     if (newNode == NULL) {
-        printf("内存分配失败\n");
+        printf("[ERROR] 内存分配失败\n");
         return 0;
     }
-    
-    // 初始化节点指针
     newNode->next = newNode->pre = NULL;
     
-    // 生成挂号编号
+    // 5. 生成挂号单号
     char id[20];
     generateUniqueId("REG", id);
-    
-    // 填充挂号记录数据
     strcpy(newNode->data.regNo, id);                    // 挂号编号
+    
+    // 6. 填充患者和医生信息
     strcpy(newNode->data.patientCardNo, patientCardNo); // 患者卡号
     strcpy(newNode->data.patientName, patientName);     // 患者姓名
     strcpy(newNode->data.doctorEmpNo, doctorEmpNo);     // 医生工号
     strcpy(newNode->data.doctorName, doctorName);       // 医生姓名
     strcpy(newNode->data.dept, dept);                   // 科室
     
-    // 获取当前日期时间
-    int year, month, day, hour, minute, second;
-    getCurrentTime(&year, &month, &day);
-    sprintf(newNode->data.date, "%04d-%02d-%02d", year, month, day);
+    // 7. 设置挂号日期时间（系统当前时间）
+    int hour, minute, second;
     time_t now = time(0);
     struct tm* timeinfo = localtime(&now);
+    getCurrentTime(&year, &month, &day);
     hour = timeinfo->tm_hour;
     minute = timeinfo->tm_min;
     second = timeinfo->tm_sec;
+
+    sprintf(newNode->data.date, "%04d-%02d-%02d", year, month, day);
     sprintf(newNode->data.time, "%02d:%02d:%02d", hour, minute, second);
-    // 设置状态为"待就诊"
-    strcpy(newNode->data.status, "待就诊");
-    
-    // 将新节点添加到链表尾部
+
+    // 8. 设置预约日期时间（由调用方传入）
+    strcpy(newNode->data.appointmentDate, appointmentDate);
+    strcpy(newNode->data.appointmentTime, appointmentTime);
+
+    // 9. 设置初始状态和挂号方式
+    newNode->data.status = PENDING;
+    newNode->data.createdBy = createdBy;
+    newNode->data.consultationFee = 0.0f;
+    strcpy(newNode->data.remarks, "");
+
+    // 10. 尾插法插入链表
     if (*tail == NULL) {
         *head = newNode;
         *tail = newNode;
@@ -87,21 +114,185 @@ int addRegistration(Registration** head, Registration** tail,
         *tail = newNode;
     }
     
-    // 增加医生的当前患者数量
+    // 11. 增加医生的当前患者数量
     incrementPatientCount(d);
     
-    // 更新挂号记录文件
+    // 12. 保存到文件
     rebuildRegistrationFile(*head);
-    
-    // 输出挂号成功信息
-    printf("挂号成功！挂号编号：%s，患者：%s，医生%s，科室：%s，日期：%s %s\n",
-        newNode->data.regNo, newNode->data.patientName, newNode->data.doctorName,
-        newNode->data.dept, newNode->data.date, newNode->data.time);
+
+    // 13. 输出成功信息（根据挂号方式区分提示）
+    if (createdBy == PATIENT) {
+        printf("[OK] 预约挂号成功！\n");
+        printf("  挂号编号：%s\n", newNode->data.regNo);
+        printf("  患者：%s\n", newNode->data.patientName);
+        printf("  医生：%s（%s）\n", newNode->data.doctorName, newNode->data.dept);
+        printf("  预约日期：%s %s\n", newNode->data.appointmentDate, newNode->data.appointmentTime);
+    }
+    else {
+        printf("[OK] 现场挂号成功！\n");
+        printf("  挂号编号：%s\n", newNode->data.regNo);
+        printf("  患者：%s\n", newNode->data.patientName);
+        printf("  医生：%s（%s）\n", newNode->data.doctorName, newNode->data.dept);
+        printf("  挂号日期：%s（今日）\n", newNode->data.date);
+    }
   
     return 1;
 }
 //-------------------------
 
+//-------------------------
+// 医生叫号
+// 功能：按挂号时间顺序叫下一位待就诊患者
+// 参数：head/tail — 挂号链表，doctorEmpNo — 医生工号
+// 返回值：1=叫号成功，0=无待就诊患者
+int callNextPatient(Registration** head, Registration** tail,char* doctorEmpNo){
+    if (head == NULL || *head == NULL) {
+        printf("[INFO] 暂无挂号记录\n");
+        return 0;
+    }
+
+    // 1. 查找该医生的第一个 PENDING 状态挂号（按预约时间排序）
+    Registration* current = *head;
+    Registration* target = NULL;
+
+    while (current != NULL) {
+        if (strcmp(current->data.doctorEmpNo, doctorEmpNo) == 0 &&
+            current->data.status == PENDING) {
+            // 找到第一个匹配的后，与 target 比较预约时间，取更早的
+            if (target == NULL) {
+                target = current;
+            }
+            else {
+                // 比较 appointmentDate，更早的优先
+                int cmpDate = compareDateStr(current->data.appointmentDate,
+                    target->data.appointmentDate);
+                if (cmpDate < 0) {
+                    target = current;
+                }
+                else if (cmpDate == 0) {
+                    // 日期相同则比较 appointmentTime
+                    if (strcmp(current->data.appointmentTime,
+                        target->data.appointmentTime) < 0) {
+                        target = current;
+                    }
+                }
+            }
+        }
+        current = current->next;
+    }
+
+    // 2. 检查是否找到待就诊患者
+    if (target == NULL) {
+        printf("[INFO] 该医生暂无待就诊患者\n");
+        return 0;
+    }
+
+    // 3. 修改状态为"就诊中"
+    target->data.status = IN_PROGRESS;
+
+    // 4. 保存到文件
+    rebuildRegistrationFile(*head);
+
+    // 5. 输出叫号信息（模拟诊室广播）
+    printf("\n╔═══════════════════════════════════════════╗\n");
+    printf("║           叫 号 通 知                     ║\n");
+    printf("╠═══════════════════════════════════════════╣\n");
+    printf("║  请患者 %-20s 到 %-10s 诊室 ║\n",
+        target->data.patientName, target->data.doctorName);
+    printf("║  挂号编号：%-30s     ║\n", target->data.regNo);
+    printf("╚═══════════════════════════════════════════╝\n");
+
+    return 1;
+}
+//-------------------------
+
+//-------------------------
+// 生成指定医生的当天候诊队列
+// 功能：筛选出 doctorEmpNo 匹配、当天预约、PENDING 状态的挂号，按时间排序
+// 参数：head — 挂号链表头，doctorEmpNo — 医生工号，today — 当天日期（YYYY-MM-DD）
+// 返回值：新的有序链表头指针（调用方负责释放）
+Registration* buildWaitingQueue(Registration* head, char* doctorEmpNo, char* today){
+    Registration* resultHead = NULL;
+    Registration* resultTail = NULL;
+    Registration* cur = head;
+
+    while (cur != NULL) {
+        // 筛选条件：同医生、当天、待就诊
+        if (strcmp(cur->data.doctorEmpNo, doctorEmpNo) == 0 &&
+            strcmp(cur->data.appointmentDate, today) == 0 &&
+            cur->data.status == PENDING) {
+
+            // 创建新节点复制数据
+            Registration* newNode = (Registration*)malloc(sizeof(Registration));
+            if (newNode == NULL) continue;
+            newNode->data = cur->data;
+            newNode->next = newNode->pre = NULL;
+
+            // 按 appointmentTime 插入有序链表（升序）
+            if (resultHead == NULL) {
+                resultHead = newNode;
+                resultTail = newNode;
+            }
+            else {
+                Registration* pos = resultHead;
+                Registration* prev = NULL;
+                while (pos != NULL &&
+                    strcmp(pos->data.appointmentTime, newNode->data.appointmentTime) < 0) {
+                    prev = pos;
+                    pos = pos->next;
+                }
+                if (prev == NULL) {
+                    // 插入头部
+                    newNode->next = resultHead;
+                    resultHead->pre = newNode;
+                    resultHead = newNode;
+                }
+                else {
+                    newNode->next = pos;
+                    newNode->pre = prev;
+                    prev->next = newNode;
+                    if (pos != NULL) pos->pre = newNode;
+                    else resultTail = newNode;
+                }
+            }
+        }
+        cur = cur->next;
+    }
+
+    return resultHead;
+}
+//-------------------------
+
+//-------------------------
+// 
+//函数名：listWaitingQueue
+//功能：显示指定医生的候诊队列
+//参数：queueHead - 候诊链表
+//      doctorEmpNo - 医生姓名
+void listWaitingQueue(Registration* queueHead, char* doctorName)
+{
+    if (queueHead == NULL) {
+        printf("[INFO] %s 医生当前无候诊患者\n", doctorName);
+        return;
+    }
+
+    printf("\n========== %s 医生 候诊队列 ==========\n", doctorName);
+    printf("%-6s %-20s %-15s %-10s\n", "序号", "患者姓名", "预约时间", "挂号方式");
+    printf("─────────────────────────────────────────────\n");
+
+    Registration* cur = queueHead;
+    int seq = 1;
+    while (cur != NULL) {
+        char* method = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
+        printf("%-6d %-20s %-15s %-10s\n",
+            seq, cur->data.patientName, cur->data.appointmentTime, method);
+        cur = cur->next;
+        seq++;
+    }
+    printf("─────────────────────────────────────────────\n");
+    printf("共 %d 人候诊\n", seq - 1);
+}
+//-------------------------
 
 //-------------------------
 //函数名：cancelRegistration
@@ -114,32 +305,36 @@ int cancelRegistration(Registration** head, Registration** tail,
     Registration* r) {
     
     if (r == NULL) {
-        printf("未找到对应记录\n");
+        printf("[ERROR] 未找到对应记录\n");
         return 0;
     }
-   
-    // 检查挂号状态，只有"待就诊"状态的挂号才能取消
-    if (strcmp(r->data.status, "待就诊") != 0) {
-        printf("只有待就诊状态的挂号才能取消\n");
-        return 0;
-    }
-    
-    // 查找对应医生并减少其当前患者数量
-    Doctor* d = findDoctorByEmpNo(getDoctorHead(), r->data.doctorEmpNo);
-    if (d != NULL && d->data.currentPatients > 0) {
-        d->data.currentPatients--;
-    }
-    
-    // 修改挂号记录状态为"已取消"
-    strcpy(r->data.status, "已取消");
-    
-    // 更新挂号记录文件
-    rebuildRegistrationFile(*head);
-    
-    printf("取消成功\n");
-    
 
-    
+    // 只有 PENDING 状态的才能取消
+    if (r->data.status != PENDING) {
+        printf("[ERROR] 只有待就诊状态的挂号才能取消（当前状态：%d）\n", r->data.status);
+        return 0;
+    }
+
+    // 获取当天日期
+    int year, month, day;
+    getCurrentTime(&year, &month, &day);
+    char today[20];
+    sprintf(today, "%04d-%02d-%02d", year, month, day);
+
+    // 只有当天挂号才减少医生接诊数（释放号源）
+    if (strcmp(r->data.appointmentDate, today) == 0) {
+        Doctor* d = findDoctorByEmpNo(g_doctorHead, r->data.doctorEmpNo);
+        if (d != NULL && d->data.currentPatients > 0) {
+            d->data.currentPatients--;
+        }
+    }
+
+    // 修改状态为已取消
+    r->data.status = CANCELLED;
+
+    // 保存文件
+    rebuildRegistrationFile(*head);
+    printf("[OK] 挂号 %s 已取消，号源已释放\n", r->data.regNo);
     return 1;
 }
 //-------------------------
@@ -302,6 +497,41 @@ Registration* findRegistrationsByDateRange(Registration* head, int y1,
 }
 //-------------------------
 
+//-------------------------
+//函数名：findRegistrationsByStatus
+//功能：按状态查询
+//参数：head - 挂号记录链表头指针
+//      status - 状态
+// 返回值：新分配的结果链表头指针（需调用方释放）
+Registration* findRegistrationsByStatus(Registration* head, RegStatus status)
+{
+    Registration* resultHead = NULL;
+    Registration* resultTail = NULL;
+    Registration* cur = head;
+
+    while (cur != NULL) {
+        if (cur->data.status == status) {
+            Registration* newNode = (Registration*)malloc(sizeof(Registration));
+            if (newNode != NULL) {
+                newNode->data = cur->data;
+                newNode->next = newNode->pre = NULL;
+                if (resultHead == NULL) {
+                    resultHead = newNode;
+                    resultTail = newNode;
+                }
+                else {
+                    resultTail->next = newNode;
+                    newNode->pre = resultTail;
+                    resultTail = newNode;
+                }
+            }
+        }
+        cur = cur->next;
+    }
+
+    return resultHead;
+}
+//-------------------------
 
 //-------------------------
 //函数名：listAllRegistrations
@@ -309,39 +539,47 @@ Registration* findRegistrationsByDateRange(Registration* head, int y1,
 //参数：head - 挂号记录链表头指针
 //返回值：无
 void listAllRegistrations(Registration* head) {
-    // 1. 检查链表是否为空
     if (head == NULL) {
         printf("暂无挂号信息\n");
         return;
     }
 
-    // 2. 统计记录数量
+    printf("\n=== 挂号记录列表 ===\n");
+    printf("%-14s %-10s %-10s %-10s %-12s %-10s %-10s %-8s\n",
+        "挂号编号", "患者姓名", "医生姓名", "科室",
+        "预约时间", "状态", "方式", "日期");
+
+    Registration* cur = head;
     int count = 0;
-    Registration* current = head;
-    while (current != NULL) {
+    while (cur != NULL) {
+        // 状态转字符串
+        char* statusStr;
+        switch (cur->data.status) {
+        case PENDING:     statusStr = "待就诊"; break;
+        case IN_PROGRESS: statusStr = "就诊中"; break;
+        case COMPLETED:   statusStr = "已完成"; break;
+        case CANCELLED:   statusStr = "已取消"; break;
+        default:          statusStr = "未知";
+        }
+
+        // 方式转字符串
+        char* methodStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
+
+        printf("%-14s %-10s %-10s %-10s %-12s %-10s %-10s %-8s\n",
+            cur->data.regNo,
+            cur->data.patientName,
+            cur->data.doctorName,
+            cur->data.dept,
+            cur->data.appointmentTime,
+            statusStr,
+            methodStr,
+            cur->data.appointmentDate);
+
+        cur = cur->next;
         count++;
-        current = current->next;
     }
 
-    // 3. 输出表头信息
-    printf("=== 挂号列表 ===\n");
-    printf("%-20s %-20s %-20s %-20s %-20s %-20s\n",
-        "挂号编号", "患者姓名", " 医生姓名", "科室", "挂号日期", "状态");
-
-    // 4. 遍历链表输出每条挂号信息
-    current = head;                              // 从头节点开始
-    while (current != NULL) {
-        // 格式化输出当前挂号的各项信息
-        printf("%-20s %-20s %-20s %-20s %-20s %-20s\n",
-            current->data.regNo,                         // 挂号编号
-            current->data.patientName,                   // 患者姓名
-            current->data.doctorName,                    // 医生姓名
-            current->data.dept,                          // 科室
-            current->data.date,                          // 挂号日期
-            current->data.status);                       // 就诊状态
-        current = current->next;                         // 移动到下一个节点
-    }
-    
-    printf("总计: %d 条记录\n", count);
+    printf("共 %d 条记录\n", count);
+}
 }
 //-------------------------
