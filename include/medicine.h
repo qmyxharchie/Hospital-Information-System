@@ -29,7 +29,7 @@ typedef struct MedicineData {
     int minStock;          // 最低库存预警值
 } MedicineData;   // 注：团队头文件中 Medicine 即为 MedicineData
 
-typedef struct MedicineNode {
+typedef struct Medicine {
     MedicineData data;          // 药品数据
     Medicine* next;
     Medicine* pre;
@@ -54,10 +54,15 @@ typedef struct PurchaseNode {
 void checkLowStock(Medicine* head);                                          //库存检查
 void purchaseMedicine(Medicine* head, char* medNo, int quantity);            //购药（扣减库存）
 void replenishStock(Medicine* head, char* medNo, int quantity);              //补充库存
-void addPurchaseRecord(Purchase** head, Purchase** tail, ...);               //购药记录（扣减药品库存）
+void addPurchaseRecord(Purchase** head, Purchase** tail, char patientCardNo[20],
+    char medNo[20], int quantity, double totalCost, char date[20]);   //购药记录（扣减药品库存）
 //查询药品
 Medicine* findMedicineByNo(Medicine* head, char* medNo);       // 按药品编号查找
 Medicine* findMedicineByName(Medicine* head, char* name);     // 按药品名查找
 void listAllMedicines(Medicine* head);    //列出所有药品
+void addMedicine(Medicine** head, Medicine** tail, char genericName[], char brandName[],
+    char spec[], double price, int stock, int minStock);//添加药品
+void delMedicine(Medicine** head, Medicine** tail, char* medNo);//删除指定编号的药品
+int modifyMedicine(Medicine* head, char* medNo, MedicineData newData); // 修改药品信息，返回 1=成功，0=失败
 
 #endif

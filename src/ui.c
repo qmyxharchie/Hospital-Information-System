@@ -325,8 +325,233 @@ void showDoctorManagement(void) {
 //--------------------
 
 //--------------------
-//以下为挂号管理菜单显示函数
-void showRegistrationManagement()
-{
+//以下为药品管理菜单显示函数
+void showMedicineManagement(void) {
+    int choice;
+    char medNo[20], name[50], patientCardNo[20], date[20];
+    int quantity;
+    double totalCost;
+    Medicine* m;
+
+    while (1) {
+        printf("\n-------- 药品管理 --------\n");
+        printf("1. 按编号查询   4. 购药登记\n");
+        printf("2. 按名称查询   5. 显示所有药品\n");
+        printf("3. 补充库存     6. 库存预警检查\n");
+        printf("0. 返回上级菜单\n");
+        printf("请选择: ");
+
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice) {
+        case 1:  // 按编号查询
+            printf("请输入药品编号: "); scanf("%19s", medNo);
+            m = findMedicineByNo(g_medHead, medNo);
+            if (m) {
+                printf("%-10s %-20s %-20s %-15s %-10s %-10s %-10s\n",
+                    "编号", "通用名", "商品名", "规格", "单价", "库存", "最低库存");
+                printf("%-10s %-20s %-20s %-15s %-10.2f %-10d %-10d\n",
+                    m->data.medNo, m->data.genericName, m->data.brandName,
+                    m->data.spec, m->data.price, m->data.stock, m->data.minStock);
+            }
+            else {
+                printf("[ERROR] 未找到该药品！\n");
+            }
+            break;
+
+        case 2:  // 按名称查询
+            printf("请输入药品名称关键字: "); scanf("%49s", name);
+            m = findMedicineByName(g_medHead, name);
+            if (m) {
+                printf("%-10s %-20s %-20s %-15s %-10s %-10s %-10s\n",
+                    "编号", "通用名", "商品名", "规格", "单价", "库存", "最低库存");
+                printf("%-10s %-20s %-20s %-15s %-10.2f %-10d %-10d\n",
+                    m->data.medNo, m->data.genericName, m->data.brandName,
+                    m->data.spec, m->data.price, m->data.stock, m->data.minStock);
+            }
+            else {
+                printf("[ERROR] 未找到该药品！\n");
+            }
+            break;
+
+        case 3:  // 补充库存
+            printf("请输入药品编号: "); scanf("%19s", medNo);
+            printf("请输入补充数量: "); scanf("%d", &quantity);
+            m = findMedicineByNo(g_medHead, medNo);
+            if (m) {
+                replenishStock(g_medHead, medNo, quantity);
+                printf("[OK] 库存补充成功！当前库存: %d\n", m->data.stock + quantity);
+            }
+            else {
+                printf("[ERROR] 未找到该药品！\n");
+            }
+            break;
+
+        case 4:  // 购药登记
+            printf("请输入病人卡号: ");     scanf("%19s", patientCardNo);
+            printf("请输入药品编号: ");     scanf("%19s", medNo);
+            printf("请输入购买数量: ");     scanf("%d", &quantity);
+            printf("请输入总费用: ");       scanf("%lf", &totalCost);
+            printf("请输入购药日期(YYYY-MM-DD): "); scanf("%19s", date);
+            m = findMedicineByNo(g_medHead, medNo);
+            if (m && m->data.stock >= quantity) {
+                addPurchaseRecord(&g_purHead, &g_purTail,
+                    patientCardNo, medNo, quantity, totalCost, date);
+                printf("[OK] 购药登记成功！\n");
+            }
+            else {
+                printf("[ERROR] 药品不存在或库存不足！\n");
+            }
+            break;
+
+        case 5:
+            listAllMedicines(g_medHead);
+            break;
+
+        case 6:  // 库存预警
+            checkLowStock(g_medHead);
+            break;
+
+        case 0:
+            return;
+
+        default:
+            printf("[ERROR] 无效选择！\n");
+        }
+    }
 }
+//--------------------
+
+//--------------------
+// 以下为住院管理菜单函数
+void showHospitalizationManagement(void) {
+    int choice;
+    char recordNo[20], patientCardNo[20], patientName[50];
+    double prepay, totalCost;
+    Hospitalization* h;
+
+    while (1) {
+        printf("\n-------- 住院管理 --------\n");
+        printf("1. 入院登记        5. 显示当前在院病人\n");
+        printf("2. 出院结算        6. 显示所有住院记录\n");
+        printf("3. 按卡号查询      7. 追加预交金\n");
+        printf("4. 按住院单号查询  8. 修改住院信息（转床/追加押金）")
+        printf("0. 返回上级菜单\n");
+        printf("请选择: ");
+
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice) {
+        case 1:  // 入院登记
+            printf("\n请输入入院信息:\n");
+            printf("病人卡号: "); scanf("%19s", patientCardNo);
+            printf("病人姓名: "); scanf("%49s", patientName);
+            printf("预交金额: "); scanf("%lf", &prepay);
+            addHospitalization(&g_hosHead, &g_hosTail, "",
+                patientCardNo, patientName, prepay);
+            printf("[OK] 入院登记成功！住院单号与床位已自动分配。\n");
+            break;
+
+        case 2:  // 出院结算
+            printf("请输入住院单号: "); scanf("%19s", recordNo);
+            h = findHospitalizationByNo(g_hosHead, recordNo);
+            if (h) {
+                printf("当前状态: %s，预交金额: %.2f\n",
+                    h->data.status, h->data.prepay);
+                printf("请输入总费用: "); scanf("%lf", &totalCost);
+                dischargePatient(h, totalCost);
+                rebuildHospitalizationFile(g_hosHead);
+                rebuildBedFile(g_bedHead);
+            }
+            else {
+                printf("[ERROR] 未找到该住院记录！\n");
+            }
+            break;
+
+        case 3:  // 按卡号查询
+            printf("请输入病人卡号: "); scanf("%19s", patientCardNo);
+            h = findHospitalizationByCardNo(g_hosHead, patientCardNo);
+            if (h) {
+                printf("%-12s %-12s %-10s %-10s %-10s %-10s %-10s\n",
+                    "住院单号", "姓名", "床位号", "预交金", "总费用", "入院日期", "状态");
+                printf("%-12s %-12s %-10s %-10.2f %-10.2f %-10s %-10s\n",
+                    h->data.recordNo, h->data.patientName, h->data.bedNo,
+                    h->data.prepay, h->data.totalCost,
+                    h->data.admissionDate, h->data.status);
+            }
+            else {
+                printf("[ERROR] 未找到该病人的住院记录！\n");
+            }
+            break;
+
+        case 4:  // 按住院单号查询
+            printf("请输入住院单号: "); scanf("%19s", recordNo);
+            h = findHospitalizationByNo(g_hosHead, recordNo);
+            if (h) {
+                printf("%-12s %-12s %-10s %-10s %-10s %-10s %-10s\n",
+                    "住院单号", "姓名", "床位号", "预交金", "总费用", "入院日期", "状态");
+                printf("%-12s %-12s %-10s %-10.2f %-10.2f %-10s %-10s\n",
+                    h->data.recordNo, h->data.patientName, h->data.bedNo,
+                    h->data.prepay, h->data.totalCost,
+                    h->data.admissionDate, h->data.status);
+            }
+            else {
+                printf("[ERROR] 未找到该住院记录！\n");
+            }
+            break;
+
+        case 5:  // 当前在院病人
+            h = findAllCurrentHospitalizations(g_hosHead);
+            if (h) {
+                listAllHospitalizations(h);
+                freeHospitalizationResultChain(h);
+            }
+            else {
+                printf("当前无在院病人。\n");
+            }
+            break;
+
+        case 6:
+            listAllHospitalizations(g_hosHead);
+            break;
+
+        case 7: {  // 追加预交金
+            printf("请输入住院单号: \n");  scanf("%19s", recordNo);
+            printf("请输入追加金额:\n ");  scanf("%lf", &prepay);
+            Hospitalization* h = findHospitalizationByNo(g_hosHead, recordNo);
+            if (h) {
+                addPrepay(h, prepay);
+            }
+            else {
+                printf("[ERROR] 未找到该住院记录！\n");
+            }
+            break;
+        }
+
+        case 8: {  // 修改住院信息（转床 + 追加预交金）
+            printf("请输入住院单号:\n ");     scanf("%19s", recordNo);
+            printf("请输入新床位号(不转床输0): \n");  scanf("%19s", bedNo);
+            printf("请输入追加预交金(不追加输0): \n"); scanf("%lf", &prepay);
+            if (strcmp(bedNo, "0") == 0) {
+                strcpy(bedNo, "");        // 空字符串表示不转床
+            }
+            modifyHospitalization(g_hosHead, recordNo, bedNo, prepay);
+            break;
+        }
+
+        case 0:
+            return;
+
+        default:
+            printf("[ERROR] 无效选择！\n");
+        }
+    }
+}
+//--------------------
+
+//--------------------
+// 以下是床位管理菜单函数
+
 //--------------------

@@ -17,8 +17,7 @@
 //     prepay - 预付款
 //返回值：无
 void addHospitalization(Hospitalization** head, Hospitalization** tail,
-	char recordNo[20],char patientCardNo[20],char patientName[50],
-	double prepay)
+	char patientCardNo[20],char patientName[50],double prepay)
 {
 	//分配床位
 	char* bedNo1 = allocateBed(g_bedHead, patientCardNo, patientName);
@@ -40,7 +39,7 @@ void addHospitalization(Hospitalization** head, Hospitalization** tail,
 	strcpy(h->data.bedNo, bedNo1);
 	strcpy(h->data.patientCardNo, patientCardNo);
 	strcpy(h->data.patientName, patientName);
-	strcpy(h->data.prepay, prepay);
+	h->data.prepay = prepay;
 	strcpy(h->data.recordNo, id);
 	strcpy(h->data.status, "住院");
 	int year, month, day;
@@ -79,7 +78,7 @@ void dischargePatient(Hospitalization* h, double totalCost)
 	double returnCost = h->data.prepay - h->data.totalCost;//计算应退还的费用
 	if (returnCost < 0)//如果应退还的费用为负数，说明患者还需补交住院费
 	{
-		printf("补交费用 %f 元", (-1) * returnCost);
+		printf("补交费用 %f 元\n", (-1) * returnCost);
 		returnCost = 0;
 	}
 	printf("====出院信息====\n");
@@ -148,7 +147,7 @@ Hospitalization* findHospitalizationByNo(Hospitalization* head, char* recordNo)
 //功能：查找当前住院患者
 //参数：head - 住院记录链表头指针
 //返回值：返回当前住院患者链表头指针
-Hospitalization* findAllCurrentHospitalizations(Hospitalization* head)
+Hospitalization* findCurrentHospitalizations(Hospitalization* head)
 {
 	Hospitalization* h = head;
 	Hospitalization* resultHead = NULL;  // 结果链表头
@@ -216,3 +215,122 @@ void listAllHospitalizations(Hospitalization* head)
 	return;
 }
 //-------------------------
+
+```c
+//-------------------------
+// 以下为追加预交金函数
+// 功能：为指定住院记录追加预交金
+// 参数：h - 住院记录节点指针，amount - 追加金额（必须 > 0）
+//-------------------------
+void addPrepay(Hospitalization* h, double amount)
+{
+	// 1. 边界检查
+	if (h == NULL) {
+		printf("[ERROR] 住院记录为空，无法追加预交金。\n");
+		return;
+	}
+
+	// 2. 检查追加金额合法性
+	if (amount <= 0) {
+		printf("[ERROR] 追加金额必须大于 0。\n");
+		return;
+	}
+
+	// 3. 检查患者是否仍在院
+	if (strcmp(h->data.status, "住院") != 0) {
+		printf("[ERROR] 该患者已出院，无法追加预交金。\n");
+		return;
+	}
+
+	// 4. 累加预交金
+	h->data.prepay += amount;
+
+	// 5. 写回文件（通过全局头指针）
+	extern Hospitalization* g_hosHead;
+	rebuildHospitalizationFile(g_hosHead);
+
+	// 6. 输出提示
+	printf("[OK] 预交金追加成功！\n");
+	printf("  本次追加：%.2f 元\n", amount);
+	printf("  当前预交金总额：%.2f 元\n", h->data.prepay);
+}
+
+//-------------------------
+// 以下为修改住院信息函数
+// 功能：修改指定住院记录（转床 + 追加预交金）
+// 参数：head - 住院链表头指针
+//      recordNo - 住院单号
+//      newBedNo - 新床位号（为空字符串则不转床）
+//      addPrepayAmount - 追加预交金金额（为 0 则不追加）
+// 返回值：1 - 成功，0 - 失败（未找到或已出院）
+//-------------------------
+int modifyHospitalization(Hospitalization* head, char* recordNo,
+	char* newBedNo, double addPrepayAmount)
+{
+	// 1. 按住院单号查找记录
+	Hospitalization* h = findHospitalizationByNo(head, recordNo);
+
+	// 2. 检查是否找到
+	if (h == NULL) {
+		printf("[ERROR] 未找到住院单号为 %s 的记录。\n", recordNo);
+		return 0;
+	}
+
+	// 3. 检查是否已出院
+	if (strcmp(h->data.status, "住院") != 0) {
+		printf("[ERROR] 该患者已出院，无法修改住院信息。\n");
+		return 0;
+	}
+
+	// 4. 显示当前信息
+	printf("当前住院信息：\n");
+	printf("  住院单号：%s\n", h->data.recordNo);
+	printf("  患者姓名：%s\n", h->data.patientName);
+	printf("  当前床位：%s\n", h->data.bedNo);
+	printf("  当前预交金：%.2f 元\n", h->data.prepay);
+
+	// 5. 转床处理（如果 newBedNo 非空）
+	if (newBedNo != NULL && strlen(newBedNo) > 0) {
+		// 释放旧床位
+		Bed* oldBed = findBedByNo(g_bedHead, h->data.bedNo);
+		if (oldBed != NULL) {
+			freeBed(oldBed);
+			printf("  [OK] 旧床位 %s 已释放。\n", h->data.bedNo);
+		}
+
+		// 分配新床位
+		Bed* newBed = findBedByNo(g_bedHead, newBedNo);
+		if (newBed == NULL) {
+			printf("[ERROR] 床位 %s 不存在。\n", newBedNo);
+			return 0;
+		}
+		if (strcmp(newBed->data.status, "空闲") != 0) {
+			printf("[ERROR] 床位 %s 非空闲状态，无法分配。\n", newBedNo);
+			return 0;
+		}
+
+		// 占用新床位
+		strcpy(newBed->data.patientCardNo, h->data.patientCardNo);
+		strcpy(newBed->data.patientName, h->data.patientName);
+		strcpy(newBed->data.status, "占用");
+		strcpy(h->data.bedNo, newBedNo);
+
+		printf("  [OK] 已成功转至床位 %s。\n", newBedNo);
+
+		// 写回床位文件
+		rebuildBedFile(g_bedHead);
+	}
+
+	// 6. 追加预交金（如果金额 > 0）
+	if (addPrepayAmount > 0) {
+		h->data.prepay += addPrepayAmount;
+		printf("  [OK] 预交金追加 %.2f 元，当前总额 %.2f 元。\n",
+			addPrepayAmount, h->data.prepay);
+	}
+
+	// 7. 写回住院记录文件
+	rebuildHospitalizationFile(head);
+
+	printf("[OK] 住院信息修改成功。\n");
+	return 1;
+}
