@@ -670,6 +670,197 @@ void showBedManagement(void) {
 }
 //--------------------
 
+//--------------------
+// 以下为挂号管理菜单
+void showRegistrationManagement(void)
+{
+    int choice;
+    char patientCardNo[20], patientName[50];
+    char doctorEmpNo[20], doctorName[50], dept[50];
+    char regNo[20], appointmentDate[20], appointmentTime[20];
+    int year, month, day;
+
+    while (1) {
+        printf("\n========== 挂号管理系统 ==========\n");
+        printf("--- 患者功能 ---\n");
+        printf("1. 预约挂号        4. 查看我的挂号\n");
+        printf("2. 取消我的挂号\n");
+        printf("--- 护士功能 ---\n");
+        printf("3. 现场挂号        5. 查看科室候诊队列\n");
+        printf("--- 医生功能 ---\n");
+        printf("6. 叫号（下一位）  7. 查看我的候诊列表\n");
+        printf("8. 完成当前就诊\n");
+        printf("--- 通用功能 ---\n");
+        printf("9. 显示全部挂号记录\n");
+        printf("0. 返回上级菜单\n");
+        printf("请选择: ");
+
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice) {
+            // ──────────── 患者：预约挂号 ────────────
+        case 1: {
+            printf("\n--- 预约挂号 ---\n");
+            printf("请输入您的卡号: ");      scanf("%19s", patientCardNo);
+            Patient* p = findPatientByCardNo(g_patientHead, patientCardNo);
+            if (p == NULL) {
+                printf("[ERROR] 未找到该患者，请先注册\n");
+                break;
+            }
+            strcpy(patientName, p->data.name);
+
+            printf("请输入医生工号: ");      scanf("%19s", doctorEmpNo);
+            Doctor* d = findDoctorByEmpNo(g_doctorHead, doctorEmpNo);
+            if (d == NULL) {
+                printf("[ERROR] 未找到该医生\n");
+                break;
+            }
+            strcpy(doctorName, d->data.name);
+            strcpy(dept, d->data.dept);
+
+            getCurrentTime(&year, &month, &day);
+            printf("请输入预约日期 (YYYY-MM-DD，至少今天 %04d-%02d-%02d): ",
+                year, month, day);
+            scanf("%19s", appointmentDate);
+            printf("请输入预约时间 (HH:MM): ");
+            scanf("%19s", appointmentTime);
+
+            addRegistration(&g_regHead, &g_regTail,
+                patientCardNo, patientName,
+                doctorEmpNo, doctorName, dept,
+                appointmentDate, appointmentTime, PATIENT);
+            break;
+        }
+
+              // ──────────── 患者：取消挂号 ────────────
+        case 2: {
+            printf("请输入您的卡号: ");      scanf("%19s", patientCardNo);
+            printf("请输入要取消的挂号编号: "); scanf("%19s", regNo);
+            patientCancelRegistration(&g_regHead, &g_regTail,
+                patientCardNo, regNo);
+            break;
+        }
+
+              // ──────────── 护士：现场挂号 ────────────
+        case 3: {
+            printf("\n--- 现场挂号 ---\n");
+            printf("请输入患者卡号: ");      scanf("%19s", patientCardNo);
+            Patient* p = findPatientByCardNo(g_patientHead, patientCardNo);
+            if (p == NULL) {
+                printf("[ERROR] 未找到该患者\n");
+                break;
+            }
+            strcpy(patientName, p->data.name);
+
+            printf("请输入医生工号: ");      scanf("%19s", doctorEmpNo);
+            Doctor* d = findDoctorByEmpNo(g_doctorHead, doctorEmpNo);
+            if (d == NULL) {
+                printf("[ERROR] 未找到该医生\n");
+                break;
+            }
+            strcpy(doctorName, d->data.name);
+            strcpy(dept, d->data.dept);
+
+            // 现场挂号：预约日期和时间都填当天当前
+            getCurrentTime(&year, &month, &day);
+            sprintf(appointmentDate, "%04d-%02d-%02d", year, month, day);
+
+            time_t now = time(0);
+            struct tm* ti = localtime(&now);
+            sprintf(appointmentTime, "%02d:%02d", ti->tm_hour, ti->tm_min);
+
+            addRegistration(&g_regHead, &g_regTail,
+                patientCardNo, patientName,
+                doctorEmpNo, doctorName, dept,
+                appointmentDate, appointmentTime, NURSE);
+            break;
+        }
+
+              // ──────────── 患者：查看我的挂号 ────────────
+        case 4: {
+            printf("请输入您的卡号: ");      scanf("%19s", patientCardNo);
+            findRegistrationsByPatient(g_regHead, patientCardNo);
+            break;
+        }
+
+              // ──────────── 护士：查看科室候诊队列 ────────────
+        case 5: {
+            printf("请输入科室: ");          scanf("%49s", dept);
+            printf("请输入医生工号(查看全部输0): "); scanf("%19s", doctorEmpNo);
+
+            getCurrentTime(&year, &month, &day);
+            char today[20];
+            sprintf(today, "%04d-%02d-%02d", year, month, day);
+
+            if (strcmp(doctorEmpNo, "0") == 0) {
+                // 查看整个科室所有医生的候诊队列
+                Doctor* d = g_doctorHead;
+                while (d != NULL) {
+                    if (strcmp(d->data.dept, dept) == 0) {
+                        Registration* queue = buildWaitingQueue(g_regHead,
+                            d->data.empNo, today);
+                        listWaitingQueue(queue, d->data.name);
+                        // 释放临时队列
+                        Registration* cur = queue;
+                        while (cur != NULL) {
+                            Registration* tmp = cur;
+                            cur = cur->next;
+                            free(tmp);
+                        }
+                    }
+                    d = d->next;
+                }
+            }
+            else {
+                doctorViewWaitingList(g_regHead, doctorEmpNo);
+            }
+            break;
+        }
+
+              // ──────────── 医生：叫号 ────────────
+        case 6: {
+            printf("请输入您的工号: ");      scanf("%19s", doctorEmpNo);
+            doctorCallNextPatient(&g_regHead, &g_regTail, doctorEmpNo);
+            break;
+        }
+
+              // ──────────── 医生：查看候诊列表 ────────────
+        case 7: {
+            printf("请输入您的工号: ");      scanf("%19s", doctorEmpNo);
+            doctorViewWaitingList(g_regHead, doctorEmpNo);
+            break;
+        }
+
+              // ──────────── 医生：完成就诊 ────────────
+        case 8: {
+            printf("请输入挂号编号: ");      scanf("%19s", regNo);
+            Registration* r = findRegistrationByNo(g_regHead, regNo);
+            if (r) {
+                completeRegistration(r);
+                rebuildRegistrationFile(g_regHead);
+            }
+            else {
+                printf("[ERROR] 未找到该挂号\n");
+            }
+            break;
+        }
+
+              // ──────────── 通用：显示全部 ────────────
+        case 9: {
+            listAllRegistrations(g_regHead);
+            break;
+        }
+
+        case 0:
+            return;
+
+        default:
+            printf("[ERROR] 无效选择\n");
+        }
+    }
+}
+//--------------------
 
 //以下为主函数
 int main(void) {

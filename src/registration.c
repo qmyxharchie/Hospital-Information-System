@@ -28,13 +28,8 @@ int addRegistration(Registration** head, Registration** tail,
     char* doctorEmpNo, char* doctorName, char* dept,
     char* appointmentDate, char* appointmentTime, UserRole createdBy){
     
-    // 查找指定医生是否存在
-    Doctor* d = findDoctorByEmpNo(getDoctorHead(), doctorEmpNo);
-    if (d == NULL) {
-        printf("[ERROR] 未找到工号为 %s 医生\n", doctorEmpNo);
-        return 0;
-    }
-    
+
+
     // 2. 检查医生是否还有名额（仅对当天挂号进行号源检查）
     int year, month, day;
     getCurrentTime(&year, &month, &day);
@@ -534,7 +529,7 @@ Registration* findRegistrationsByStatus(Registration* head, RegStatus status)
 //返回值：无
 void listAllRegistrations(Registration* head) {
     if (head == NULL) {
-        printf("暂无挂号信息\n");
+        printf("[ERROR] 暂无挂号信息\n");
         return;
     }
 
@@ -573,7 +568,7 @@ void listAllRegistrations(Registration* head) {
         count++;
     }
 
-    printf("共 %d 条记录\n", count);
+    printf("[OK] 共 %d 条记录\n", count);
 }
 }
 //-------------------------

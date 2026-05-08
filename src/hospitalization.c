@@ -16,48 +16,140 @@
 //     patientName - 患者姓名
 //     prepay - 预付款
 //返回值：无
-void addHospitalization(Hospitalization** head, Hospitalization** tail,
-	char patientCardNo[20],char patientName[50],double prepay)
+void addHospitalization(Hospitalization** head,
+                        Hospitalization** tail,
+                        const char* patientCardNo,
+                        const char* patientName,
+                        double prepay)
 {
-	//分配床位
-	char* bedNo1 = allocateBed(g_bedHead, patientCardNo, patientName);
-	if (strcmp(bedNo1, "NULL") == 0)
-	{
-		printf("[ERROR] 床位不足");
-		return;
-	}
-	Hospitalization* h = (Hospitalization*)malloc(sizeof(Hospitalization));
-	if (!h)//分配新节点
-	{
-		printf("[ERROR] 内存申请失败\n");
-		return;
-	}
-	char id[20];
-	generateUniqueId("HOS", id);//生成住院编号
-	h->next = h->pre = NULL;
-	h->data.totalCost = 0;//将住院信息填充到结构体的各个字段中去
-	strcpy(h->data.bedNo, bedNo1);
-	strcpy(h->data.patientCardNo, patientCardNo);
-	strcpy(h->data.patientName, patientName);
-	h->data.prepay = prepay;
-	strcpy(h->data.recordNo, id);
-	strcpy(h->data.status, "住院");
-	int year, month, day;
-	getCurrentTime(&year, &month, &day);
-	sprintf(h->data.admissionDate, "%04d-%02d-%02d", year, month, day);
-	if (*tail == NULL)//如果尾指针为空则插入节点
-	{
-		*head = h;
-		*tail = h;
-	}
-	else {
-		(*tail)->next =h;
-		h->pre = *tail;
-		*tail = h;
-	}
-	rebuildHospitalizationFile(*head);
-	printf("[OK] 入院登记成功！住院单号与床位已自动分配。\n");
-	return;
+    // =========================
+    // 1. 参数合法性检查
+    // =========================
+    if (head == NULL || tail == NULL ||
+        patientCardNo == NULL || patientName == NULL)
+    {
+        printf("[ERROR] 输入内容不符合要求\n");
+        return;
+    }
+
+    // =========================
+    // 2. 检查病人是否已经住院
+    // =========================
+    Hospitalization* p = *head;
+
+    while (p != NULL)
+    {
+        if (strcmp(p->data.patientCardNo, patientCardNo) == 0 &&
+            strcmp(p->data.status, "住院") == 0)
+        {
+            printf("[ERROR] 该病人已在院，不能重复办理住院！\n");
+            return;
+        }
+
+        p = p->next;
+    }
+
+    // =========================
+    // 3. 创建新节点
+    // =========================
+    Hospitalization* h =
+        (Hospitalization*)malloc(sizeof(Hospitalization));
+
+    if (h == NULL)
+    {
+        printf("[ERROR] 床位申请失败！\n");
+        return;
+    }
+
+    // 初始化指针
+    h->next = NULL;
+    h->pre = NULL;
+
+    // =========================
+    // 4. 分配床位
+    // =========================
+    char* bedNo1 =
+        allocateBed(g_bedHead, patientCardNo, patientName);
+
+    // 床位不足
+    if (bedNo1 == NULL)
+    {
+        printf("[ERROR] 床位不足！\n");
+
+        free(h);
+        h = NULL;
+
+        return;
+    }
+
+    // =========================
+    // 5. 生成住院编号
+    // =========================
+    char id[20];
+
+    generateUniqueId("HOS", id);
+
+    // =========================
+    // 6. 填充住院数据
+    // =========================
+
+    // 安全复制字符串
+    safeStringCopy(h->data.recordNo, id,
+                   sizeof(h->data.recordNo));
+
+    safeStringCopy(h->data.bedNo, bedNo1,
+                   sizeof(h->data.bedNo));
+
+    safeStringCopy(h->data.patientCardNo, patientCardNo,
+                   sizeof(h->data.patientCardNo));
+
+    safeStringCopy(h->data.patientName, patientName,
+                   sizeof(h->data.patientName));
+
+    safeStringCopy(h->data.status, "住院",
+                   sizeof(h->data.status));
+
+    // 费用信息
+    h->data.prepay = prepay;
+    h->data.totalCost = 0;
+
+    // =========================
+    // 7. 获取当前日期
+    // =========================
+    int year, month, day;
+
+    getCurrentTime(&year, &month, &day);
+
+    sprintf(h->data.admissionDate,
+            "%04d-%02d-%02d",
+            year, month, day);
+
+    // =========================
+    // 8. 双向链表尾插
+    // =========================
+    if (*tail == NULL)
+    {
+        // 空链表
+        *head = h;
+        *tail = h;
+    }
+    else
+    {
+        // 非空链表
+        (*tail)->next = h;
+        h->pre = *tail;
+        *tail = h;
+    }
+
+    // =========================
+    // 9. 保存到文件
+    // =========================
+    rebuildHospitalizationFile(*head);
+
+    // =========================
+    // 10. 输出成功信息
+    // =========================
+    printf("[OK] 入院登记成功！\n");
 }
 //-------------------------
 
@@ -217,7 +309,7 @@ void listAllHospitalizations(Hospitalization* head)
 }
 //-------------------------
 
-```c
+
 //-------------------------
 // 以下为追加预交金函数
 // 功能：为指定住院记录追加预交金

@@ -66,7 +66,7 @@ void addBed(Bed** head, Bed** tail, char* ward, char* bedNo)
 	Bed* b = (Bed*)malloc(sizeof(Bed));
 	if (!b)//分配新节点
 	{
-		printf("内存申请失败\n");
+		printf("[ERROR] 床位申请失败\n");
 		return;
 	}
 	strcpy(b->data.patientCardNo, "无");  // 初始化患者卡号为"无"
@@ -108,7 +108,7 @@ void delBed(Bed** head, Bed** tail, Bed* b)
 
 	// 2. 占用状态的床位不能删除
 	if (strcmp(b->data.status, "占用") == 0) {
-		printf("警告：床位%s正处于占用状态，无法删除\n", b->data.bedNo);
+		printf("[ERROR] 床位%s正处于占用状态，无法删除\n", b->data.bedNo);
 		return;
 	}
 
