@@ -60,11 +60,15 @@ int cancelRegistration(Registration** head, Registration** tail,
     Registration* r);                                                   //取消挂号
 int completeRegistration(Registration* r);                              //完成就诊                               
 
-int callNextPatient(Registration** head, Registration** tail,
-    char* doctorEmpNo);                                                 //医生叫号
 Registration* buildWaitingQueue(Registration* head,
     char* doctorEmpNo, char* today);                                    //生成候诊队列
 void listWaitingQueue(Registration* queueHead, char* doctorName);       //显示指定医生的候诊队列
+
+//医生
+int callNextPatient(Registration** head, Registration** tail,
+    char* doctorEmpNo);                                                 //医生叫号
+
+
 //查询函数
 Registration* findRegistrationByNo(Registration* head, char* regNo);    //按挂号单号查询
 Registration* findRegistrationsByPatient(Registration* head, 
@@ -75,6 +79,7 @@ Registration* findRegistrationsByDateRange(Registration* head, int y1,
     int m1, int d1, int y2, int m2, int d2);                            //按时间范围查询
 Registration* findRegistrationsByStatus(Registration* head,
     RegStatus status);                                                  //按状态查询
+
 void listAllRegistrations(Registration* head);                          //列表显示
 
 #endif // !_REGISTRATION_H_

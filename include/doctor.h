@@ -33,10 +33,17 @@ void addDoctor(Doctor** head, Doctor** tail,
     char name[], char dept[], char schedule[], int maxPatients);        //添加医生
 void delDoctor(Doctor** head, Doctor** tail, DoctorData d);             //删除医生
 int modifyDoctor(Doctor* head, char empNo, DoctorData newData);         //修改医生信息
+
 //查询医生
 Doctor* findDoctorByEmpNo(Doctor* head, char* empNo);                   //按工号精确查找
 Doctor* findDoctorsByName(Doctor* head, char* name);                    //按姓名查找
 Doctor* findDoctorsByDept(Doctor* head, char* dept);                    //按科室查找（返回第一个匹配）
+
+//挂号
+void doctorViewWaitingList(Registration* regHead, char* doctorEmpNo);   //医生查看候诊列表
+void doctorCallNextPatient(Registration** regHead, Registration** regTail,
+    char* doctorEmpNo)                                                  //医生叫号入口
+
 //医生接诊检查
 int canAcceptPatient(Doctor* d);                                        //医生是否还能接诊（1=能, 0=不能）
 void incrementPatientCount(Doctor* d);                                  //挂号成功后接诊数+1

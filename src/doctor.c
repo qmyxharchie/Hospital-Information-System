@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "doctor.h"         // 医生模块头文件
+#include "registration.h"   // 挂号模块头文件
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
 
@@ -27,7 +28,7 @@ Doctor* getDoctorTail(void) {
 //--------------------
 
 //--------------------
-//以下为添加医生函数// 功能：向医生链表中添加一个新的医生节点
+// 以下为添加医生函数// 功能：向医生链表中添加一个新的医生节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
 //      name - 姓名，dept - 科室，schedule - 出诊时间，maxPatients - 每日最大接诊数
 void addDoctor(Doctor** head, Doctor** tail,
@@ -69,7 +70,7 @@ void addDoctor(Doctor** head, Doctor** tail,
 //--------------------
 
 //--------------------
-//以下为删除医生函数
+// 以下为删除医生函数
 // 功能：从医生链表中删除指定的医生节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
 //      d - 要删除的医生数据（根据empNo匹配）
@@ -126,7 +127,7 @@ void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
 }//--------------------
 
 //--------------------
-//以下为修改医生信息函数
+// 以下为修改医生信息函数
 // 功能：修改指定工号的医生信息
 // 参数：head - 链表头指针，empNo - 要修改的医生工号，newData - 新的医生数据
 // 返回值：1-修改成功，0-修改失败
@@ -169,9 +170,9 @@ int modifyDoctor(Doctor* head, char* empNo, DoctorData newData) {
 //--------------------
 
 //--------------------
-//以下为查找医生信息函数
+// 以下为查找医生信息函数
 
-//按工号精确查找
+// 按工号精确查找
 // 功能：根据工号精确查找医生
 // 参数：head - 链表头指针，empNo - 要查找的工号
 // 返回值：找到的医生节点指针，未找到返回NULL
@@ -186,7 +187,7 @@ Doctor* findDoctorByEmpNo(Doctor* head, char* empNo) {
     return NULL;                                          
 }
 
-//按姓名模糊
+// 按姓名模糊
 // 功能：根据姓名模糊查找医生（查找姓名中包含指定字符串的医生）
 // 参数：head - 链表头指针，name - 要查找的姓名片段
 // 返回值：如果找到返回头节点指针，未找到返回NULL
@@ -216,7 +217,7 @@ Doctor* findDoctorsByName(Doctor* head, char* name) {
     return resultHead;    
 }
 
-//按科室查找（返回第一个匹配）
+// 按科室查找（返回第一个匹配）
 // 功能：根据科室查找医生（返回第一个匹配的医生）
 // 参数：head - 链表头指针，dept - 要查找的科室
 // 返回值：找到的医生节点指针，未找到返回NULL
@@ -233,9 +234,68 @@ Doctor* findDoctorsByDept(Doctor* head, char* dept) {
 //--------------------
 
 //--------------------
-//以下为医生接诊检查函数
+// 查看候诊列表
+// 功能：医生查看自己的候诊列表
+// 参数：regHead — 挂号链表头，doctorEmpNo — 医生工号
+//--------------------
+void doctorViewWaitingList(Registration* regHead, char* doctorEmpNo)
+{
+    int year, month, day;
+    getCurrentTime(&year, &month, &day);
+    char today[20];
+    sprintf(today, "%04d-%02d-%02d", year, month, day);
 
-//医生是否还能接诊（1=能, 0=不能）
+    // 生成有序候诊队列
+    Registration* queue = buildWaitingQueue(regHead, doctorEmpNo, today);
+
+    // 找到医生姓名
+    Doctor* d = findDoctorByEmpNo(g_doctorHead, doctorEmpNo);
+    char* doctorName = (d != NULL) ? d->data.name : doctorEmpNo;
+
+    listWaitingQueue(queue, doctorName);
+
+    // 释放临时队列（不释放原始数据！）
+    Registration* cur = queue;
+    while (cur != NULL) {
+        Registration* tmp = cur;
+        cur = cur->next;
+        free(tmp);
+    }
+}
+//--------------------
+
+//--------------------
+// 医生叫号入口（封装 callNextPatient）
+//--------------------
+void doctorCallNextPatient(Registration** regHead, Registration** regTail,
+    char* doctorEmpNo)
+{
+    int result = callNextPatient(regHead, regTail, doctorEmpNo);
+    if (result == 1) {
+        // 叫号成功后显示剩余候诊人数
+        int year, month, day;
+        getCurrentTime(&year, &month, &day);
+        char today[20];
+        sprintf(today, "%04d-%02d-%02d", year, month, day);
+
+        Registration* cur = *regHead;
+        int remaining = 0;
+        while (cur != NULL) {
+            if (strcmp(cur->data.doctorEmpNo, doctorEmpNo) == 0 &&
+                strcmp(cur->data.appointmentDate, today) == 0 &&
+                cur->data.status == PENDING) {
+                remaining++;
+            }
+            cur = cur->next;
+        }
+        printf("[INFO] 该医生还有 %d 位患者在候诊\n", remaining);
+    }
+}
+//--------------------
+
+// 以下为医生接诊检查函数
+
+// 医生是否还能接诊（1=能, 0=不能）
 // 功能：检查医生是否还能接诊（是否达到最大接诊数）
 // 参数：d - 医生节点指针
 // 返回值：1-还能接诊，0-已达最大接诊数
@@ -248,7 +308,7 @@ int canAcceptPatient(Doctor* d) {
     }
 }
 
-//挂号成功后接诊数+1
+// 挂号成功后接诊数+1
 // 功能：挂号成功后增加医生的接诊数
 // 参数：d - 医生节点指针
 void incrementPatientCount(Doctor* d) {
@@ -263,7 +323,7 @@ void incrementPatientCount(Doctor* d) {
 //--------------------
 
 //--------------------
-//以下为重置每日接诊数函数
+// 以下为重置每日接诊数函数
 // 功能：重置所有医生的每日接诊数为0
 // 参数：head - 链表头指针
 void resetDailyPatients(Doctor* head) {
@@ -276,7 +336,7 @@ void resetDailyPatients(Doctor* head) {
 //--------------------
 
 //--------------------
-//以下为科室统计函数
+// 以下为科室统计函数
 // 功能：统计指定科室在当前日期的总接待量
 // 参数：head - 链表头指针，dept - 科室名称，count - 指向统计结果的指针
 void getDeptStats(Doctor* head, char* dept, char* date, int* count) {
@@ -310,7 +370,7 @@ void getDeptStats(Doctor* head, char* dept, char* date, int* count) {
 //--------------------
 
 //--------------------
-//以下为列表显示函数
+// 以下为列表显示函数
 // 功能：遍历并显示所有医生信息
 // 参数：head - 链表头指针
 void listAllDoctors(Doctor* head) {
