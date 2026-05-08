@@ -154,7 +154,7 @@ int modifyDoctor(Doctor* head, char* empNo, DoctorData newData) {
 
     // 4. 更新医生信息
     safeStringCopy(target->data.name, newData.name, 50);          // 安全复制姓名
-    safeStringCopy(target->data.dept, newData.dept, 20);          // 安全复制工号
+    safeStringCopy(target->data.dept, newData.dept, 50);          // 安全复制工号
     safeStringCopy(target->data.schedule, newData.schedule, 100); // 安全复制出诊时间
     target->data.maxPatients = newData.maxPatients;               // 更新每日最大接诊数
     target->data.currentPatients = newData.currentPatients;       // 今日已接诊数
@@ -197,7 +197,7 @@ Doctor* findDoctorsByName(Doctor* head, char* name) {
     Doctor* resultTail = NULL;
     // 遍历整个链表
     while (d != NULL) {
-        if ((strstr(d->data.name, name) != NULL) {
+        if (strstr(d->data.name, name) != NULL) {
             Doctor* newNode = (Doctor*)malloc(sizeof(Doctor));
             newNode->data = d->data;
             newNode->next = NULL;
@@ -317,7 +317,7 @@ void incrementPatientCount(Doctor* d) {
         d->data.currentPatients++;
     }
     else {
-        printf("此医生已达每日最大接诊次数\n")
+        printf("此医生已达每日最大接诊次数\n");
     }
 }
 //--------------------

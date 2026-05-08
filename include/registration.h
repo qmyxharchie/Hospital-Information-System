@@ -37,8 +37,8 @@ typedef struct RegistrationData {
     char dept[50];               // 科室
     char date[20];               // 挂号日期（格式：YYYY-MM-DD）
     char time[20];               // 挂号时间（格式：HH:MM:SS）
-    char appointmentDate[20];    // 预约日期（预约挂号=患者指定日期；现场挂号=当天日期）
-    char appointmentTime[20];    // 预约时间（预约挂号=患者指定时段；现场挂号=当前时间）
+    char appointmentDate[20];    // 预约日期（格式：YYYY-MM-DD，预约挂号=患者指定日期；现场挂号=当天日期）
+    char appointmentTime[20];    // 预约时间（格式：HH:MM，预约挂号=患者指定时段；现场挂号=当前时间）
     RegStatus status;            // 挂号状态（PENDING/IN_PROGRESS/COMPLETED/CANCELLED）
     UserRole createdBy;          // 挂号方式（PATIENT-预约挂号, NURSE-现场挂号）
     float consultationFee;       // 诊疗费用
