@@ -44,6 +44,9 @@ extern Bed* g_bedTail;
 #define INPUT_HEIGHT   40     // 输入框高度
 
 //函数声明
+int safeReadInt( int minVal, int maxVal);//安全读取int类型变量
+double safeReadDouble(void);//安全读取double类型函数
+void safeReadString(char* buf, int maxLen);//安全读取字符串（带长度限制）
 void initUI(void);  //初始化界面
 void closeUI(void); //关闭界面释放资源
 int showLoginPage(void);//显示登录状态

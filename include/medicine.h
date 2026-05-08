@@ -31,8 +31,8 @@ typedef struct MedicineData {
 
 typedef struct Medicine {
     MedicineData data;          // 药品数据
-    Medicine* next;
-    Medicine* pre;
+    struct Medicine* next;
+    struct Medicine* pre;
 } Medicine;
 
 //购药记录
@@ -45,10 +45,10 @@ typedef struct PurchaseData {
     char date[20];          // 购药日期
 } PurchaseData;
 
-typedef struct PurchaseNode {
+typedef struct Purchase {
     PurchaseData data;
-    Purchase* next;
-    Purchase* pre;
+    struct Purchase* next;
+    struct Purchase* pre;
 } Purchase;
 
 void checkLowStock(Medicine* head);                                          //库存检查

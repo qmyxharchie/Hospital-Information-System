@@ -24,7 +24,6 @@ typedef struct BedData {
 // 先声明结构体标签
 typedef struct Bed {
     BedData data;
-    // 用 struct Bed* 声明指针，而不是直接用 Bed*
     struct Bed* next;
     struct Bed* pre;
 } Bed; // 最后再 typedef 成 Bed

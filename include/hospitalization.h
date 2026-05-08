@@ -27,11 +27,12 @@ typedef struct HospitalizationData
 
 typedef struct Hospitalization {
     HospitalizationData data;
-    Hospitalization* next;
-    Hospitalization* pre;
+    struct Hospitalization* next;
+    struct Hospitalization* pre;
 } Hospitalization;
 
-void addHospitalization(Hospitalization** head, Hospitalization** tail, char patientCardNo[20], char patientName[50], double prepay);    //入院登记
+void addHospitalization(Hospitalization** head, Hospitalization** tail, char* patientCardNo,
+    char* patientName, double prepay);    //入院登记
 void dischargePatient(Hospitalization* h, double totalCost);                     //出院结算
 //查找病人
 Hospitalization* findHospitalizationByCardNo(Hospitalization* head, char* cardNo);  // 按病人卡号查住院记录

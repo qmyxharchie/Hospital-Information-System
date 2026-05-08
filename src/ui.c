@@ -1,4 +1,54 @@
 #include"ui.h"
+#include <stdbool.h>
+
+// 安全的整数输入函数（带清缓冲）
+int safeReadInt( int minVal, int maxVal) {
+    int choice;
+    char buf[100];
+    while (true) {
+       
+        if (scanf("%d", &choice) != 1) {
+            // 清除错误输入
+            fgets(buf, sizeof(buf), stdin);
+            printf("[ERROR] 输入无效，请输入数字！\n");
+            continue;
+        }
+        getchar(); // 吃掉换行
+        if (choice < minVal || choice > maxVal) {
+            printf("[ERROR] 请输入 %d~%d 之间的数字\n", minVal, maxVal);
+            continue;
+        }
+        return choice;
+    }
+}
+
+// 安全读取 double
+double safeReadDouble(void) {
+    double val;
+    char buf[100];
+    while (true) {
+        
+        if (scanf("%lf", &val) != 1) {
+            fgets(buf, sizeof(buf), stdin);
+            printf("[ERROR] 输入无效，请输入数字！\n");
+            continue;
+        }
+        getchar();
+        return val;
+    }
+}
+
+// 安全读取字符串（带长度限制）
+void safeReadString(char* buf, int maxLen) {
+ 
+    if (scanf("%99s", buf) == 1) {
+        if ((int)strlen(buf) >= maxLen) {
+            printf("[WARNING] 输入过长，已截断至 %d 字符\n", maxLen - 1);
+            buf[maxLen - 1] = '\0';
+        }
+    }
+    getchar();
+}
 
 
 //--------------------
@@ -18,8 +68,7 @@ int showLoginPage(void) {
     printf("请选择: ");
 
     int choice;
-    scanf("%d", &choice);
-    getchar();   // 清除 scanf 后的换行符
+    choice = safeReadInt(0,3);
 
     switch (choice) {
     case 1:
@@ -709,14 +758,30 @@ void showRegistrationManagement(void)
                 break;
             }
             strcpy(patientName, p->data.name);
-
-            printf("请输入医生工号: ");      scanf("%19s", doctorEmpNo);
-            Doctor* d = findDoctorByEmpNo(g_doctorHead, doctorEmpNo);
+         
+            printf("\n可选医生列表：\n");
+            printf("%-4s %-10s %-10s %-10s %-20s\n",
+                "序号", "工号", "姓名", "科室", "出诊时间");
+            Doctor* d = g_doctorHead;
+            int docIdx = 1;
+            while (d) {
+                printf("%-4d %-10s %-10s %-10s %-20s\n",
+                    docIdx++, d->data.empNo, d->data.name,
+                    d->data.dept, d->data.schedule);
+                d = d->next;
+            }
+            int sel = safeReadInt("请选择医生序号: ", 1, docIdx - 1);
+            // 根据序号找到医生
+            d = g_doctorHead;
+            for (int i = 1; i < sel; i++) d = d->next;
+            strcpy(doctorEmpNo, d->data.empNo);
+            strcpy(doctorName, d->data.name);
+            strcpy(dept, d->data.dept);
             if (d == NULL) {
                 printf("[ERROR] 未找到该医生\n");
                 break;
             }
-            strcpy(doctorName, d->data.name);
+            strcpy(doctorName, d->data.name);     
             strcpy(dept, d->data.dept);
 
             getCurrentTime(&year, &month, &day);
@@ -734,11 +799,32 @@ void showRegistrationManagement(void)
         }
 
               // ──────────── 患者：取消挂号 ────────────
-        case 2: {
-            printf("请输入您的卡号: ");      scanf("%19s", patientCardNo);
-            printf("请输入要取消的挂号编号: "); scanf("%19s", regNo);
+        case 2: {  // 取消挂号
+            // 先列出患者的所有 PENDING 挂号
+            Registration* list = findRegistrationsByPatientAndStatus(
+                g_regHead, patientCardNo, PENDING);
+            if (list == NULL) {
+                printf("您没有待就诊的挂号记录\n");
+                break;
+            }
+            // 显示带序号的列表
+            Registration* cur = list;
+            int idx = 1;
+            while (cur) {
+                printf("%d. %s %s %s %s\n", idx++,
+                    cur->data.regNo, cur->data.doctorName,
+                    cur->data.dept, cur->data.appointmentDate);
+                cur = cur->next;
+            }
+            // 输入序号取消
+            int sel = safeReadInt("请输入要取消的序号: ", 1, idx - 1);
+            // 根据序号找到对应节点并取消
+            cur = list;
+            for (int i = 1; i < sel; i++) cur = cur->next;
             patientCancelRegistration(&g_regHead, &g_regTail,
-                patientCardNo, regNo);
+                patientCardNo, cur->data.regNo);
+            // 释放临时链表
+            freeRegistrationChain(list);
             break;
         }
 
