@@ -63,8 +63,6 @@ int completeRegistration(Registration* r);                              //完成就
 Registration* buildWaitingQueue(Registration* head,
     char* doctorEmpNo, char* today);                                    //生成候诊队列
 void listWaitingQueue(Registration* queueHead, char* doctorName);       //显示指定医生的候诊队列
-
-//医生
 int callNextPatient(Registration** head, Registration** tail,
     char* doctorEmpNo);                                                 //医生叫号
 

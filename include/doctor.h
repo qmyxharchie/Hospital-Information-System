@@ -32,7 +32,7 @@ Doctor* getDoctorTail(void);
 void addDoctor(Doctor** head, Doctor** tail,
     char name[], char dept[], char schedule[], int maxPatients);        //添加医生
 void delDoctor(Doctor** head, Doctor** tail, DoctorData d);             //删除医生
-int modifyDoctor(Doctor* head, char empNo, DoctorData newData);         //修改医生信息
+int modifyDoctor(Doctor* head, char* empNo, DoctorData newData);         //修改医生信息
 
 //查询医生
 Doctor* findDoctorByEmpNo(Doctor* head, char* empNo);                   //按工号精确查找

@@ -35,6 +35,13 @@ void addPatient(Patient** head, Patient** tail,
     char name[], int age, char gender[], char idCard[], char phone[]);  //添加病人
 void delPatient(Patient** head, Patient** tail, PatientData p);         //删除病人
 int modifyPatient(Patient* head, char* cardNo, PatientData newData);    //修改病人信息
+
+//挂号
+void patientViewOwnRegistrations(Registration* regHead, 
+    char* patientCardNo);                                               //查看挂号记录
+int patientCancelRegistration(Registration** regHead, Registration** regTail,
+    char* patientCardNo, char* regNo);                                  //取消自己挂号
+
 //查找
 Patient* findPatientByCardNo(Patient* head, char* cardNo);              //按卡号精确查找
 Patient* findPatientsByName(Patient* head, char* name);                 //按姓名模糊/精确查找

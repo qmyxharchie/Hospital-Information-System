@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "patient.h"        // 病人模块头文件
+#include "registration.h"   // 挂号模块头文件
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
 
@@ -27,7 +28,7 @@ Patient* getPatientTail(void) {
 //--------------------
 
 //--------------------
-//以下为添加病人函数
+// 以下为添加病人函数
 // 功能：向病人链表中添加一个新的病人节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
 //      name - 姓名，age - 年龄， gender - 性别，idCard - 身份证号，phone - 电话号码
@@ -74,7 +75,7 @@ void addPatient(Patient** head, Patient** tail,
 //--------------------
 
 //--------------------
-//以下为删除病人函数
+// 以下为删除病人函数
 // 功能：从病人链表中删除指定的病人节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
 //      p - 要删除的病人数据（根据cardNo匹配）
@@ -132,7 +133,7 @@ void delPatient(Patient** head, Patient** tail, PatientData p) {
 //--------------------
 
 //--------------------
-//以下为修改病人信息函数
+// 以下为修改病人信息函数
 // 功能：修改指定门诊卡号的病人信息
 // 参数：head - 链表头指针，cardNo - 要修改的病人卡号，newData - 新的病人数据
 // 返回值：1-修改成功，0-修改失败
@@ -173,6 +174,75 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     printf("[OK] 患者信息修改成功！\n");
     
     return 1;                                             // 返回1表示修改成功
+}
+//--------------------
+
+//--------------------
+// 以下为查看挂号记录函数
+// 功能：患者查看个人挂号记录
+// 参数：regHead — 挂号链表头，patientCardNo — 患者卡号
+//--------------------
+void patientViewOwnRegistrations(Registration* regHead, 
+    char* patientCardNo){
+    printf("\n========== 我的挂号记录 ==========\n");
+    printf("%-14s %-10s %-10s %-12s %-10s %-10s\n",
+        "挂号编号", "医生", "科室", "预约时间", "状态", "方式");
+    printf("──────────────────────────────────────────────────────\n");
+
+    Registration* cur = regHead;
+    int count = 0;
+    while (cur != NULL) {
+        if (strcmp(cur->data.patientCardNo, patientCardNo) == 0) {
+            char* statusStr;
+            switch (cur->data.status) {
+            case PENDING:     statusStr = "待就诊"; break;
+            case IN_PROGRESS: statusStr = "就诊中"; break;
+            case COMPLETED:   statusStr = "已完成"; break;
+            case CANCELLED:   statusStr = "已取消"; break;
+            default:          statusStr = "未知";
+            }
+            char* methodStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
+
+            printf("%-14s %-10s %-10s %-12s %-10s %-10s\n",
+                cur->data.regNo, cur->data.doctorName, cur->data.dept,
+                cur->data.appointmentTime, statusStr, methodStr);
+            count++;
+        }
+        cur = cur->next;
+    }
+
+    if (count == 0) {
+        printf("暂无挂号记录\n");
+    }
+    else {
+        printf("共 %d 条记录\n", count);
+    }
+}
+//--------------------
+
+//--------------------
+// 以下为取消自己挂号函数
+// 功能：患者取消自己的挂号（带权限校验：只能取消自己的、PENDING 状态的）
+// 参数：regHead/regTail — 挂号链表，patientCardNo — 患者卡号，regNo — 挂号编号
+//---------------------
+int patientCancelRegistration(Registration** regHead, Registration** regTail,
+    char* patientCardNo, char* regNo)
+{
+    // 1. 按挂号编号查找
+    Registration* r = findRegistrationByNo(*regHead, regNo);
+    if (r == NULL) {
+        printf("[ERROR] 未找到挂号编号 %s\n", regNo);
+        return 0;
+    }
+
+    // 2. 权限校验：只能取消自己的挂号
+    if (strcmp(r->data.patientCardNo, patientCardNo) != 0) {
+        printf("[ERROR] 无权取消他人的挂号记录\n");
+        return 0;
+    }
+
+    // 3. 调用通用取消函数
+    return cancelRegistration(regHead, regTail, r);
 }
 //--------------------
 
