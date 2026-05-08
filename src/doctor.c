@@ -12,7 +12,7 @@
 static Doctor* g_doctorHead = NULL;  // 医生链表头指针 - 指向链表的第一个节点
 static Doctor* g_doctorTail = NULL;  // 医生链表尾指针 - 指向链表的最后一个节点
 //--------------------
-newNode->data.
+
 //--------------------
 // Getter 函数实现 - 用于其他模块访问本模块的全局变量
 Doctor* getDoctorHead(void) {
@@ -76,7 +76,7 @@ void addDoctor(Doctor** head, Doctor** tail,
 void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
     // 1. 检查链表是否为空
     if (*head == NULL) {
-        printf("暂无医生数据。\n");
+        printf("[ERROR] 暂无医生数据\n");
         return;
     }
 
@@ -93,7 +93,7 @@ void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
 
     // 3. 检查是否找到要删除的节点
     if (cur == NULL) {
-        printf("未找到该医生，无法删除。\n");
+        printf("[ERROR] 未找到该医生，无法删除\n");
         return;
     }
 
@@ -119,7 +119,7 @@ void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
     free(cur);
 
     // 6. 输出删除成功的提示信息
-    printf("删除成功。\n");
+    printf("[OK] 删除成功。\n");
 
     // 7. 将更新后的链表数据保存到文件
     rebuildDoctorFile(*head);
@@ -130,7 +130,7 @@ void delDoctor(Doctor** head, Doctor** tail, DoctorData d) {
 // 功能：修改指定工号的医生信息
 // 参数：head - 链表头指针，empNo - 要修改的医生工号，newData - 新的医生数据
 // 返回值：1-修改成功，0-修改失败
-int modifyDoctor(Doctor* head, char empNo, DoctorData newData) {
+int modifyDoctor(Doctor* head, char* empNo, DoctorData newData) {
     Doctor* target = NULL;
 
     // 1. 根据卡号查找要修改的医生节点
@@ -138,7 +138,7 @@ int modifyDoctor(Doctor* head, char empNo, DoctorData newData) {
 
     // 2. 检查是否找到要修改的医生
     if (target == NULL) {
-        printf("未找到门诊卡号为%s的医生。\n", empNo);
+        printf("[ERROR] 未找到工号为%s的医生。\n", empNo);
         return 0;                                       // 返回0表示修改失败
     }
 
@@ -162,7 +162,7 @@ int modifyDoctor(Doctor* head, char empNo, DoctorData newData) {
     rebuildDoctorFile(head);
 
     // 6. 输出修改成功的提示信息
-    printf("医生信息修改成功！\n");
+    printf("[OK] 医生信息修改成功！\n");
 
     return 1;                                             // 返回1表示修改成功
 }

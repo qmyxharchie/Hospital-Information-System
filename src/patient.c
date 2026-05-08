@@ -81,7 +81,7 @@ void addPatient(Patient** head, Patient** tail,
 void delPatient(Patient** head, Patient** tail, PatientData p) {
     // 1. 检查链表是否为空
     if (*head == NULL) {
-        printf("暂无病人数据。\n");
+        printf("[ERROR] 暂无病人数据。\n");
         return;
     }
     
@@ -98,7 +98,7 @@ void delPatient(Patient** head, Patient** tail, PatientData p) {
     
     // 3. 检查是否找到要删除的节点
     if (cur == NULL) {
-        printf("未找到该病人，无法删除。\n");
+        printf("[ERROR] 未找到该病人，无法删除。\n");
         return;
     }
     
@@ -124,7 +124,7 @@ void delPatient(Patient** head, Patient** tail, PatientData p) {
     free(cur);
     
     // 6. 输出删除成功的提示信息
-    printf("删除成功。\n");
+    printf("[OK] 删除成功。\n");
     
     // 7. 将更新后的链表数据保存到文件
     rebuildPatientFile(*head);
@@ -144,7 +144,7 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     
     // 2. 检查是否找到要修改的病人
     if (target == NULL) {
-        printf("未找到门诊卡号为%s的病人。\n", cardNo);
+        printf("[ERROR] 未找到门诊卡号为%s的病人。\n", cardNo);
         return 0;                                       // 返回0表示修改失败
     }
     
@@ -170,7 +170,7 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     rebuildPatientFile(head);
     
     // 6. 输出修改成功的提示信息
-    printf("患者信息修改成功！\n");
+    printf("[OK] 患者信息修改成功！\n");
     
     return 1;                                             // 返回1表示修改成功
 }

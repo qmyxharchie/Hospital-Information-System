@@ -23,13 +23,13 @@ void addHospitalization(Hospitalization** head, Hospitalization** tail,
 	char* bedNo1 = allocateBed(g_bedHead, patientCardNo, patientName);
 	if (strcmp(bedNo1, "NULL") == 0)
 	{
-		printf("床位不足");
+		printf("[ERROR] 床位不足");
 		return;
 	}
 	Hospitalization* h = (Hospitalization*)malloc(sizeof(Hospitalization));
 	if (!h)//分配新节点
 	{
-		printf("内存申请失败\n");
+		printf("[ERROR] 内存申请失败\n");
 		return;
 	}
 	char id[20];
@@ -56,6 +56,7 @@ void addHospitalization(Hospitalization** head, Hospitalization** tail,
 		*tail = h;
 	}
 	rebuildHospitalizationFile(*head);
+	printf("[OK] 入院登记成功！住院单号与床位已自动分配。\n");
 	return;
 }
 //-------------------------

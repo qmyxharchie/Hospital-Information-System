@@ -130,7 +130,7 @@ void showPatientManagement(void) {
             printf("\n联系电话: "); scanf("%14s", phone);
             addPatient(&g_patientHead, &g_patientTail,
                 name, age, gender, idCard, phone);
-            rebuildPatientFile(g_patientHead);  // 增删改后必须写文件
+           
             break;
 
         case 2:  // 删除
@@ -138,19 +138,20 @@ void showPatientManagement(void) {
             scanf("%19s", cardNo);
             p = findPatientByCardNo(g_patientHead, cardNo);
             delPatient(&g_patientHead, &g_patientTail, p);
-            rebuildPatientFile(g_patientHead);
+          
             break;
 
         case 3://修改
             PatientData newData;
-            printf("\n请输入病人信息:");
+            printf("\n请输入要修改的病人卡号："); scanf("%19s", cardNo);
+            printf("\n请输入修改后的病人信息:");
             printf("\n姓名: ");     scanf("%49s", newData.name);
             printf("\n年龄: ");     scanf("%d", newData.age);
             printf("\n性别: ");     scanf("%9s", newData.gender);
             printf("\n身份证号: "); scanf("%19s", newData.idCard);
             printf("\n联系电话: "); scanf("%14s", newData.phone);
             modifyPatient(g_patientHead, &cardNo,newData);
-            break;
+            break;//存疑！！！
 
         case 4://查找病人
             printf("请选择查找方式：\n");
@@ -163,32 +164,46 @@ void showPatientManagement(void) {
             case 1:
                 printf("请输入卡号："); scanf("%19s", cardNo);
                 Patient* pt = findPatientByCardNo(g_patientHead, cardNo);
-                printf("\n");
-                printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-                    "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
-                printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
-                    pt->data.cardNo,                         // 门诊卡号
-                    pt->data.name,                           // 姓名
-                    pt->data.age,                            // 年龄
-                    pt->data.gender,                         // 性别
-                    pt->data.idCard,                         // 身份证号
-                    pt->data.phone,                          // 电话号码
-                    pt->data.isActive ? "住院" : "非住院");  // 住院状态（0=非住院，1=住院）
+                if (pt == NULL)
+                {
+                    printf("[ERROR] 未找到病人信息");
+                }
+                else {
+                    printf("[OK] 病人信息如下");
+                    printf("\n");
+                    printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
+                        "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
+                    printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
+                        pt->data.cardNo,                         // 门诊卡号
+                        pt->data.name,                           // 姓名
+                        pt->data.age,                            // 年龄
+                        pt->data.gender,                         // 性别
+                        pt->data.idCard,                         // 身份证号
+                        pt->data.phone,                          // 电话号码
+                        pt->data.isActive ? "住院" : "非住院");  // 住院状态（0=非住院，1=住院）
+                }
                 break;
             case 2:
                 printf("请输入姓名："); scanf("%49s", name);
                 Patient* pt = findPatientsByName(g_patientHead, name);
-                printf("\n");
-                printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-                    "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
-                printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
-                    pt->data.cardNo,                         // 门诊卡号
-                    pt->data.name,                           // 姓名
-                    pt->data.age,                            // 年龄
-                    pt->data.gender,                         // 性别
-                    pt->data.idCard,                         // 身份证号
-                    pt->data.phone,                          // 电话号码
-                    pt->data.isActive ? "住院" : "非住院");  // 住院状态（0=非住院，1=住院）
+                if (pt == NULL)
+                {
+                    printf("[ERROR] 未找到病人信息");
+                }
+                else {
+                    printf("[OK] 病人信息如下");
+                    printf("\n");
+                    printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
+                        "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
+                    printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
+                        pt->data.cardNo,                         // 门诊卡号
+                        pt->data.name,                           // 姓名
+                        pt->data.age,                            // 年龄
+                        pt->data.gender,                         // 性别
+                        pt->data.idCard,                         // 身份证号
+                        pt->data.phone,                          // 电话号码
+                        pt->data.isActive ? "住院" : "非住院");  // 住院状态（0=非住院，1=住院）
+                }
                 break;
             default:
                 printf("[ERROR] 无效选择！\n");
@@ -205,6 +220,8 @@ void showPatientManagement(void) {
         default:
             printf("[ERROR] 无效选择！\n");
         }
+        system("pause");
+        system("cls");
     }
 }
 //--------------------
@@ -236,7 +253,7 @@ void showDoctorManagement(void) {
             printf("\n每日最大接诊数: "); scanf("%d", &maxPatients);
             addDoctor(&g_doctorHead, &g_doctorTail,
                 name, dept, schedule, maxPatients);
-            rebuildDoctorFile(g_doctorHead);  // ★ 写回文件
+
             printf("[OK] 医生添加成功！\n");
             break;
            
@@ -245,8 +262,9 @@ void showDoctorManagement(void) {
             scanf("%19s", empNo);
             d = findDoctorByEmpNo(g_doctorHead, empNo);
             delDoctor(&g_doctorHead, &g_doctorTail, d);
-            rebuildDoctorFile(g_doctorHead);
+          
             break;
+
         case 3://修改医生信息
             DoctorData newData;
             printf("\n请输入医生信息:");
@@ -254,7 +272,7 @@ void showDoctorManagement(void) {
             printf("\n科室: ");      scanf("%49s", newData.dept);
             printf("\n出诊时间: ");  scanf("%99s", newData.schedule);
             printf("\n每日最大接诊数: "); scanf("%d", &newData.maxPatients);
-            modifyDoctor(&g_doctorHead, &empNo, newData);
+            modifyDoctor(g_doctorHead, empNo, newData);
             break;
 
         case 4://查找
@@ -269,31 +287,40 @@ void showDoctorManagement(void) {
             case 1://按工号
                 printf("请输入要查找医生的工号:\n"); scanf("%19s", empNo);
                 Doctor* d = findDoctorsByDept(g_doctorHead, empNo);
-                printf("\n");
-                printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
-                    "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
-                printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
-                    d->data.empNo,                         // 工号
-                    d->data.name,                          // 姓名
-                    d->data.dept,                          // 科室
-                    d->data.schedule,                      // 出诊时间
-                    d->data.maxPatients,                   // 每日最大接诊数
-                    d->data.currentPatients);              // 今日已接诊数
+                if (d==NULL)
+                {
+                    printf("[ERROR] 未找到医生信息");
+                }
+                else {
+                    printf("[OK] 医生信息如下");
+                    printf("\n");
+                    printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
+                        "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
+                    printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+                        d->data.empNo,                         // 工号
+                        d->data.name,                          // 姓名
+                        d->data.dept,                          // 科室
+                        d->data.schedule,                      // 出诊时间
+                        d->data.maxPatients,                   // 每日最大接诊数
+                        d->data.currentPatients);              // 今日已接诊数
+                }
+              
                 break;
             case 2://按姓名
                 printf("请输入要查找医生的姓名:\n"); scanf("%49s", name);
                 Doctor* d = findDoctorsByDept(g_doctorHead, name);
-                printf("\n");
-                printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
-                    "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
-                printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
-                    d->data.empNo,                         // 工号
-                    d->data.name,                          // 姓名
-                    d->data.dept,                          // 科室
-                    d->data.schedule,                      // 出诊时间
-                    d->data.maxPatients,                   // 每日最大接诊数
-                    d->data.currentPatients);              // 今日已接诊数
+                if (d == NULL)
+                {
+                    printf("[ERROR] 未找到医生信息");
+                }
+                else {
+                    printf("[OK] 医生信息如下");
+                    listAllDoctors(d);
+                    freeDoctorChain(d);
+                }
+                
                 break;
+
             case 3://按科室
                 printf("请输入要查找医生的科室:\n"); scanf("%49s", dept);
                 Doctor* d = findDoctorsByDept(g_doctorHead, dept);
@@ -361,7 +388,7 @@ void showMedicineManagement(void) {
             break;
 
         case 2:  // 按名称查询
-            printf("请输入药品名称关键字: "); scanf("%49s", name);
+            printf("请输入药品名称: "); scanf("%49s", name);
             m = findMedicineByName(g_medHead, name);
             if (m) {
                 printf("%-10s %-20s %-20s %-15s %-10s %-10s %-10s\n",
@@ -389,11 +416,11 @@ void showMedicineManagement(void) {
             break;
 
         case 4:  // 购药登记
-            printf("请输入病人卡号: ");     scanf("%19s", patientCardNo);
-            printf("请输入药品编号: ");     scanf("%19s", medNo);
-            printf("请输入购买数量: ");     scanf("%d", &quantity);
-            printf("请输入总费用: ");       scanf("%lf", &totalCost);
-            printf("请输入购药日期(YYYY-MM-DD): "); scanf("%19s", date);
+            printf("\n请输入病人卡号: ");     scanf("%19s", patientCardNo);
+            printf("\n请输入药品编号: ");     scanf("%19s", medNo);
+            printf("\n请输入购买数量: ");     scanf("%d", &quantity);
+            printf("\n请输入总费用: ");       scanf("%lf", &totalCost);
+            printf("\n请输入购药日期(YYYY-MM-DD): "); scanf("%19s", date);
             m = findMedicineByNo(g_medHead, medNo);
             if (m && m->data.stock >= quantity) {
                 addPurchaseRecord(&g_purHead, &g_purTail,
@@ -445,13 +472,13 @@ void showHospitalizationManagement(void) {
 
         switch (choice) {
         case 1:  // 入院登记
-            printf("\n请输入入院信息:\n");
-            printf("病人卡号: "); scanf("%19s", patientCardNo);
-            printf("病人姓名: "); scanf("%49s", patientName);
-            printf("预交金额: "); scanf("%lf", &prepay);
-            addHospitalization(&g_hosHead, &g_hosTail, "",
+            printf("\n请输入入院信息:");
+            printf("\n病人卡号: "); scanf("%19s", patientCardNo);
+            printf("\n病人姓名: "); scanf("%49s", patientName);
+            printf("\n预交金额: "); scanf("%lf", &prepay);
+            addHospitalization(&g_hosHead, &g_hosTail,
                 patientCardNo, patientName, prepay);
-            printf("[OK] 入院登记成功！住院单号与床位已自动分配。\n");
+
             break;
 
         case 2:  // 出院结算
