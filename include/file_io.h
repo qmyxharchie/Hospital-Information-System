@@ -48,14 +48,14 @@ void rebuildRegistrationFile(Registration* head);								// 保存挂号记录
 void rebuildUserFile(User* head);												// 保存用户列表
 
 //释放内存
-void freePatientChain(Patient* head);											// 释放病人列表
-void freeDoctorChain(Doctor* head);												// 释放医生列表
-void freeMedicineChain(Medicine* head);										// 释放药品列表
-void freePurchaseChain(Purchase* head);										// 释放购药记录
-void freeHospitalizationChain(Hospitalization* head);						// 释放住院记录
-void freeBedChain(Bed* head);												// 释放床位列表
-void freeRegistrationChain(Registration* head);									// 释放挂号记录
-void freeUserChain(User* head);													// 释放用户列表
+void freePatientChain(Patient** head);											// 释放病人列表
+void freeDoctorChain(Doctor** head);												// 释放医生列表
+void freeMedicineChain(Medicine** head);										// 释放药品列表
+void freePurchaseChain(Purchase** head);										// 释放购药记录
+void freeHospitalizationChain(Hospitalization** head);						// 释放住院记录
+void freeBedChain(Bed** head);												// 释放床位列表
+void freeRegistrationChain(Registration** head);									// 释放挂号记录
+void freeUserChain(User** head);													// 释放用户列表
 
 
 //数据备份

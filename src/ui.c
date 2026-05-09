@@ -548,7 +548,7 @@ void showHospitalizationManagement(void) {
             h = findCurrentHospitalizations(g_hosHead);
             if (h) {
                 listAllHospitalizations(h);
-                freeHospitalizationResultChain(h);
+                freeHospitalizationChain(h);
             } else {
                 printf("当前无在院病人。\n");
             }
@@ -771,7 +771,7 @@ void showRegistrationManagement(void) {
             strcpy(doctorEmpNo, doc->data.empNo);
             strcpy(doctorName, doc->data.name);
             strcpy(dept, doc->data.dept);
-
+            int year, month, day;
             getCurrentTime(&year, &month, &day);
             printf("请输入预约日期 (YYYY-MM-DD，至少今天 %04d-%02d-%02d): ",
                    year, month, day);
@@ -808,7 +808,7 @@ void showRegistrationManagement(void) {
                     cur->data.status == PENDING) {
                     if (pCount >= arrCap) {
                         arrCap *= 2;
-                        pendingArr = (Registration**)realloc(pendingArr, arrCap * sizeof(Registration*));
+                        pendingArr = (Registration**)malloc(arrCap * sizeof(Registration*));
                     }
                     pendingArr[pCount] = cur;
                     char* mStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
@@ -891,6 +891,7 @@ void showRegistrationManagement(void) {
         case 6: {
             safeReadString("请输入科室: ", dept, 50);
             safeReadString("请输入医生工号(查看全部输0): ", doctorEmpNo, 20);
+            int year, month, day;
             getCurrentTime(&year, &month, &day);
             char today[20];
             sprintf(today, "%04d-%02d-%02d", year, month, day);
