@@ -4,6 +4,12 @@
 #include <stdbool.h>
 #include "file_io.h"
 #include "utils.h"
+#include "patient.h"
+#include "doctor.h"
+#include "registration.h"
+#include "medicine.h"
+#include "hospitalization.h"
+#include "bed.h"
 
 //-----------------
 //	读取文件
@@ -104,7 +110,7 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 	fclose(fp);
 }
 
-void buildMedicineChain(MedicineNode** head, MedicineNode** tail) {
+void buildMedicineChain(Medicine** head, Medicine** tail) {
 	FILE* fp = fopen(MEDICINE_FILE, "r");
 	if (fp == NULL) {
 		fopen(MEDICINE_FILE, "w");
@@ -153,7 +159,7 @@ void buildMedicineChain(MedicineNode** head, MedicineNode** tail) {
 	fclose(fp);
 }
 
-void buildPurchaseChain(PurchaseNode** head, PurchaseNode** tail) {
+void buildPurchaseChain(Purchase** head, Purchase** tail) {
 	FILE* fp = fopen(PURCHASE_FILE, "r");
 	if (fp == NULL) {
 		fopen(PURCHASE_FILE, "w");
@@ -201,7 +207,7 @@ void buildPurchaseChain(PurchaseNode** head, PurchaseNode** tail) {
 	fclose(fp);
 }
 
-void buildHospitalizationChain(HospitalizationNode** head, HospitalizationNode** tail) {
+void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail) {
 	FILE* fp = fopen(HOSPITAL_FILE, "r");
 	if (fp == NULL) {
 		fopen(HOSPITAL_FILE, "w");
@@ -250,7 +256,7 @@ void buildHospitalizationChain(HospitalizationNode** head, HospitalizationNode**
 	fclose(fp);
 }
 
-void buildBedChain(BedNode** head, BedNode** tail) {
+void buildBedChain(Bed** head, Bed** tail) {
 	FILE* fp = fopen(BED_FILE, "r");
 	if (fp == NULL) {
 		fopen(BED_FILE, "w");
@@ -453,7 +459,7 @@ void rebuildDoctorFile(Doctor* head) {
 	fclose(fp);
 }
 
-void rebuildMedicineFile(MedicineNode* head) {
+void rebuildMedicineFile(Medicine* head) {
 	FILE* fp = fopen(MEDICINE_FILE, "w");
 
 	if (fp == NULL)
@@ -482,7 +488,7 @@ void rebuildMedicineFile(MedicineNode* head) {
 	fclose(fp);
 }
 
-void rebuildPurchaseFile(PurchaseNode* head) {
+void rebuildPurchaseFile(Purchase* head) {
 	FILE* fp = fopen(PURCHASE_FILE, "w");
 
 	if (fp == NULL)
@@ -510,7 +516,7 @@ void rebuildPurchaseFile(PurchaseNode* head) {
 	fclose(fp);
 }
 
-void rebuildHospitalizationFile(HospitalizationNode* head) {
+void rebuildHospitalizationFile(Hospitalization* head) {
 	FILE* fp = fopen(HOSPITAL_FILE, "w");
 
 	if (fp == NULL)
@@ -539,7 +545,7 @@ void rebuildHospitalizationFile(HospitalizationNode* head) {
 	fclose(fp);
 }
 
-void rebuildBedFile(BedNode* head) {
+void rebuildBedFile(Bed* head) {
 	FILE* fp = fopen(BED_FILE, "w");
 
 	if (fp == NULL)
@@ -649,7 +655,7 @@ void freeDoctorChain(Doctor** head) {
 	*head = NULL;
 }
 
-void freeMedicineChain(MedicineNode** head) {
+void freeMedicineChain(Medicine** head) {
 	if (!head || !*head) return;
 	Medicine* p = *head;
 
@@ -661,7 +667,7 @@ void freeMedicineChain(MedicineNode** head) {
 	*head = NULL;
 }
 
-void freePurchaseChain(PurchaseNode** head) {
+void freePurchaseChain(Purchase** head) {
 	if (!head || !*head) return;
 	Purchase* p = *head;
 
@@ -673,7 +679,7 @@ void freePurchaseChain(PurchaseNode** head) {
 	*head = NULL;
 }
 
-void freeHospitalizationChain(HospitalizationNode** head) {
+void freeHospitalizationChain(Hospitalization** head) {
 	if (!head || !*head) return;
 	Hospitalization* p = *head;
 
@@ -685,7 +691,7 @@ void freeHospitalizationChain(HospitalizationNode** head) {
 	*head = NULL;
 }
 
-void freeBedChain(BedNode** head) {
+void freeBedChain(Bed** head) {
 	if (!head || !*head) return;
 	Bed* p = *head;
 
@@ -769,7 +775,7 @@ void freeMedicineResultChain(Medicine** head) {
 	*head = NULL;
 }
 
-void freeHospitalizationResultChain(Hospitalization** head）{
+void freeHospitalizationResultChain(Hospitalization** head){
 	if (!head || !*head) return;
 		Medicine* p = *head;
 
@@ -839,7 +845,7 @@ int backupAllData() {
 		BED_FILE,
 		REGISTRATION_FILE,
 		USER_FILE
-	}
+	};
 	int fileCount = 8;
 
 	char destPath[1024];			// 目标路径

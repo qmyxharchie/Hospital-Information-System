@@ -107,10 +107,11 @@ int registerUser(char username[], char password[], int role) {
 
 	if (g_userHead == NULL) {						//尾插法插入链表
 		g_userHead = newUser;
-		g_userTail = g_userTail;					//修正：初始化pre指针
+		g_userTail = newUser;						//修正：初始化尾指针
 	}
 	else {
 		g_userTail->next = newUser;
+		newUser->pre = g_userTail;					//维护双向链表
 		g_userTail = newUser;
 	}
 	rebuildUserFile(g_userHead);					//保存到文件

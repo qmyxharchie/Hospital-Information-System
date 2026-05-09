@@ -13,6 +13,8 @@
 #ifndef _PATIENT_H_
 #define _PATIENT_H_
 
+#include "registration.h"
+
 typedef struct PatientData {
     char cardNo[20];          // 门诊卡号（唯一标识）
     char name[50];            // 姓名
@@ -47,4 +49,4 @@ Patient* findPatientByCardNo(Patient* head, char* cardNo);              //按卡号
 Patient* findPatientsByName(Patient* head, char* name);                 //按姓名模糊/精确查找
 void listAllPatients(Patient* head);                                    //列表显示
 
-#endif                        
+#endif                       
