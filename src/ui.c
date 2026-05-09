@@ -30,8 +30,9 @@ char g_currentUsername[50] = "";
 UserRole g_currentUserRole = PATIENT;
 bool g_isLoggedIn = false;
 
+void initUI(void) {}
+
 /* 安全读取 int，带范围校验和错误清缓冲 */
-void initUI(void){}
 int safeReadInt(const char* prompt, int minVal, int maxVal) {
     int choice;
     char buf[100];
@@ -79,6 +80,39 @@ void safeReadString(const char* prompt, char* buf, int maxLen) {
     getchar();
 }
 
+//------------------------
+// 辅助：按科室分组打印医生人数
+//------------------------
+static void statDoctorByDept(void) {
+    char depts[20][50];
+    int  counts[20] = { 0 };
+    int  deptCount = 0;
+
+    Doctor* d = g_doctorHead;
+    while (d != NULL) {
+        int found = 0;
+        for (int i = 0; i < deptCount; i++) {
+            if (strcmp(depts[i], d->data.dept) == 0) {
+                counts[i]++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found && deptCount < 20) {
+            strcpy(depts[deptCount], d->data.dept);
+            counts[deptCount] = 1;
+            deptCount++;
+        }
+        d = d->next;
+    }
+
+    printf("\n--- 科室分布 ---\n");
+    printf("%-20s %-10s\n", "科室", "医生人数");
+    printf("------------------------------\n");
+    for (int i = 0; i < deptCount; i++) {
+        printf("%-20s %-10d\n", depts[i], counts[i]);
+    }
+}
 
 //--------------------
 // 以下为登录界面函数
@@ -953,6 +987,492 @@ void showRegistrationManagement(void) {
 
         default:
             printf("[ERROR] 无效选择\n");
+        }
+    }
+}
+
+/* ================================================================
+ * 7. 统计报表菜单 — showStatisticsMenu()
+ * ================================================================ */
+
+void showStatisticsMenu(void) {
+    int choice;
+    char buf[20];
+
+    while (1) {
+        printf("\n========== 统计报表 ==========\n");
+        printf("1. 病人统计\n");
+        printf("2. 医生统计\n");
+        printf("3. 药品统计\n");
+        printf("4. 住院与床位统计\n");
+        printf("5. 挂号统计\n");
+        printf("6. 财务统计\n");
+        printf("0. 返回上级菜单\n");
+
+        choice = safeReadInt("请选择: ", 0, 6);
+
+        switch (choice) {
+
+            /* ──────────── 1. 病人统计 ──────────── */
+        case 1: {
+            int total = 0, hospitalized = 0;
+            int male = 0, female = 0;
+            int age0_18 = 0, age19_35 = 0, age36_60 = 0, age60plus = 0;
+
+            Patient* p = g_patientHead;
+            while (p != NULL) {
+                total++;
+                if (p->data.isActive) hospitalized++;
+
+                if (strcmp(p->data.gender, "男") == 0) male++;
+                else if (strcmp(p->data.gender, "女") == 0) female++;
+
+                int age = p->data.age;
+                if (age <= 18) age0_18++;
+                else if (age <= 35) age19_35++;
+                else if (age <= 60) age36_60++;
+                else age60plus++;
+
+                p = p->next;
+            }
+
+            printf("\n========== 病人统计报表 ==========\n");
+            printf("总病人数:          %d\n", total);
+            printf("当前住院人数:      %d\n", hospitalized);
+            printf("\n--- 性别分布 ---\n");
+            printf("  男: %d (%.1f%%)\n", male, total > 0 ? male * 100.0 / total : 0);
+            printf("  女: %d (%.1f%%)\n", female, total > 0 ? female * 100.0 / total : 0);
+            printf("\n--- 年龄分布 ---\n");
+            printf("  0-18岁:   %d\n", age0_18);
+            printf("  19-35岁:  %d\n", age19_35);
+            printf("  36-60岁:  %d\n", age36_60);
+            printf("  60岁以上: %d\n", age60plus);
+            printf("==================================\n");
+            break;
+        }
+
+              /* ──────────── 2. 医生统计 ──────────── */
+        case 2: {
+            int total = 0, fullLoad = 0;
+            int totalMax = 0, totalCurrent = 0;
+
+            Doctor* d = g_doctorHead;
+            while (d != NULL) {
+                total++;
+                totalMax += d->data.maxPatients;
+                totalCurrent += d->data.currentPatients;
+                if (d->data.currentPatients >= d->data.maxPatients) fullLoad++;
+                d = d->next;
+            }
+
+            printf("\n========== 医生统计报表 ==========\n");
+            printf("总医生数:              %d\n", total);
+            printf("今日满负荷接诊医生:    %d\n", fullLoad);
+            printf("今日总接诊上限:        %d\n", totalMax);
+            printf("今日已接诊人数:        %d\n", totalCurrent);
+            printf("整体接诊率:            %.1f%%\n",
+                totalMax > 0 ? totalCurrent * 100.0 / totalMax : 0);
+
+            statDoctorByDept();
+            printf("==================================\n");
+            break;
+        }
+
+              /* ──────────── 3. 药品统计 ──────────── */
+        case 3: {
+            int total = 0, lowStock = 0;
+            double totalValue = 0.0;
+            Medicine* maxPriceMed = NULL;
+
+            Medicine* m = g_medHead;
+            while (m != NULL) {
+                total++;
+                totalValue += m->data.price * m->data.stock;
+                if (m->data.stock <= m->data.minStock) lowStock++;
+                if (maxPriceMed == NULL || m->data.price > maxPriceMed->data.price) {
+                    maxPriceMed = m;
+                }
+                m = m->next;
+            }
+
+            printf("\n========== 药品统计报表 ==========\n");
+            printf("药品总品种数:    %d\n", total);
+            printf("库存预警品种数:  %d\n", lowStock);
+            printf("库存总价值:      %.2f 元\n", totalValue);
+            if (maxPriceMed) {
+                printf("最高单价药品:    %s (%s) %.2f 元\n",
+                    maxPriceMed->data.medNo, maxPriceMed->data.genericName,
+                    maxPriceMed->data.price);
+            }
+            printf("==================================\n");
+            break;
+        }
+
+              /* ──────────── 4. 住院与床位统计 ──────────── */
+        case 4: {
+            int totalBeds = 0, occupied = 0, available = 0, maintenance = 0;
+            int totalInHospital = 0, totalDischarged = 0;
+            double totalCost = 0.0, totalPrepay = 0.0;
+
+            Bed* b = g_bedHead;
+            while (b != NULL) {
+                totalBeds++;
+                if (strcmp(b->data.status, "占用") == 0) occupied++;
+                else if (strcmp(b->data.status, "空闲") == 0) available++;
+                else if (strcmp(b->data.status, "维修") == 0) maintenance++;
+                b = b->next;
+            }
+
+            Hospitalization* h = g_hosHead;
+            while (h != NULL) {
+                if (strcmp(h->data.status, "住院") == 0) {
+                    totalInHospital++;
+                    totalPrepay += h->data.prepay;
+                    totalCost += h->data.totalCost;
+                }
+                else {
+                    totalDischarged++;
+                }
+                h = h->next;
+            }
+
+            printf("\n========== 住院与床位统计 ==========\n");
+            printf("--- 床位 ---\n");
+            printf("  总床位:  %d\n", totalBeds);
+            printf("  已占用:  %d\n", occupied);
+            printf("  空闲:    %d\n", available);
+            printf("  维修中:  %d\n", maintenance);
+            printf("  使用率:  %.1f%%\n", totalBeds > 0 ? occupied * 100.0 / totalBeds : 0);
+            printf("\n--- 住院 ---\n");
+            printf("  在院人数:  %d\n", totalInHospital);
+            printf("  历史出院:  %d\n", totalDischarged);
+            printf("  预交金总额: %.2f 元\n", totalPrepay);
+            printf("  费用总额:   %.2f 元\n", totalCost);
+            printf("====================================\n");
+            break;
+        }
+
+              /* ──────────── 5. 挂号统计 ──────────── */
+        case 5: {
+            int year, month, day;
+            getCurrentTime(&year, &month, &day);
+            sprintf(buf, "%04d-%02d-%02d", year, month, day);
+
+            int totalToday = 0, pending = 0, inProgress = 0;
+            int completed = 0, cancelled = 0;
+            int onsite = 0, online = 0;
+
+            Registration* r = g_regHead;
+            while (r != NULL) {
+                if (strcmp(r->data.appointmentDate, buf) == 0) {
+                    totalToday++;
+                    if (r->data.createdBy == NURSE) onsite++;
+                    else online++;
+                }
+                switch (r->data.status) {
+                case 0: pending++; break;
+                case 1: inProgress++; break;
+                case 2: completed++; break;
+                case 3: cancelled++; break;
+                }
+                r = r->next;
+            }
+
+            printf("\n========== 挂号统计报表 ==========\n");
+            printf("统计日期: %s\n", buf);
+            printf("\n--- 今日挂号 ---\n");
+            printf("  今日总挂号数: %d\n", totalToday);
+            printf("  现场挂号:     %d\n", onsite);
+            printf("  线上预约:     %d\n", online);
+            printf("\n--- 全部挂号状态分布 ---\n");
+            printf("  待就诊:  %d\n", pending);
+            printf("  就诊中:  %d\n", inProgress);
+            printf("  已完成:  %d\n", completed);
+            printf("  已取消:  %d\n", cancelled);
+            printf("==================================\n");
+            break;
+        }
+
+              /* ──────────── 6. 财务统计 ──────────── */
+        case 6: {
+            double totalMedicineCost = 0.0;
+            double totalHospitalCost = 0.0;
+            double totalPrepay = 0.0;
+
+            Purchase* pur = g_purHead;
+            while (pur != NULL) {
+                totalMedicineCost += pur->data.totalCost;
+                pur = pur->next;
+            }
+
+            Hospitalization* h = g_hosHead;
+            while (h != NULL) {
+                totalHospitalCost += h->data.totalCost;
+                totalPrepay += h->data.prepay;
+                h = h->next;
+            }
+
+            printf("\n========== 财务统计报表 ==========\n");
+            printf("药品销售总额:       %.2f 元\n", totalMedicineCost);
+            printf("住院诊疗费用总额:   %.2f 元\n", totalHospitalCost);
+            printf("预交金收入总额:     %.2f 元\n", totalPrepay);
+            printf("总收入（估算）:     %.2f 元\n",
+                totalMedicineCost + totalHospitalCost);
+            printf("==================================\n");
+            break;
+        }
+
+        case 0:
+            return;
+
+        default:
+            printf("[ERROR] 无效选择！\n");
+        }
+    }
+}
+
+
+/* ================================================================
+ * 8. 查询功能菜单 — showQueryMenu()
+ * ================================================================ */
+
+void showQueryMenu(void) {
+    int choice;
+    char cardNo[20], name[50], date[20], dept[50];
+    int found;
+
+    while (1) {
+        printf("\n========== 综合查询 ==========\n");
+        printf("1. 按病人卡号查全部关联记录\n");
+        printf("2. 按医生查其挂号记录\n");
+        printf("3. 按日期查挂号记录\n");
+        printf("4. 按日期查住院记录\n");
+        printf("5. 按科室查医生和病人\n");
+        printf("6. 药品库存明细查询\n");
+        printf("0. 返回上级菜单\n");
+
+        choice = safeReadInt("请选择: ", 0, 6);
+
+        switch (choice) {
+
+            /* ──────────── 1. 按病人卡号查全部关联 ──────────── */
+        case 1: {
+            safeReadString("请输入病人卡号: ", cardNo, 20);
+
+            Patient* p = findPatientByCardNo(g_patientHead, cardNo);
+            if (p == NULL) {
+                printf("[ERROR] 未找到该病人\n");
+                break;
+            }
+
+            printf("\n========== 病人综合信息 ==========\n");
+            printf("【基本信息】\n");
+            printf("  卡号: %s  姓名: %s  性别: %s  年龄: %d\n",
+                p->data.cardNo, p->data.name,
+                p->data.gender, p->data.age);
+            printf("  电话: %s  身份证: %s\n",
+                p->data.phone, p->data.idCard);
+            printf("  住院状态: %s\n", p->data.isActive ? "住院中" : "未住院");
+
+            printf("\n【挂号记录】\n");
+            found = 0;
+            Registration* r = g_regHead;
+            while (r != NULL) {
+                if (strcmp(r->data.patientCardNo, cardNo) == 0) {
+                    found++;
+                    char* st = (r->data.status == 0) ? "待就诊" :
+                        (r->data.status == 1) ? "就诊中" :
+                        (r->data.status == 2) ? "已完成" : "已取消";
+                    printf("  %s %s %s %s %s\n",
+                        r->data.regNo, r->data.doctorName,
+                        r->data.dept, r->data.appointmentDate, st);
+                }
+                r = r->next;
+            }
+            if (!found) printf("  无挂号记录\n");
+
+            printf("\n【住院记录】\n");
+            found = 0;
+            Hospitalization* h = g_hosHead;
+            while (h != NULL) {
+                if (strcmp(h->data.patientCardNo, cardNo) == 0) {
+                    found++;
+                    printf("  %s 床位:%s 预交:%.2f 费用:%.2f 状态:%s\n",
+                        h->data.recordNo, h->data.bedNo,
+                        h->data.prepay, h->data.totalCost, h->data.status);
+                }
+                h = h->next;
+            }
+            if (!found) printf("  无住院记录\n");
+
+            printf("\n【购药记录】\n");
+            found = 0;
+            Purchase* pur = g_purHead;
+            while (pur != NULL) {
+                if (strcmp(pur->data.patientCardNo, cardNo) == 0) {
+                    found++;
+                    printf(" 药品:%s 数量:%d 费用:%.2f %s\n",
+                   pur->data.medNo,
+                        pur->data.quantity, pur->data.totalCost,
+                        pur->data.date);
+                }
+                pur = pur->next;
+            }
+            if (!found) printf("  无购药记录\n");
+
+            printf("==================================\n");
+            break;
+        }
+
+              /* ──────────── 2. 按医生查挂号记录 ──────────── */
+        case 2: {
+            safeReadString("请输入医生工号: ", cardNo, 20);
+
+            Doctor* d = findDoctorByEmpNo(g_doctorHead, cardNo);
+            if (d == NULL) {
+                printf("[ERROR] 未找到该医生\n");
+                break;
+            }
+
+            printf("\n【%s（%s）的挂号记录】\n", d->data.name, d->data.dept);
+            printf("%-16s %-10s %-12s %-10s\n",
+                "挂号编号", "患者", "预约时间", "状态");
+            printf("-----------------------------------------------\n");
+
+            found = 0;
+            Registration* r = g_regHead;
+            while (r != NULL) {
+                if (strcmp(r->data.doctorEmpNo, cardNo) == 0) {
+                    found++;
+                    char* st = (r->data.status == 0) ? "待就诊" :
+                        (r->data.status == 1) ? "就诊中" :
+                        (r->data.status == 2) ? "已完成" : "已取消";
+                    printf("%-16s %-10s %-12s %-10s\n",
+                        r->data.regNo, r->data.patientName,
+                        r->data.appointmentTime, st);
+                }
+                r = r->next;
+            }
+            if (!found) printf("  暂无挂号记录\n");
+            printf("共 %d 条记录\n", found);
+            break;
+        }
+
+              /* ──────────── 3. 按日期查挂号 ──────────── */
+        case 3: {
+            safeReadString("请输入日期 (YYYY-MM-DD): ", date, 20);
+
+            printf("\n【%s 挂号记录】\n", date);
+            printf("%-16s %-10s %-10s %-12s %-10s\n",
+                "挂号编号", "患者", "医生", "预约时间", "状态");
+            printf("-----------------------------------------------------\n");
+
+            found = 0;
+            Registration* r = g_regHead;
+            while (r != NULL) {
+                if (strcmp(r->data.appointmentDate, date) == 0) {
+                    found++;
+                    char* st = (r->data.status == 0) ? "待就诊" :
+                        (r->data.status == 1) ? "就诊中" :
+                        (r->data.status == 2) ? "已完成" : "已取消";
+                    printf("%-16s %-10s %-10s %-12s %-10s\n",
+                        r->data.regNo, r->data.patientName,
+                        r->data.doctorName, r->data.appointmentTime, st);
+                }
+                r = r->next;
+            }
+            if (!found) printf("  该日无挂号记录\n");
+            printf("共 %d 条\n", found);
+            break;
+        }
+
+              /* ──────────── 4. 按日期查住院 ──────────── */
+        case 4: {
+            safeReadString("请输入日期 (YYYY-MM-DD): ", date, 20);
+
+            printf("\n【%s 住院记录】\n", date);
+            printf("%-14s %-10s %-10s %-10s %-10s\n",
+                "住院单号", "患者", "床位", "预交金", "状态");
+            printf("------------------------------------------------\n");
+
+            found = 0;
+            Hospitalization* h = g_hosHead;
+            while (h != NULL) {
+                if (strcmp(h->data.admissionDate, date) == 0) {
+                    found++;
+                    printf("%-14s %-10s %-10s %-10.2f %-10s\n",
+                        h->data.recordNo, h->data.patientName,
+                        h->data.bedNo, h->data.prepay, h->data.status);
+                }
+                h = h->next;
+            }
+            if (!found) printf("  该日无入院记录\n");
+            printf("共 %d 条\n", found);
+            break;
+        }
+
+              /* ──────────── 5. 按科室查医生和病人 ──────────── */
+        case 5: {
+            safeReadString("请输入科室: ", dept, 50);
+
+            printf("\n========== %s 科室信息 ==========\n", dept);
+
+            printf("\n【医生列表】\n");
+            found = 0;
+            Doctor* d = g_doctorHead;
+            while (d != NULL) {
+                if (strcmp(d->data.dept, dept) == 0) {
+                    found++;
+                    printf("  %s %s 接诊:%d/%d\n",
+                        d->data.empNo, d->data.name,
+                        d->data.currentPatients, d->data.maxPatients);
+                }
+                d = d->next;
+            }
+            if (!found) printf("  该科室暂无医生\n");
+
+            printf("\n【今日挂号患者】\n");
+            found = 0;
+            Registration* r = g_regHead;
+            while (r != NULL) {
+                if (strcmp(r->data.dept, dept) == 0 && r->data.status != 3) {
+                    found++;
+                    printf("  %s %s %s %s\n",
+                        r->data.patientCardNo, r->data.patientName,
+                        r->data.appointmentDate, r->data.appointmentTime);
+                }
+                r = r->next;
+            }
+            if (!found) printf("  暂无挂号患者\n");
+            printf("==================================\n");
+            break;
+        }
+
+              /* ──────────── 6. 药品库存明细 ──────────── */
+        case 6: {
+            printf("\n========== 药品库存明细 ==========\n");
+            printf("%-10s %-20s %-10s %-10s %-10s %-10s\n",
+                "编号", "通用名", "单价", "库存", "最低库存", "状态");
+            printf("----------------------------------------------------------------\n");
+
+            Medicine* m = g_medHead;
+            while (m != NULL) {
+                char* status = (m->data.stock <= m->data.minStock) ? "【预警】" : "正常";
+                printf("%-10s %-20s %-10.2f %-10d %-10d %-10s\n",
+                    m->data.medNo, m->data.genericName,
+                    m->data.price, m->data.stock,
+                    m->data.minStock, status);
+                m = m->next;
+            }
+            printf("==================================\n");
+            break;
+        }
+
+        case 0:
+            return;
+
+        default:
+            printf("[ERROR] 无效选择！\n");
         }
     }
 }
