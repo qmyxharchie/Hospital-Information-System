@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "patient.h"        // 患者模块头文件
 #include "doctor.h"         // 医生模块头文件
 #include "registration.h"	// 挂号模块头文件
@@ -8,6 +9,7 @@
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
 #include "ui.h" 
+
 
 
 
@@ -575,5 +577,5 @@ void listAllRegistrations(Registration* head) {
 
     printf("[OK] 共 %d 条记录\n", count);
 }
-}
+
 //-------------------------
