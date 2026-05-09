@@ -27,8 +27,11 @@ User* g_userTail = NULL;
 
 // 登录相关全局
 char g_currentUsername[50] = "";
+UserRole g_currentUserRole = PATIENT;
+bool g_isLoggedIn = false;
 
 /* 安全读取 int，带范围校验和错误清缓冲 */
+void initUI(void){}
 int safeReadInt(const char* prompt, int minVal, int maxVal) {
     int choice;
     char buf[100];
@@ -542,7 +545,7 @@ void showHospitalizationManagement(void) {
             }
             break;
         case 5:
-            h = findAllCurrentHospitalizations(g_hosHead);
+            h = findCurrentHospitalizations(g_hosHead);
             if (h) {
                 listAllHospitalizations(h);
                 freeHospitalizationResultChain(h);
@@ -986,7 +989,6 @@ int main(void) {
             case 8: showQueryMenu();                 break;
             case 0:
                 printf("正在退出到登录界面...\n");
-                closeUI();
                 /* 跳出内层循环，回到登录 */
                 goto logout;
             default:
@@ -995,6 +997,6 @@ int main(void) {
         }
     logout:;
     }
-    closeUI();
+
     return 0;
 }
