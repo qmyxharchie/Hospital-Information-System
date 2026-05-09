@@ -199,14 +199,14 @@ int completeRegistration(Registration* r) {
     }
 
     // 检查挂号状态是否为"待就诊"或"就诊中"
-    if (strcmp(r->data.status, PENDING) != 0 &&
-        strcmp(r->data.status, "就诊中") != 0) {
+    if (r->data.status != PENDING &&
+        r->data.status != IN_PROGRESS) {
         printf("挂号信息状态异常，无法完成就诊\n");
         return 0;
     }
 
     // 修改状态为"已完成"
-    strcpy(r->data.status, "已完成");
+    r->data.status = COMPLETED;
 
     printf("患者%s就诊完成\n", r->data.patientName);
 
