@@ -1,35 +1,36 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h> 
 #include <stdbool.h>
 #include "utils.h"
+#include "ui.h"
 
 //-----------------
-//»ñÈ¡µ±Ç°ÈÕÆÚ
-// ¹¦ÄÜ£º»ñÈ¡µ±Ç°ÏµÍ³µÄÄê¡¢ÔÂ¡¢ÈÕ
-// ²ÎÊı£ºyear - Äê·İÖ¸Õë£¬month - ÔÂ·İÖ¸Õë£¬day - ÈÕÆÚÖ¸Õë
+//è·å–å½“å‰æ—¥æœŸ
+// åŠŸèƒ½ï¼šè·å–å½“å‰ç³»ç»Ÿçš„å¹´ã€æœˆã€æ—¥
+// å‚æ•°ï¼šyear - å¹´ä»½æŒ‡é’ˆï¼Œmonth - æœˆä»½æŒ‡é’ˆï¼Œday - æ—¥æœŸæŒ‡é’ˆ
 void getCurrentTime(int* year, int* month, int* day) {
 	if (year == NULL || month == NULL || day == NULL) {
 		return;
 	}
 	 
-	time_t now = time(NULL);		//»ñÈ¡Ê±¼ä´Á
-	struct tm* t = localtime(&now);	//×ª»»Îª±¾µØÊ±¼ä
+	time_t now = time(NULL);		//è·å–æ—¶é—´æˆ³
+	struct tm* t = localtime(&now);	//è½¬æ¢ä¸ºæœ¬åœ°æ—¶é—´
 
 	if (t == NULL) return;
 
-	*year = t->tm_year + 1900;		//Äê·İ´Ó1900¿ªÊ¼Ëã
-	*month = t->tm_mon + 1;			//ÔÂ·İ´Ó0¿ªÊ¼Ëã
-	*day = t->tm_mday;				//Ê¹ÓÃtm_mday£¨Ò»ÔÂÖĞµÄµÚ¼¸Ìì£©¶ø²»ÊÇtm_wday£¨ĞÇÆÚ¼¸£©
+	*year = t->tm_year + 1900;		//å¹´ä»½ä»1900å¼€å§‹ç®—
+	*month = t->tm_mon + 1;			//æœˆä»½ä»0å¼€å§‹ç®—
+	*day = t->tm_mday;				//ä½¿ç”¨tm_mdayï¼ˆä¸€æœˆä¸­çš„ç¬¬å‡ å¤©ï¼‰è€Œä¸æ˜¯tm_wdayï¼ˆæ˜ŸæœŸå‡ ï¼‰
 }
 //-----------------
 
 //-----------------
-//Éú³ÉÎ¨Ò»ID
-// ¹¦ÄÜ£ºÉú³É´øÓĞÖ¸¶¨Ç°×ºµÄÎ¨Ò»±êÊ¶·û
-// ²ÎÊı£ºprefix - IDÇ°×º£¬id - ´æ·ÅÉú³ÉIDµÄ»º³åÇø
+//ç”Ÿæˆå”¯ä¸€ID
+// åŠŸèƒ½ï¼šç”Ÿæˆå¸¦æœ‰æŒ‡å®šå‰ç¼€çš„å”¯ä¸€æ ‡è¯†ç¬¦
+// å‚æ•°ï¼šprefix - IDå‰ç¼€ï¼Œid - å­˜æ”¾ç”ŸæˆIDçš„ç¼“å†²åŒº
 void generateUniqueId(const char* prefix, char* id) {
 	if (!prefix || !id) return;
 
@@ -37,26 +38,26 @@ void generateUniqueId(const char* prefix, char* id) {
 	struct tm* t = localtime(&now);
 	if (!t) return;
 
-	static int counter = 0;			//±ÜÃâÍ¬Ò»Ê±¼äÖ´ĞĞÊ±²úÉúÏàÍ¬ID
-	counter=(counter+1)%100;		//·ÀÖ¹¼ÆÊıÆ÷ÎŞÏßÔö³¤
+	static int counter = 0;			//é¿å…åŒä¸€æ—¶é—´æ‰§è¡Œæ—¶äº§ç”Ÿç›¸åŒID
+	counter=(counter+1)%100;		//é˜²æ­¢è®¡æ•°å™¨æ— çº¿å¢é•¿
 
 	int year = t->tm_year+1900;
 	int month = t->tm_mon + 1;
-	int day = t->tm_mday;			//Ò»ÔÂÖĞµÄµÚ¼¸Ìì£¬·¶Î§´Ó1µ½31
+	int day = t->tm_mday;			//ä¸€æœˆä¸­çš„ç¬¬å‡ å¤©ï¼ŒèŒƒå›´ä»1åˆ°31
 	int hour = t->tm_hour;
 	int min = t->tm_min;
 	int sec = t->tm_sec;
 
 		sprintf(id, "%s%04d%02d%02d%02d%02d%02d%02d",
-			prefix, year, month, day, hour, min, sec, counter);		//·ÀÖ¹»º³åÇøÒç³ö
+			prefix, year, month, day, hour, min, sec, counter);		//é˜²æ­¢ç¼“å†²åŒºæº¢å‡º
 }
 //-----------------
 
 //-----------------
-//±È½ÏÁ½¸öÈÕÆÚ£¨Öğ¼¶±È½Ï£¬ÏàÍ¬·µ»Ø0£¬1<2·µ»Ø¸ºÊı£¬·ñÔò·µ»ØÕıÊı£©
-// ¹¦ÄÜ£º±È½ÏÁ½¸öÈÕÆÚµÄ´óĞ¡
-// ²ÎÊı£ºyear1, month1, day1 - µÚÒ»¸öÈÕÆÚ£¬year2, month2, day2 - µÚ¶ş¸öÈÕÆÚ
-// ·µ»ØÖµ£ºÏàµÈ·µ»Ø0£¬µÚÒ»¸öÈÕÆÚĞ¡ÓÚµÚ¶ş¸ö·µ»Ø¸ºÊı£¬·ñÔò·µ»ØÕıÊı
+//æ¯”è¾ƒä¸¤ä¸ªæ—¥æœŸï¼ˆé€çº§æ¯”è¾ƒï¼Œç›¸åŒè¿”å›0ï¼Œ1<2è¿”å›è´Ÿæ•°ï¼Œå¦åˆ™è¿”å›æ­£æ•°ï¼‰
+// åŠŸèƒ½ï¼šæ¯”è¾ƒä¸¤ä¸ªæ—¥æœŸçš„å¤§å°
+// å‚æ•°ï¼šyear1, month1, day1 - ç¬¬ä¸€ä¸ªæ—¥æœŸï¼Œyear2, month2, day2 - ç¬¬äºŒä¸ªæ—¥æœŸ
+// è¿”å›å€¼ï¼šç›¸ç­‰è¿”å›0ï¼Œç¬¬ä¸€ä¸ªæ—¥æœŸå°äºç¬¬äºŒä¸ªè¿”å›è´Ÿæ•°ï¼Œå¦åˆ™è¿”å›æ­£æ•°
 int compareDate(int year1, int month1, int day1,
 	int year2, int month2, int day2) {
 	if (month1 < 1 || month2 < 1 || month1 >12 || month2 >12) {
@@ -76,50 +77,50 @@ int compareDate(int year1, int month1, int day1,
 //-----------------
 
 //-----------------
-//°²È«×Ö·û´®¸´ÖÆ
-// ¹¦ÄÜ£º°²È«µØ½«Ô´×Ö·û´®¸´ÖÆµ½Ä¿±ê»º³åÇø
-// ²ÎÊı£ºdest - Ä¿±ê»º³åÇø£¬src - Ô´×Ö·û´®£¬maxLen - ×î´ó³¤¶È
+//å®‰å…¨å­—ç¬¦ä¸²å¤åˆ¶
+// åŠŸèƒ½ï¼šå®‰å…¨åœ°å°†æºå­—ç¬¦ä¸²å¤åˆ¶åˆ°ç›®æ ‡ç¼“å†²åŒº
+// å‚æ•°ï¼šdest - ç›®æ ‡ç¼“å†²åŒºï¼Œsrc - æºå­—ç¬¦ä¸²ï¼ŒmaxLen - æœ€å¤§é•¿åº¦
 void safeStringCopy(char* dest, const char* src, int maxLen){
 	if (dest == NULL || maxLen <= 0) return;
 	if (src == NULL) {
 		dest[0] = '\0';
 		return;
 	}
-	strncpy(dest, src, maxLen - 1);		//×î¶à¸´ÖÆmaxLen-1¸ö×Ö·û
-	dest[maxLen - 1] = '\0';			//È·±£Ç¿ÖÆ¼Ó½áÊø·û
+	strncpy(dest, src, maxLen - 1);		//æœ€å¤šå¤åˆ¶maxLen-1ä¸ªå­—ç¬¦
+	dest[maxLen - 1] = '\0';			//ç¡®ä¿å¼ºåˆ¶åŠ ç»“æŸç¬¦
 }
 //-----------------
 
 //-----------------
-//È¥³ıÁ½¶Ë¿Õ°××Ö·û
-// ¹¦ÄÜ£ºÈ¥³ı×Ö·û´®Ê×Î²µÄ¿Õ°××Ö·û
-// ²ÎÊı£ºstr - ´ı´¦ÀíµÄ×Ö·û´®
+//å»é™¤ä¸¤ç«¯ç©ºç™½å­—ç¬¦
+// åŠŸèƒ½ï¼šå»é™¤å­—ç¬¦ä¸²é¦–å°¾çš„ç©ºç™½å­—ç¬¦
+// å‚æ•°ï¼šstr - å¾…å¤„ç†çš„å­—ç¬¦ä¸²
 void trim(char* str) {
 	if (str == NULL) return;
 
 	char* start = str;
 	char* end;
 
-	while (*start && isspace((unsigned char) * start)) {		//Ìø¹ıÇ°µ¼¿Õ°×
+	while (*start && isspace((unsigned char) * start)) {		//è·³è¿‡å‰å¯¼ç©ºç™½
 		start++;
 	}
-	if (*start == '\0') {			//Èç¹ûÈ«ÊÇ¿Õ°×
+	if (*start == '\0') {			//å¦‚æœå…¨æ˜¯ç©ºç™½
 		str[0] = '\0';
 		return;
 	}
 
 	end = start + strlen(start) - 1;
 
-	while (end > start && isspace((unsigned char)*end)) {		//´ÓºóÍùÇ°Ìø¹ı¿Õ°×
+	while (end > start && isspace((unsigned char)*end)) {		//ä»åå¾€å‰è·³è¿‡ç©ºç™½
 		end--;
 	}
 	*(end + 1) = '\0';
-	memmove(str, start,end - start + 2);		//Ä¿±êµØÖ·¡¢Ô´µØÖ·¡¢¿½±´×Ö½ÚÊı
+	memmove(str, start,end - start + 2);		//ç›®æ ‡åœ°å€ã€æºåœ°å€ã€æ‹·è´å­—èŠ‚æ•°
 }
 //-----------------
 
 //-----------------
-// ±È½ÏÁ½¸ö YYYY-MM-DD ¸ñÊ½µÄÈÕÆÚ×Ö·û´®
+// æ¯”è¾ƒä¸¤ä¸ª YYYY-MM-DD æ ¼å¼çš„æ—¥æœŸå­—ç¬¦ä¸²
 int compareDateStr(char* date1, char* date2) {
 	int y1, m1, d1, y2, m2, d2;
 	sscanf(date1, "%d-%d-%d", &y1, &m1, &d1);
@@ -129,34 +130,34 @@ int compareDateStr(char* date1, char* date2) {
 //-----------------
 
 //-----------------
-//	×Ö·û´®×ªÊıÖµ
-// ¹¦ÄÜ£º½«×Ö·û´®×ª»»ÎªÕûÊı»ò¸¡µãÊı
-// ²ÎÊı£ºstr - ´ı×ª»»µÄ×Ö·û´®
-// ·µ»ØÖµ£º×ª»»ºóµÄÊıÖµ
-int stringToInt(const char* str) {			//×Ö·û´®×ªÎªÕûÊı
+//	å­—ç¬¦ä¸²è½¬æ•°å€¼
+// åŠŸèƒ½ï¼šå°†å­—ç¬¦ä¸²è½¬æ¢ä¸ºæ•´æ•°æˆ–æµ®ç‚¹æ•°
+// å‚æ•°ï¼šstr - å¾…è½¬æ¢çš„å­—ç¬¦ä¸²
+// è¿”å›å€¼ï¼šè½¬æ¢åçš„æ•°å€¼
+int stringToInt(const char* str) {			//å­—ç¬¦ä¸²è½¬ä¸ºæ•´æ•°
 	if (str == NULL) return 0;
 	return atoi(str);
 }
-double stringToDouble(const char* str) {	// ×Ö·û´®×ª¸¡µãÊı
+double stringToDouble(const char* str) {	// å­—ç¬¦ä¸²è½¬æµ®ç‚¹æ•°
 	if (str == NULL) return 0;
 	return atof(str);
 }
 //-----------------
 
 //-----------------
-//	ÊÖ»úºÅÑéÖ¤
-// ¹¦ÄÜ£ºÑéÖ¤ÊÖ»úºÅÊÇ·ñ·ûºÏÖĞ¹úÊÖ»úºÅ¸ñÊ½
-// ²ÎÊı£ºphone - ´ıÑéÖ¤µÄÊÖ»úºÅ
-// ·µ»ØÖµ£ºtrue-ÓĞĞ§£¬false-ÎŞĞ§
+//	æ‰‹æœºå·éªŒè¯
+// åŠŸèƒ½ï¼šéªŒè¯æ‰‹æœºå·æ˜¯å¦ç¬¦åˆä¸­å›½æ‰‹æœºå·æ ¼å¼
+// å‚æ•°ï¼šphone - å¾…éªŒè¯çš„æ‰‹æœºå·
+// è¿”å›å€¼ï¼štrue-æœ‰æ•ˆï¼Œfalse-æ— æ•ˆ
 bool isValidPhone(const char* phone) {
-	if (phone == NULL) {							//ÅĞ¿Õ
+	if (phone == NULL) {							//åˆ¤ç©º
 		return false;
 	}
-	if (strlen(phone) != 11) {						//ÖĞ¹úÊÖ»úºÅ±ØĞëÊÇ 11 Î»
+	if (strlen(phone) != 11) {						//ä¸­å›½æ‰‹æœºå·å¿…é¡»æ˜¯ 11 ä½
 		return false;
 	}
 	for (int i = 0; i < 11; i++) {
-		if (!isdigit((unsigned char)phone[i])) {	//Öğ¸ö×Ö·û¼ì²éÊÇ·ñÎªÊı×Ö
+		if (!isdigit((unsigned char)phone[i])) {	//é€ä¸ªå­—ç¬¦æ£€æŸ¥æ˜¯å¦ä¸ºæ•°å­—
 			return false;
 		}
 	}
@@ -164,25 +165,25 @@ bool isValidPhone(const char* phone) {
 //-----------------
 
 //-----------------
-//	Éí·İÖ¤ºÅÑéÖ¤
-// ¹¦ÄÜ£ºÑéÖ¤Éí·İÖ¤ºÅÊÇ·ñ·ûºÏÖĞ¹úÉí·İÖ¤¸ñÊ½
-// ²ÎÊı£ºidCard - ´ıÑéÖ¤µÄÉí·İÖ¤ºÅ
-// ·µ»ØÖµ£ºtrue-ÓĞĞ§£¬false-ÎŞĞ§
+//	èº«ä»½è¯å·éªŒè¯
+// åŠŸèƒ½ï¼šéªŒè¯èº«ä»½è¯å·æ˜¯å¦ç¬¦åˆä¸­å›½èº«ä»½è¯æ ¼å¼
+// å‚æ•°ï¼šidCard - å¾…éªŒè¯çš„èº«ä»½è¯å·
+// è¿”å›å€¼ï¼štrue-æœ‰æ•ˆï¼Œfalse-æ— æ•ˆ
 bool isValidIdCard(const char* idCard) {
-	if (idCard == NULL) {							//ÅĞ¿Õ
+	if (idCard == NULL) {							//åˆ¤ç©º
 		return false;
 	}
-	if (strlen(idCard) != 18) {						//ÖĞ¹úÉí·İÖ¤ºÅ±ØĞëÊÇ 18Î»
+	if (strlen(idCard) != 18) {						//ä¸­å›½èº«ä»½è¯å·å¿…é¡»æ˜¯ 18ä½
 		return false;
 	}
 	for (int i = 0; i < 17; i++) {
-		if (!isdigit((unsigned char)idCard[i])) {	//Ç°17Î»±ØĞëÊÇÊı×Ö
+		if (!isdigit((unsigned char)idCard[i])) {	//å‰17ä½å¿…é¡»æ˜¯æ•°å­—
 			return false;
 		}
 	}
 
 	char last = idCard[17];
-	if (!(isdigit((unsigned char)last) && last != 'X' && last != 'x')) {	//µÚ18Î»
+	if (!(isdigit((unsigned char)last) && last != 'X' && last != 'x')) {	//ç¬¬18ä½
 		return false;
 	}
 	return true;
@@ -190,10 +191,10 @@ bool isValidIdCard(const char* idCard) {
 //-----------------
 
 //-----------------
-//  ÈÕÆÚÓĞĞ§ĞÔÑéÖ¤
-// ¹¦ÄÜ£ºÑéÖ¤¸ø¶¨µÄÄêÔÂÈÕÊÇ·ñÎªÓĞĞ§ÈÕÆÚ
-// ²ÎÊı£ºyear - Äê·İ£¬month - ÔÂ·İ£¬day - ÈÕÆÚ
-// ·µ»ØÖµ£ºtrue-ÓĞĞ§£¬false-ÎŞĞ§
+//  æ—¥æœŸæœ‰æ•ˆæ€§éªŒè¯
+// åŠŸèƒ½ï¼šéªŒè¯ç»™å®šçš„å¹´æœˆæ—¥æ˜¯å¦ä¸ºæœ‰æ•ˆæ—¥æœŸ
+// å‚æ•°ï¼šyear - å¹´ä»½ï¼Œmonth - æœˆä»½ï¼Œday - æ—¥æœŸ
+// è¿”å›å€¼ï¼štrue-æœ‰æ•ˆï¼Œfalse-æ— æ•ˆ
 bool isValidDate(int year, int month, int day) {
 	if (year < 1900 || year > 2100) {
 		return false;
@@ -209,13 +210,13 @@ bool isValidDate(int year, int month, int day) {
 //-----------------
 
 //-----------------
-//	ÌáÊ¾ÓëÔİÍ£
-// ¹¦ÄÜ£ºÏÔÊ¾ÌáÊ¾ĞÅÏ¢²¢µÈ´ıÓÃ»§°´¼ü
-// ²ÎÊı£ºmessage - ÌáÊ¾ĞÅÏ¢
+//	æç¤ºä¸æš‚åœ
+// åŠŸèƒ½ï¼šæ˜¾ç¤ºæç¤ºä¿¡æ¯å¹¶ç­‰å¾…ç”¨æˆ·æŒ‰é”®
+// å‚æ•°ï¼šmessage - æç¤ºä¿¡æ¯
 void pause(const char* message) {
 	printf("%s\n", message);
 	int c;
-	while ((c = getchar()) != '\n' && c != EOF);			//·ÀÖ¹getchar¶Áµ½'\n'
+	while ((c = getchar()) != '\n' && c != EOF);			//é˜²æ­¢getcharè¯»åˆ°'\n'
 	getchar();
 }
 //-----------------

@@ -1,807 +1,903 @@
-#include"ui.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include "ui.h"
+
+// ============================================================
+// å…¨å±€é“¾è¡¨æŒ‡é’ˆå®šä¹‰ï¼ˆå”¯ä¸€å®šä¹‰ç‚¹ï¼Œæ‰€æœ‰æ¨¡å—å…±äº«ï¼‰
+// ============================================================
+Patient* g_patientHead = NULL;
+Patient* g_patientTail = NULL;
+Doctor* g_doctorHead = NULL;
+Doctor* g_doctorTail = NULL;
+Registration* g_regHead = NULL;
+Registration* g_regTail = NULL;
+Medicine* g_medHead = NULL;
+Medicine* g_medTail = NULL;
+Purchase* g_purHead = NULL;
+Purchase* g_purTail = NULL;
+Hospitalization* g_hosHead = NULL;
+Hospitalization* g_hosTail = NULL;
+Bed* g_bedHead = NULL;
+Bed* g_bedTail = NULL;
+User* g_userHead = NULL;
+User* g_userTail = NULL;
+
+// ç™»å½•ç›¸å…³å…¨å±€
+char g_currentUsername[50] = "";
+
+/* å®‰å…¨è¯»å– intï¼Œå¸¦èŒƒå›´æ ¡éªŒå’Œé”™è¯¯æ¸…ç¼“å†² */
+int safeReadInt(const char* prompt, int minVal, int maxVal) {
+    int choice;
+    char buf[100];
+    while (true) {
+        printf("%s", prompt);
+        if (scanf("%d", &choice) != 1) {
+            fgets(buf, sizeof(buf), stdin);
+            printf("[ERROR] è¾“å…¥æ— æ•ˆï¼Œè¯·è¾“å…¥æ•°å­—ï¼\n");
+            continue;
+        }
+        getchar();
+        if (choice < minVal || choice > maxVal) {
+            printf("[ERROR] è¯·è¾“å…¥ %d~%d ä¹‹é—´çš„æ•°å­—\n", minVal, maxVal);
+            continue;
+        }
+        return choice;
+    }
+}
+
+/* å®‰å…¨è¯»å– double */
+double safeReadDouble(const char* prompt) {
+    double val;
+    char buf[100];
+    while (true) {
+        printf("%s", prompt);
+        if (scanf("%lf", &val) != 1) {
+            fgets(buf, sizeof(buf), stdin);
+            printf("[ERROR] è¾“å…¥æ— æ•ˆï¼Œè¯·è¾“å…¥æ•°å­—ï¼\n");
+            continue;
+        }
+        getchar();
+        return val;
+    }
+}
+
+/* å®‰å…¨è¯»å–å­—ç¬¦ä¸² */
+void safeReadString(const char* prompt, char* buf, int maxLen) {
+    printf("%s", prompt);
+    if (scanf("%99s", buf) == 1) {
+        if ((int)strlen(buf) >= maxLen) {
+            printf("[WARNING] è¾“å…¥è¿‡é•¿ï¼Œå·²æˆªæ–­è‡³ %d å­—ç¬¦\n", maxLen - 1);
+            buf[maxLen - 1] = '\0';
+        }
+    }
+    getchar();
+}
 
 
 //--------------------
-//µÇÂ¼½çÃæ
+// ä»¥ä¸‹ä¸ºç™»å½•ç•Œé¢å‡½æ•°
+//--------------------
 int showLoginPage(void) {
     char username[50] = { 0 };
     char password[50] = { 0 };
 
-    printf("\n¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨[\n");
-    printf("¨U       Ò½Ôº×ÛºÏĞÅÏ¢¹ÜÀíÏµÍ³ - µÇÂ¼½çÃæ           ¨U\n");
-    printf("¨d¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨g\n");
-    printf("¨U  1. ÓÃ»§µÇÂ¼                                     ¨U\n");
-    printf("¨U  2. ¹ÜÀíÔ±µÇÂ¼                                   ¨U\n");
-    printf("¨U  3. ÓÃ»§×¢²á                                     ¨U\n");
-    printf("¨U  0. ÍË³öÏµÍ³                                     ¨U\n");
-    printf("¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨a\n");
-    printf("ÇëÑ¡Ôñ: ");
+    printf("\nâ•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—\n");
+    printf("â•‘       åŒ»é™¢ç»¼åˆä¿¡æ¯ç®¡ç†ç³»ç»Ÿ - ç™»å½•ç•Œé¢           â•‘\n");
+    printf("â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£\n");
+    printf("â•‘  1. ç”¨æˆ·ç™»å½•                                     â•‘\n");
+    printf("â•‘  2. ç®¡ç†å‘˜ç™»å½•                                   â•‘\n");
+    printf("â•‘  3. ç”¨æˆ·æ³¨å†Œ                                     â•‘\n");
+    printf("â•‘  0. é€€å‡ºç³»ç»Ÿ                                     â•‘\n");
+    printf("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•\n");
 
-    int choice;
-    scanf("%d", &choice);
-    getchar();   // Çå³ı scanf ºóµÄ»»ĞĞ·û
+  
+    int choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 3);
 
     switch (choice) {
     case 1:
-        printf("\nÇëÊäÈëÓÃ»§Ãû: "); scanf("%49s", username);
-        printf("ÇëÊäÈëÃÜÂë: ");     scanf("%49s", password);
-        return login(username, password);  // µ÷ÓÃ login Ä£¿é
-
-    case 2:   // ¹ÜÀíÔ±µÇÂ¼£¬Í¬ÉÏ
-        printf("\nÇëÊäÈë¹ÜÀíÔ±ÓÃ»§Ãû: "); scanf("%49s", username);
-        printf("ÇëÊäÈëÃÜÂë: ");            scanf("%49s", password);
+        printf("\nè¯·è¾“å…¥ç”¨æˆ·å: "); scanf("%49s", username);
+        printf("è¯·è¾“å…¥å¯†ç : ");     scanf("%49s", password);
         return login(username, password);
-
-    case 3:   // ×¢²á
-        printf("\nÇëÊäÈëÒª×¢²áµÄÓÃ»§Ãû: "); scanf("%49s", username);
-        printf("ÇëÊäÈëÃÜÂë: ");             scanf("%49s", password);
-        registerUser(username, password, 0);  // role=0 ÆÕÍ¨ÓÃ»§
+    case 2:
+        printf("\nè¯·è¾“å…¥ç®¡ç†å‘˜ç”¨æˆ·å: "); scanf("%49s", username);
+        printf("è¯·è¾“å…¥å¯†ç : ");            scanf("%49s", password);
+        return login(username, password);
+    case 3:
+        printf("\nè¯·è¾“å…¥è¦æ³¨å†Œçš„ç”¨æˆ·å: "); scanf("%49s", username);
+        printf("è¯·è¾“å…¥å¯†ç : ");             scanf("%49s", password);
+        registerUser(username, password, 0);
         return LOGIN_FAILED;
-
     case 0:
         return LOGIN_EXIT;
-
     default:
-        printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡\n");
+        printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼\n");
         return LOGIN_FAILED;
     }
 }
-//--------------------
+
 
 //--------------------
-// ÒÔÏÂÎª¸ù¾İ²»Í¬½ÇÉ«ÏÔÊ¾²Ëµ¥µÄº¯Êı
-void showMainMenuByRole(int userRole, char* username) {
-    printf("\n¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨[\n");
-    printf("¨U Ò½Ôº×ÛºÏĞÅÏ¢¹ÜÀíÏµÍ³ - Ö÷²Ëµ¥           ¨U\n");
-    printf("¨U µ±Ç°ÓÃ»§: %-15s ½ÇÉ«: ", username);
-
-    // ¸ù¾İ½ÇÉ«ÏÔÊ¾½ÇÉ«Ãû³Æ
+//ä¸»èœå•æ˜¾ç¤º
+int showMainMenuByRole(int userRole, char* username) {
+    printf("\nâ•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—\n");
+    printf("â•‘ åŒ»é™¢ç»¼åˆä¿¡æ¯ç®¡ç†ç³»ç»Ÿ - ä¸»èœå•           â•‘\n");
+    printf("â•‘ å½“å‰ç”¨æˆ·: %-15s è§’è‰²: ", username);
     switch (userRole) {
-    case 0: printf("»¼Õß"); break;
-    case 1: printf("»¤Ê¿"); break;
-    case 2: printf("Ò½Éú"); break;
-    case 3: printf("¹ÜÀíÔ±"); break;
-    default: printf("Î´Öª"); break;
+    case 0: printf("æ‚£è€…"); break;
+    case 1: printf("æŠ¤å£«"); break;
+    case 2: printf("åŒ»ç”Ÿ"); break;
+    case 3: printf("ç®¡ç†å‘˜"); break;
+    default: printf("æœªçŸ¥"); break;
     }
-    printf("    ¨U\n");
-    printf("¨d¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨g\n");
+    printf("    â•‘\n");
+    printf("â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£\n");
 
-    // ¸ù¾İ½ÇÉ«ÏÔÊ¾ÏàÓ¦µÄ²Ëµ¥Ñ¡Ïî
-    if (userRole >= 0) { // »¼Õß¼°ÒÔÉÏ
-        printf("¨U 1. ¸öÈËĞÅÏ¢¹ÜÀí                         ¨U\n");
-        printf("¨U 2. ¹ÒºÅÔ¤Ô¼                             ¨U\n");
+    if (userRole >= 0) {
+        printf("â•‘ 1. ä¸ªäººä¿¡æ¯ç®¡ç†                         â•‘\n");
+        printf("â•‘ 2. æŒ‚å·é¢„çº¦                             â•‘\n");
     }
-
-    if (userRole >= 1) { // »¤Ê¿¼°ÒÔÉÏ
-        printf("¨U 3. »¼ÕßĞÅÏ¢¹ÜÀí                         ¨U\n");
-        printf("¨U 4. ´²Î»¹ÜÀí                             ¨U\n");
+    if (userRole >= 1) {
+        printf("â•‘ 3. æ‚£è€…ä¿¡æ¯ç®¡ç†                         â•‘\n");
+        printf("â•‘ 4. åºŠä½ç®¡ç†                             â•‘\n");
     }
-
-    if (userRole >= 2) { // Ò½Éú¼°ÒÔÉÏ
-        printf("¨U 5. Ò½ÉúĞÅÏ¢¹ÜÀí                         ¨U\n");
-        printf("¨U 6. Ò©Æ·¹ÜÀí                             ¨U\n");
-        printf("¨U 7. ×¡Ôº¹ÜÀí                             ¨U\n");
+    if (userRole >= 2) {
+        printf("â•‘ 5. åŒ»ç”Ÿä¿¡æ¯ç®¡ç†                         â•‘\n");
+        printf("â•‘ 6. è¯å“ç®¡ç†                             â•‘\n");
+        printf("â•‘ 7. ä½é™¢ç®¡ç†                             â•‘\n");
     }
-
-    if (userRole >= 3) { // ¹ÜÀíÔ±
-        printf("¨U 8. Í³¼Æ±¨±í                             ¨U\n");
-        printf("¨U 9. ÏµÍ³¹ÜÀí                             ¨U\n");
+    if (userRole >= 3) {
+        printf("â•‘ 8. ç»Ÿè®¡æŠ¥è¡¨                             â•‘\n");
+        printf("â•‘ 9. ç³»ç»Ÿç®¡ç†                             â•‘\n");
     }
+    printf("â•‘ 0. é€€å‡ºç³»ç»Ÿ                             â•‘\n");
+    printf("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•\n");
 
-    printf("¨U 0. ÍË³öÏµÍ³                             ¨U\n");
-    printf("¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨a\n");
-    // ´¦ÀíÓÃ»§Ñ¡Ôñ
-    int module;
-    printf("ÇëÑ¡Ôñ¹¦ÄÜÄ£¿é: ");
-    scanf("%d", &module);
-    getchar();
-
-    // ¸ù¾İ½ÇÉ«ºÍÑ¡ÔñÖ´ĞĞÏàÓ¦¹¦ÄÜ
-    handleModuleChoiceByRole(module, userRole);
+    int maxOption = 0;
+    if (userRole >= 3) maxOption = 9;
+    else if (userRole >= 2) maxOption = 7;
+    else if (userRole >= 1) maxOption = 4;
+    else maxOption = 2;
+    return safeReadInt("è¯·é€‰æ‹©åŠŸèƒ½æ¨¡å—: ", 0, maxOption);
 }
-//--------------------
+
 
 //--------------------
-// ÒÔÏÂÎª²¡ÈË¹ÜÀí²Ëµ¥ÏÔÊ¾º¯Êı
+// ä»¥ä¸‹ä¸ºç—…äººç®¡ç†èœå•æ˜¾ç¤ºå‡½æ•°
+//--------------------
 void showPatientManagement(void) {
     int choice;
     char name[50], gender[10], idCard[20], phone[15], cardNo[20];
     int age;
     Patient* p;
-
     while (1) {
-        printf("\n-------- ²¡ÈËĞÅÏ¢¹ÜÀí --------\n");
-        printf("1. Ìí¼Ó²¡ÈË   4. ²éÕÒ²¡ÈË\n");
-        printf("2. É¾³ı²¡ÈË   5. ÏÔÊ¾ËùÓĞ²¡ÈË\n");
-        printf("3. ĞŞ¸Ä²¡ÈËĞÅÏ¢\n");
-        printf("0. ·µ»ØÉÏ¼¶²Ëµ¥\n");
-        printf("ÇëÑ¡Ôñ: ");
+        printf("\n-------- ç—…äººä¿¡æ¯ç®¡ç† --------\n");
+        printf("1. æ·»åŠ ç—…äºº   4. æŸ¥æ‰¾ç—…äºº\n");
+        printf("2. åˆ é™¤ç—…äºº   5. æ˜¾ç¤ºæ‰€æœ‰ç—…äºº\n");
+        printf("3. ä¿®æ”¹ç—…äººä¿¡æ¯\n");
+        printf("0. è¿”å›ä¸Šçº§èœå•\n");
 
-        scanf("%d", &choice);
-        getchar();
+        choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 5);
 
         switch (choice) {
-        case 1:  // Ìí¼Ó
-            printf("\nÇëÊäÈë²¡ÈËĞÅÏ¢:");
-            printf("\nĞÕÃû: ");     scanf("%49s", name);
-            printf("\nÄêÁä: ");     scanf("%d", &age);
-            printf("\nĞÔ±ğ: ");     scanf("%9s", gender);
-            printf("\nÉí·İÖ¤ºÅ: "); scanf("%19s", idCard);
-            printf("\nÁªÏµµç»°: "); scanf("%14s", phone);
+        case 1:
+            printf("\nè¯·è¾“å…¥ç—…äººä¿¡æ¯:");
+            printf("\nå§“å: ");     scanf("%49s", name);
+
+            age = safeReadInt("\nå¹´é¾„: ", 0, 150);
+            printf("\næ€§åˆ«: ");     scanf("%9s", gender);
+            printf("\nèº«ä»½è¯å·: "); scanf("%19s", idCard);
+            printf("\nè”ç³»ç”µè¯: "); scanf("%14s", phone);
             addPatient(&g_patientHead, &g_patientTail,
-                name, age, gender, idCard, phone);
-           
+                       name, age, gender, idCard, phone);
             break;
-
-        case 2:  // É¾³ı
-            printf("ÇëÊäÈëÒªÉ¾³ıµÄ²¡ÈË¿¨ºÅ: ");
-            scanf("%19s", cardNo);
+        case 2:
+            safeReadString("è¯·è¾“å…¥è¦åˆ é™¤çš„ç—…äººå¡å·: ", cardNo, 20);
             p = findPatientByCardNo(g_patientHead, cardNo);
-            delPatient(&g_patientHead, &g_patientTail, p);
-          
+            if (p) {
+                delPatient(&g_patientHead, &g_patientTail, p->data);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥ç—…äººï¼\n");
+            }
             break;
-
-        case 3://ĞŞ¸Ä
+        case 3: {
             PatientData newData;
-            printf("\nÇëÊäÈëÒªĞŞ¸ÄµÄ²¡ÈË¿¨ºÅ£º"); scanf("%19s", cardNo);
-            printf("\nÇëÊäÈëĞŞ¸ÄºóµÄ²¡ÈËĞÅÏ¢:");
-            printf("\nĞÕÃû: ");     scanf("%49s", newData.name);
-            printf("\nÄêÁä: ");     scanf("%d", newData.age);
-            printf("\nĞÔ±ğ: ");     scanf("%9s", newData.gender);
-            printf("\nÉí·İÖ¤ºÅ: "); scanf("%19s", newData.idCard);
-            printf("\nÁªÏµµç»°: "); scanf("%14s", newData.phone);
-            modifyPatient(g_patientHead, &cardNo,newData);
-            break;//´æÒÉ£¡£¡£¡
-
-        case 4://²éÕÒ²¡ÈË
-            printf("ÇëÑ¡Ôñ²éÕÒ·½Ê½£º\n");
-            printf("1¡¢°´ÕÕ¿¨ºÅ²éÕÒ\n");
-            printf("2¡¢°´ÕÕĞÕÃû²éÕÒ\n");
-            int choice1;
-            scanf("%d", &choice1);
-            switch (choice1)
-            {
+            printf("\nè¯·è¾“å…¥è¦ä¿®æ”¹çš„ç—…äººå¡å·ï¼š"); scanf("%19s", cardNo);
+            printf("\nè¯·è¾“å…¥ä¿®æ”¹åçš„ç—…äººä¿¡æ¯:");
+            printf("\nå§“å: ");     scanf("%49s", newData.name);
+            newData.age = safeReadInt("\nå¹´é¾„: ", 0, 150);
+            printf("\næ€§åˆ«: ");     scanf("%9s", newData.gender);
+            printf("\nèº«ä»½è¯å·: "); scanf("%19s", newData.idCard);
+            printf("\nè”ç³»ç”µè¯: "); scanf("%14s", newData.phone);
+            modifyPatient(g_patientHead, cardNo, newData);
+            break;
+        }
+        case 4: {
+            printf("è¯·é€‰æ‹©æŸ¥æ‰¾æ–¹å¼ï¼š\n");
+            printf("1ã€æŒ‰ç…§å¡å·æŸ¥æ‰¾\n");
+            printf("2ã€æŒ‰ç…§å§“åæŸ¥æ‰¾\n");
+            int choice1 = safeReadInt("è¯·é€‰æ‹©: ", 1, 2);
+            switch (choice1) {
             case 1:
-                printf("ÇëÊäÈë¿¨ºÅ£º"); scanf("%19s", cardNo);
-                Patient* pt = findPatientByCardNo(g_patientHead, cardNo);
-                if (pt == NULL)
-                {
-                    printf("[ERROR] Î´ÕÒµ½²¡ÈËĞÅÏ¢");
-                }
-                else {
-                    printf("[OK] ²¡ÈËĞÅÏ¢ÈçÏÂ");
-                    printf("\n");
+                safeReadString("è¯·è¾“å…¥å¡å·ï¼š", cardNo, 20);
+                p = findPatientByCardNo(g_patientHead, cardNo);
+                if (p == NULL) {
+                    printf("[ERROR] æœªæ‰¾åˆ°ç—…äººä¿¡æ¯\n");
+                } else {
+                    printf("[OK] ç—…äººä¿¡æ¯å¦‚ä¸‹\n");
                     printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-                        "¿¨ºÅ", "ĞÕÃû", "ÄêÁä", "ĞÔ±ğ", "Éí·İÖ¤", "µç»°", "×¡Ôº×´Ì¬");
-                    printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
-                        pt->data.cardNo,                         // ÃÅÕï¿¨ºÅ
-                        pt->data.name,                           // ĞÕÃû
-                        pt->data.age,                            // ÄêÁä
-                        pt->data.gender,                         // ĞÔ±ğ
-                        pt->data.idCard,                         // Éí·İÖ¤ºÅ
-                        pt->data.phone,                          // µç»°ºÅÂë
-                        pt->data.isActive ? "×¡Ôº" : "·Ç×¡Ôº");  // ×¡Ôº×´Ì¬£¨0=·Ç×¡Ôº£¬1=×¡Ôº£©
+                           "å¡å·", "å§“å", "å¹´é¾„", "æ€§åˆ«", "èº«ä»½è¯", "ç”µè¯", "ä½é™¢çŠ¶æ€");
+                    printf("%-20s %-50s %-10d %-10s %-20s %-15s %-10s\n",
+                           p->data.cardNo, p->data.name, p->data.age,
+                           p->data.gender, p->data.idCard, p->data.phone,
+                           p->data.isActive ? "ä½é™¢" : "éä½é™¢");
                 }
                 break;
             case 2:
-                printf("ÇëÊäÈëĞÕÃû£º"); scanf("%49s", name);
-                Patient* pt = findPatientsByName(g_patientHead, name);
-                if (pt == NULL)
-                {
-                    printf("[ERROR] Î´ÕÒµ½²¡ÈËĞÅÏ¢");
-                }
-                else {
-                    printf("[OK] ²¡ÈËĞÅÏ¢ÈçÏÂ");
-                    printf("\n");
+                safeReadString("è¯·è¾“å…¥å§“åï¼š", name, 50);
+                p = findPatientsByName(g_patientHead, name);
+                if (p == NULL) {
+                    printf("[ERROR] æœªæ‰¾åˆ°ç—…äººä¿¡æ¯\n");
+                } else {
+                    printf("[OK] ç—…äººä¿¡æ¯å¦‚ä¸‹\n");
                     printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-                        "¿¨ºÅ", "ĞÕÃû", "ÄêÁä", "ĞÔ±ğ", "Éí·İÖ¤", "µç»°", "×¡Ôº×´Ì¬");
-                    printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
-                        pt->data.cardNo,                         // ÃÅÕï¿¨ºÅ
-                        pt->data.name,                           // ĞÕÃû
-                        pt->data.age,                            // ÄêÁä
-                        pt->data.gender,                         // ĞÔ±ğ
-                        pt->data.idCard,                         // Éí·İÖ¤ºÅ
-                        pt->data.phone,                          // µç»°ºÅÂë
-                        pt->data.isActive ? "×¡Ôº" : "·Ç×¡Ôº");  // ×¡Ôº×´Ì¬£¨0=·Ç×¡Ôº£¬1=×¡Ôº£©
+                           "å¡å·", "å§“å", "å¹´é¾„", "æ€§åˆ«", "èº«ä»½è¯", "ç”µè¯", "ä½é™¢çŠ¶æ€");
+                    printf("%-20s %-50s %-10d %-10s %-20s %-15s %-10s\n",
+                           p->data.cardNo, p->data.name, p->data.age,
+                           p->data.gender, p->data.idCard, p->data.phone,
+                           p->data.isActive ? "ä½é™¢" : "éä½é™¢");
                 }
                 break;
-            default:
-                printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡\n");
             }
             break;
-
+        }
         case 5:
             listAllPatients(g_patientHead);
             break;
-
         case 0:
             return;
-
         default:
-            printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡\n");
+            printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼\n");
         }
         system("pause");
         system("cls");
     }
 }
-//--------------------
+
 
 //--------------------
-// ÒÔÏÂÎªÒ½Éú¹ÜÀí²Ëµ¥ÏÔÊ¾º¯Êı
+// ä»¥ä¸‹ä¸ºåŒ»ç”Ÿç®¡ç†èœå•æ˜¾ç¤ºå‡½æ•°
+//--------------------
 void showDoctorManagement(void) {
     int choice;
     char name[50], dept[50], schedule[100], empNo[20];
     int maxPatients;
     Doctor* d;
-
     while (1) {
-        printf("\n-------- Ò½ÉúĞÅÏ¢¹ÜÀí --------\n");
-        printf("1. Ìí¼ÓÒ½Éú   4. ²éÕÒÒ½Éú\n");
-        printf("2. É¾³ıÒ½Éú   5. ÏÔÊ¾ËùÓĞÒ½Éú\n");
-        printf("3. ĞŞ¸ÄÒ½ÉúĞÅÏ¢\n");
-        printf("0. ·µ»ØÉÏ¼¶²Ëµ¥\n");
-        printf("ÇëÑ¡Ôñ: ");
-        scanf("%d", &choice);
-        getchar();
+        printf("\n-------- åŒ»ç”Ÿä¿¡æ¯ç®¡ç† --------\n");
+        printf("1. æ·»åŠ åŒ»ç”Ÿ   4. æŸ¥æ‰¾åŒ»ç”Ÿ\n");
+        printf("2. åˆ é™¤åŒ»ç”Ÿ   5. æ˜¾ç¤ºæ‰€æœ‰åŒ»ç”Ÿ\n");
+        printf("3. ä¿®æ”¹åŒ»ç”Ÿä¿¡æ¯\n");
+        printf("0. è¿”å›ä¸Šçº§èœå•\n");
+        choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 5);
 
         switch (choice) {
-        case 1:  // Ìí¼Ó
-            printf("\nÇëÊäÈëÒ½ÉúĞÅÏ¢:");
-            printf("\nĞÕÃû: ");      scanf("%49s", name);
-            printf("\n¿ÆÊÒ: ");      scanf("%49s", dept);
-            printf("\n³öÕïÊ±¼ä: ");  scanf("%99s", schedule);
-            printf("\nÃ¿ÈÕ×î´ó½ÓÕïÊı: "); scanf("%d", &maxPatients);
+        case 1:
+            printf("\nè¯·è¾“å…¥åŒ»ç”Ÿä¿¡æ¯:");
+            printf("\nå§“å: ");      scanf("%49s", name);
+            printf("\nç§‘å®¤: ");      scanf("%49s", dept);
+            printf("\nå‡ºè¯Šæ—¶é—´: ");  scanf("%99s", schedule);
+            maxPatients = safeReadInt("\næ¯æ—¥æœ€å¤§æ¥è¯Šæ•°: ", 1, 999);
             addDoctor(&g_doctorHead, &g_doctorTail,
-                name, dept, schedule, maxPatients);
-
-            printf("[OK] Ò½ÉúÌí¼Ó³É¹¦£¡\n");
+                      name, dept, schedule, maxPatients);
+            printf("[OK] åŒ»ç”Ÿæ·»åŠ æˆåŠŸï¼\n");
             break;
-           
-        case 2://É¾³ı
-            printf("ÇëÊäÈëÒªÉ¾³ıµÄÒ½Éú¹¤ºÅ£º\n");
-            scanf("%19s", empNo);
+        case 2:
+            safeReadString("è¯·è¾“å…¥è¦åˆ é™¤çš„åŒ»ç”Ÿå·¥å·ï¼š", empNo, 20);
             d = findDoctorByEmpNo(g_doctorHead, empNo);
-            delDoctor(&g_doctorHead, &g_doctorTail, d);
-          
+            if (d) {
+                delDoctor(&g_doctorHead, &g_doctorTail, d->data);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥åŒ»ç”Ÿï¼\n");
+            }
             break;
 
-        case 3://ĞŞ¸ÄÒ½ÉúĞÅÏ¢
+        case 3: {
             DoctorData newData;
-            printf("\nÇëÊäÈëÒ½ÉúĞÅÏ¢:");
-            printf("\nĞÕÃû: ");      scanf("%49s", newData.name);
-            printf("\n¿ÆÊÒ: ");      scanf("%49s", newData.dept);
-            printf("\n³öÕïÊ±¼ä: ");  scanf("%99s", newData.schedule);
-            printf("\nÃ¿ÈÕ×î´ó½ÓÕïÊı: "); scanf("%d", &newData.maxPatients);
+            safeReadString("\nè¯·è¾“å…¥è¦ä¿®æ”¹çš„åŒ»ç”Ÿå·¥å·: ", empNo, 20);
+            printf("\nè¯·è¾“å…¥åŒ»ç”Ÿä¿¡æ¯:");
+            printf("\nå§“å: ");      scanf("%49s", newData.name);
+            printf("\nç§‘å®¤: ");      scanf("%49s", newData.dept);
+            printf("\nå‡ºè¯Šæ—¶é—´: ");  scanf("%99s", newData.schedule);
+            newData.maxPatients = safeReadInt("\næ¯æ—¥æœ€å¤§æ¥è¯Šæ•°: ", 1, 999);
             modifyDoctor(g_doctorHead, empNo, newData);
             break;
-
-        case 4://²éÕÒ
-            printf("ÇëÑ¡Ôñ²éÕÒ·½Ê½£º\n");
-            printf("1¡¢°´ÕÕ¹¤ºÅ²éÕÒ\n");
-            printf("2¡¢°´ÕÕĞÕÃû²éÕÒ\n");
-            printf("3¡¢°´ÕÕ¿ÆÊÒ²éÕÒ\n");
-            int choice2;
-            scanf("%d", &choice2);
-            switch (choice2)
-            {
-            case 1://°´¹¤ºÅ
-                printf("ÇëÊäÈëÒª²éÕÒÒ½ÉúµÄ¹¤ºÅ:\n"); scanf("%19s", empNo);
-                Doctor* d = findDoctorsByDept(g_doctorHead, empNo);
-                if (d==NULL)
-                {
-                    printf("[ERROR] Î´ÕÒµ½Ò½ÉúĞÅÏ¢");
-                }
-                else {
-                    printf("[OK] Ò½ÉúĞÅÏ¢ÈçÏÂ");
-                    printf("\n");
+        }
+        case 4: {
+            printf("è¯·é€‰æ‹©æŸ¥æ‰¾æ–¹å¼ï¼š\n");
+            printf("1ã€æŒ‰ç…§å·¥å·æŸ¥æ‰¾\n");
+            printf("2ã€æŒ‰ç…§å§“åæŸ¥æ‰¾\n");
+            printf("3ã€æŒ‰ç…§ç§‘å®¤æŸ¥æ‰¾\n");
+            int choice2 = safeReadInt("è¯·é€‰æ‹©: ", 1, 3);
+            switch (choice2) {
+            case 1:
+                safeReadString("è¯·è¾“å…¥è¦æŸ¥æ‰¾åŒ»ç”Ÿçš„å·¥å·: ", empNo, 20);
+                d = findDoctorByEmpNo(g_doctorHead, empNo);
+                if (d == NULL) {
+                    printf("[ERROR] æœªæ‰¾åˆ°åŒ»ç”Ÿä¿¡æ¯\n");
+                } else {
+                    printf("[OK] åŒ»ç”Ÿä¿¡æ¯å¦‚ä¸‹\n");
                     printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
-                        "¹¤ºÅ", "ĞÕÃû", "¿ÆÊÒ", "³öÕïÊ±¼ä", "Ã¿ÈÕ×î´ó½ÓÕïÊı", "½ñÈÕÒÑ½ÓÕïÊı");
+                           "å·¥å·", "å§“å", "ç§‘å®¤", "å‡ºè¯Šæ—¶é—´", "æ¯æ—¥æœ€å¤§æ¥è¯Šæ•°", "ä»Šæ—¥å·²æ¥è¯Šæ•°");
                     printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
-                        d->data.empNo,                         // ¹¤ºÅ
-                        d->data.name,                          // ĞÕÃû
-                        d->data.dept,                          // ¿ÆÊÒ
-                        d->data.schedule,                      // ³öÕïÊ±¼ä
-                        d->data.maxPatients,                   // Ã¿ÈÕ×î´ó½ÓÕïÊı
-                        d->data.currentPatients);              // ½ñÈÕÒÑ½ÓÕïÊı
+                           d->data.empNo, d->data.name, d->data.dept,
+                           d->data.schedule, d->data.maxPatients,
+                           d->data.currentPatients);
                 }
-              
-                break;
-            case 2://°´ĞÕÃû
-                printf("ÇëÊäÈëÒª²éÕÒÒ½ÉúµÄĞÕÃû:\n"); scanf("%49s", name);
-                Doctor* d = findDoctorsByDept(g_doctorHead, name);
-                if (d == NULL)
-                {
-                    printf("[ERROR] Î´ÕÒµ½Ò½ÉúĞÅÏ¢");
-                }
-                else {
-                    printf("[OK] Ò½ÉúĞÅÏ¢ÈçÏÂ");
-                    listAllDoctors(d);
-                    freeDoctorChain(d);
-                }
-                
                 break;
 
-            case 3://°´¿ÆÊÒ
-                printf("ÇëÊäÈëÒª²éÕÒÒ½ÉúµÄ¿ÆÊÒ:\n"); scanf("%49s", dept);
-                Doctor* d = findDoctorsByDept(g_doctorHead, dept);
-                printf("\n");
-                printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
-                    "¹¤ºÅ", "ĞÕÃû", "¿ÆÊÒ", "³öÕïÊ±¼ä", "Ã¿ÈÕ×î´ó½ÓÕïÊı", "½ñÈÕÒÑ½ÓÕïÊı");
-                printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
-                    d->data.empNo,                         // ¹¤ºÅ
-                    d->data.name,                          // ĞÕÃû
-                    d->data.dept,                          // ¿ÆÊÒ
-                    d->data.schedule,                      // ³öÕïÊ±¼ä
-                    d->data.maxPatients,                   // Ã¿ÈÕ×î´ó½ÓÕïÊı
-                    d->data.currentPatients);              // ½ñÈÕÒÑ½ÓÕïÊı
+            case 2:
+                safeReadString("è¯·è¾“å…¥è¦æŸ¥æ‰¾åŒ»ç”Ÿçš„å§“å: ", name, 50);
+                d = findDoctorsByName(g_doctorHead, name);
+                if (d == NULL) {
+                    printf("[ERROR] æœªæ‰¾åˆ°åŒ»ç”Ÿä¿¡æ¯\n");
+                } else {
+                    printf("[OK] åŒ»ç”Ÿä¿¡æ¯å¦‚ä¸‹\n");
+                    listAllDoctors(d);
+                    /* æ³¨æ„ï¼šfindDoctorsByName è¿”å›æ–°é“¾è¡¨ï¼Œéœ€é‡Šæ”¾ */
+                    Doctor* cur = d;
+                    while (cur) { Doctor* tmp = cur; cur = cur->next; free(tmp); }
+                }
+                break;
+            case 3:
+                safeReadString("è¯·è¾“å…¥è¦æŸ¥æ‰¾åŒ»ç”Ÿçš„ç§‘å®¤: ", dept, 50);
+                d = findDoctorsByDept(g_doctorHead, dept);
+                if (d) {
+                    printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
+                           "å·¥å·", "å§“å", "ç§‘å®¤", "å‡ºè¯Šæ—¶é—´", "æ¯æ—¥æœ€å¤§æ¥è¯Šæ•°", "ä»Šæ—¥å·²æ¥è¯Šæ•°");
+                    printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+                           d->data.empNo, d->data.name, d->data.dept,
+                           d->data.schedule, d->data.maxPatients,
+                           d->data.currentPatients);
+                } else {
+                    printf("[ERROR] æœªæ‰¾åˆ°è¯¥ç§‘å®¤çš„åŒ»ç”Ÿï¼\n");
+                }
                 break;
             default:
-                printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡");
+                printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼");
             }
+            break;
+        }
         case 5:
             listAllDoctors(g_doctorHead);
             break;
         case 0:
             return;
         default:
-            printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡");
+            printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼");
             break;
         }
     }
 }
-//--------------------
+
+
 
 //--------------------
-//ÒÔÏÂÎªÒ©Æ·¹ÜÀí²Ëµ¥ÏÔÊ¾º¯Êı
+// ä»¥ä¸‹ä¸ºè¯å“ç®¡ç†èœå•æ˜¾ç¤ºå‡½æ•°
+//--------------------
 void showMedicineManagement(void) {
     int choice;
     char medNo[20], name[50], patientCardNo[20], date[20];
     int quantity;
     double totalCost;
     Medicine* m;
-
     while (1) {
-        printf("\n-------- Ò©Æ·¹ÜÀí --------\n");
-        printf("1. °´±àºÅ²éÑ¯   4. ¹ºÒ©µÇ¼Ç\n");
-        printf("2. °´Ãû³Æ²éÑ¯   5. ÏÔÊ¾ËùÓĞÒ©Æ·\n");
-        printf("3. ²¹³ä¿â´æ     6. ¿â´æÔ¤¾¯¼ì²é\n");
-        printf("0. ·µ»ØÉÏ¼¶²Ëµ¥\n");
-        printf("ÇëÑ¡Ôñ: ");
+        printf("\n-------- è¯å“ç®¡ç† --------\n");
+        printf("1. æŒ‰ç¼–å·æŸ¥è¯¢   4. è´­è¯ç™»è®°\n");
+        printf("2. æŒ‰åç§°æŸ¥è¯¢   5. æ˜¾ç¤ºæ‰€æœ‰è¯å“\n");
+        printf("3. è¡¥å……åº“å­˜     6. åº“å­˜é¢„è­¦æ£€æŸ¥\n");
+        printf("0. è¿”å›ä¸Šçº§èœå•\n");
 
-        scanf("%d", &choice);
-        getchar();
+        choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 6);
 
         switch (choice) {
-        case 1:  // °´±àºÅ²éÑ¯
-            printf("ÇëÊäÈëÒ©Æ·±àºÅ: "); scanf("%19s", medNo);
+        case 1:
+            safeReadString("è¯·è¾“å…¥è¯å“ç¼–å·: ", medNo, 20);
             m = findMedicineByNo(g_medHead, medNo);
             if (m) {
                 printf("%-10s %-20s %-20s %-15s %-10s %-10s %-10s\n",
-                    "±àºÅ", "Í¨ÓÃÃû", "ÉÌÆ·Ãû", "¹æ¸ñ", "µ¥¼Û", "¿â´æ", "×îµÍ¿â´æ");
+                       "ç¼–å·", "é€šç”¨å", "å•†å“å", "è§„æ ¼", "å•ä»·", "åº“å­˜", "æœ€ä½åº“å­˜");
                 printf("%-10s %-20s %-20s %-15s %-10.2f %-10d %-10d\n",
-                    m->data.medNo, m->data.genericName, m->data.brandName,
-                    m->data.spec, m->data.price, m->data.stock, m->data.minStock);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸ÃÒ©Æ·£¡\n");
+                       m->data.medNo, m->data.genericName, m->data.brandName,
+                       m->data.spec, m->data.price, m->data.stock, m->data.minStock);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥è¯å“ï¼\n");
             }
             break;
-
-        case 2:  // °´Ãû³Æ²éÑ¯
-            printf("ÇëÊäÈëÒ©Æ·Ãû³Æ: "); scanf("%49s", name);
+        case 2:
+            safeReadString("è¯·è¾“å…¥è¯å“åç§°: ", name, 50);
             m = findMedicineByName(g_medHead, name);
             if (m) {
                 printf("%-10s %-20s %-20s %-15s %-10s %-10s %-10s\n",
-                    "±àºÅ", "Í¨ÓÃÃû", "ÉÌÆ·Ãû", "¹æ¸ñ", "µ¥¼Û", "¿â´æ", "×îµÍ¿â´æ");
+                       "ç¼–å·", "é€šç”¨å", "å•†å“å", "è§„æ ¼", "å•ä»·", "åº“å­˜", "æœ€ä½åº“å­˜");
                 printf("%-10s %-20s %-20s %-15s %-10.2f %-10d %-10d\n",
-                    m->data.medNo, m->data.genericName, m->data.brandName,
-                    m->data.spec, m->data.price, m->data.stock, m->data.minStock);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸ÃÒ©Æ·£¡\n");
+                       m->data.medNo, m->data.genericName, m->data.brandName,
+                       m->data.spec, m->data.price, m->data.stock, m->data.minStock);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥è¯å“ï¼\n");
             }
             break;
-
-        case 3:  // ²¹³ä¿â´æ
-            printf("ÇëÊäÈëÒ©Æ·±àºÅ: "); scanf("%19s", medNo);
-            printf("ÇëÊäÈë²¹³äÊıÁ¿: "); scanf("%d", &quantity);
+        case 3: {
+            safeReadString("è¯·è¾“å…¥è¯å“ç¼–å·: ", medNo, 20);
+            quantity = safeReadInt("è¯·è¾“å…¥è¡¥å……æ•°é‡: ", 1, 99999);
             m = findMedicineByNo(g_medHead, medNo);
             if (m) {
                 replenishStock(g_medHead, medNo, quantity);
-                printf("[OK] ¿â´æ²¹³ä³É¹¦£¡µ±Ç°¿â´æ: %d\n", m->data.stock + quantity);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸ÃÒ©Æ·£¡\n");
+                printf("[OK] åº“å­˜è¡¥å……æˆåŠŸï¼å½“å‰åº“å­˜: %d\n", m->data.stock);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥è¯å“ï¼\n");
             }
             break;
-
-        case 4:  // ¹ºÒ©µÇ¼Ç
-            printf("\nÇëÊäÈë²¡ÈË¿¨ºÅ: ");     scanf("%19s", patientCardNo);
-            printf("\nÇëÊäÈëÒ©Æ·±àºÅ: ");     scanf("%19s", medNo);
-            printf("\nÇëÊäÈë¹ºÂòÊıÁ¿: ");     scanf("%d", &quantity);
-            printf("\nÇëÊäÈë×Ü·ÑÓÃ: ");       scanf("%lf", &totalCost);
-            printf("\nÇëÊäÈë¹ºÒ©ÈÕÆÚ(YYYY-MM-DD): "); scanf("%19s", date);
+        }
+        case 4: {
+            printf("\nè¯·è¾“å…¥ç—…äººå¡å·: ");     scanf("%19s", patientCardNo);
+            printf("\nè¯·è¾“å…¥è¯å“ç¼–å·: ");     scanf("%19s", medNo);
+            quantity = safeReadInt("\nè¯·è¾“å…¥è´­ä¹°æ•°é‡: ", 1, 99999);
+            totalCost = safeReadDouble("\nè¯·è¾“å…¥æ€»è´¹ç”¨: ");
+            printf("\nè¯·è¾“å…¥è´­è¯æ—¥æœŸ(YYYY-MM-DD): "); scanf("%19s", date);
             m = findMedicineByNo(g_medHead, medNo);
             if (m && m->data.stock >= quantity) {
                 addPurchaseRecord(&g_purHead, &g_purTail,
-                    patientCardNo, medNo, quantity, totalCost, date);
-                printf("[OK] ¹ºÒ©µÇ¼Ç³É¹¦£¡\n");
-            }
-            else {
-                printf("[ERROR] Ò©Æ·²»´æÔÚ»ò¿â´æ²»×ã£¡\n");
+                                  patientCardNo, medNo, quantity, totalCost, date);
+                printf("[OK] è´­è¯ç™»è®°æˆåŠŸï¼\n");
+            } else {
+                printf("[ERROR] è¯å“ä¸å­˜åœ¨æˆ–åº“å­˜ä¸è¶³ï¼\n");
             }
             break;
-
+        }
         case 5:
             listAllMedicines(g_medHead);
             break;
-
-        case 6:  // ¿â´æÔ¤¾¯
+        case 6:
             checkLowStock(g_medHead);
             break;
-
         case 0:
             return;
-
         default:
-            printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡\n");
+            printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼\n");
         }
     }
 }
-//--------------------
+
 
 //--------------------
-// ÒÔÏÂÎª×¡Ôº¹ÜÀí²Ëµ¥º¯Êı
+// ä»¥ä¸‹ä¸ºä½é™¢ç®¡ç†èœå•å‡½æ•°
+//--------------------
 void showHospitalizationManagement(void) {
     int choice;
     char recordNo[20], patientCardNo[20], patientName[50];
+    char bedNo[20];
     double prepay, totalCost;
     Hospitalization* h;
-
     while (1) {
-        printf("\n-------- ×¡Ôº¹ÜÀí --------\n");
-        printf("1. ÈëÔºµÇ¼Ç        5. ÏÔÊ¾µ±Ç°ÔÚÔº²¡ÈË\n");
-        printf("2. ³öÔº½áËã        6. ÏÔÊ¾ËùÓĞ×¡Ôº¼ÇÂ¼\n");
-        printf("3. °´¿¨ºÅ²éÑ¯      7. ×·¼ÓÔ¤½»½ğ\n");
-        printf("4. °´×¡Ôºµ¥ºÅ²éÑ¯  8. ĞŞ¸Ä×¡ÔºĞÅÏ¢£¨×ª´²/×·¼ÓÑº½ğ£©")
-        printf("0. ·µ»ØÉÏ¼¶²Ëµ¥\n");
-        printf("ÇëÑ¡Ôñ: ");
+        printf("\n-------- ä½é™¢ç®¡ç† --------\n");
+        printf("1. å…¥é™¢ç™»è®°        5. æ˜¾ç¤ºå½“å‰åœ¨é™¢ç—…äºº\n");
+        printf("2. å‡ºé™¢ç»“ç®—        6. æ˜¾ç¤ºæ‰€æœ‰ä½é™¢è®°å½•\n");
+        printf("3. æŒ‰å¡å·æŸ¥è¯¢      7. è¿½åŠ é¢„äº¤é‡‘\n");
+        printf("4. æŒ‰ä½é™¢å•å·æŸ¥è¯¢  8. ä¿®æ”¹ä½é™¢ä¿¡æ¯ï¼ˆè½¬åºŠ/è¿½åŠ æŠ¼é‡‘ï¼‰\n");
+        printf("0. è¿”å›ä¸Šçº§èœå•\n");
 
-        scanf("%d", &choice);
-        getchar();
+        choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 8);
 
         switch (choice) {
-        case 1:  // ÈëÔºµÇ¼Ç
-            printf("\nÇëÊäÈëÈëÔºĞÅÏ¢:");
-            printf("\n²¡ÈË¿¨ºÅ: "); scanf("%19s", patientCardNo);
-            printf("\n²¡ÈËĞÕÃû: "); scanf("%49s", patientName);
-            printf("\nÔ¤½»½ğ¶î: "); scanf("%lf", &prepay);
+        case 1:
+            printf("\nè¯·è¾“å…¥å…¥é™¢ä¿¡æ¯:");
+            printf("\nç—…äººå¡å·: "); scanf("%19s", patientCardNo);
+            printf("\nç—…äººå§“å: "); scanf("%49s", patientName);
+            prepay = safeReadDouble("\né¢„äº¤é‡‘é¢: ");
             addHospitalization(&g_hosHead, &g_hosTail,
-                patientCardNo, patientName, prepay);
-
+                               patientCardNo, patientName, prepay);
             break;
-
-        case 2:  // ³öÔº½áËã
-            printf("ÇëÊäÈë×¡Ôºµ¥ºÅ: "); scanf("%19s", recordNo);
+        case 2: {
+            safeReadString("è¯·è¾“å…¥ä½é™¢å•å·: ", recordNo, 20);
             h = findHospitalizationByNo(g_hosHead, recordNo);
             if (h) {
-                printf("µ±Ç°×´Ì¬: %s£¬Ô¤½»½ğ¶î: %.2f\n",
-                    h->data.status, h->data.prepay);
-                printf("ÇëÊäÈë×Ü·ÑÓÃ: "); scanf("%lf", &totalCost);
+                printf("å½“å‰çŠ¶æ€: %sï¼Œé¢„äº¤é‡‘é¢: %.2f\n",
+                       h->data.status, h->data.prepay);
+                totalCost = safeReadDouble("è¯·è¾“å…¥æ€»è´¹ç”¨: ");
                 dischargePatient(h, totalCost);
-                rebuildHospitalizationFile(g_hosHead);
-                rebuildBedFile(g_bedHead);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸Ã×¡Ôº¼ÇÂ¼£¡\n");
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥ä½é™¢è®°å½•ï¼\n");
             }
             break;
-
-        case 3:  // °´¿¨ºÅ²éÑ¯
-            printf("ÇëÊäÈë²¡ÈË¿¨ºÅ: "); scanf("%19s", patientCardNo);
+        }
+        case 3:
+            safeReadString("è¯·è¾“å…¥ç—…äººå¡å·: ", patientCardNo, 20);
             h = findHospitalizationByCardNo(g_hosHead, patientCardNo);
             if (h) {
                 printf("%-12s %-12s %-10s %-10s %-10s %-10s %-10s\n",
-                    "×¡Ôºµ¥ºÅ", "ĞÕÃû", "´²Î»ºÅ", "Ô¤½»½ğ", "×Ü·ÑÓÃ", "ÈëÔºÈÕÆÚ", "×´Ì¬");
+                       "ä½é™¢å•å·", "å§“å", "åºŠä½å·", "é¢„äº¤é‡‘", "æ€»è´¹ç”¨", "å…¥é™¢æ—¥æœŸ", "çŠ¶æ€");
                 printf("%-12s %-12s %-10s %-10.2f %-10.2f %-10s %-10s\n",
-                    h->data.recordNo, h->data.patientName, h->data.bedNo,
-                    h->data.prepay, h->data.totalCost,
-                    h->data.admissionDate, h->data.status);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸Ã²¡ÈËµÄ×¡Ôº¼ÇÂ¼£¡\n");
+                       h->data.recordNo, h->data.patientName, h->data.bedNo,
+                       h->data.prepay, h->data.totalCost,
+                       h->data.admissionDate, h->data.status);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥ç—…äººçš„ä½é™¢è®°å½•ï¼\n");
             }
             break;
-
-        case 4:  // °´×¡Ôºµ¥ºÅ²éÑ¯
-            printf("ÇëÊäÈë×¡Ôºµ¥ºÅ: "); scanf("%19s", recordNo);
+        case 4:
+            safeReadString("è¯·è¾“å…¥ä½é™¢å•å·: ", recordNo, 20);
             h = findHospitalizationByNo(g_hosHead, recordNo);
             if (h) {
                 printf("%-12s %-12s %-10s %-10s %-10s %-10s %-10s\n",
-                    "×¡Ôºµ¥ºÅ", "ĞÕÃû", "´²Î»ºÅ", "Ô¤½»½ğ", "×Ü·ÑÓÃ", "ÈëÔºÈÕÆÚ", "×´Ì¬");
+                       "ä½é™¢å•å·", "å§“å", "åºŠä½å·", "é¢„äº¤é‡‘", "æ€»è´¹ç”¨", "å…¥é™¢æ—¥æœŸ", "çŠ¶æ€");
                 printf("%-12s %-12s %-10s %-10.2f %-10.2f %-10s %-10s\n",
-                    h->data.recordNo, h->data.patientName, h->data.bedNo,
-                    h->data.prepay, h->data.totalCost,
-                    h->data.admissionDate, h->data.status);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸Ã×¡Ôº¼ÇÂ¼£¡\n");
+                       h->data.recordNo, h->data.patientName, h->data.bedNo,
+                       h->data.prepay, h->data.totalCost,
+                       h->data.admissionDate, h->data.status);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥ä½é™¢è®°å½•ï¼\n");
             }
             break;
-
-        case 5:  // µ±Ç°ÔÚÔº²¡ÈË
+        case 5:
             h = findAllCurrentHospitalizations(g_hosHead);
             if (h) {
                 listAllHospitalizations(h);
                 freeHospitalizationResultChain(h);
-            }
-            else {
-                printf("µ±Ç°ÎŞÔÚÔº²¡ÈË¡£\n");
+            } else {
+                printf("å½“å‰æ— åœ¨é™¢ç—…äººã€‚\n");
             }
             break;
-
         case 6:
             listAllHospitalizations(g_hosHead);
             break;
-
-        case 7: {  // ×·¼ÓÔ¤½»½ğ
-            printf("ÇëÊäÈë×¡Ôºµ¥ºÅ: \n");  scanf("%19s", recordNo);
-            printf("ÇëÊäÈë×·¼Ó½ğ¶î:\n ");  scanf("%lf", &prepay);
-            Hospitalization* h = findHospitalizationByNo(g_hosHead, recordNo);
+        case 7: {
+            safeReadString("è¯·è¾“å…¥ä½é™¢å•å·: ", recordNo, 20);
+            prepay = safeReadDouble("è¯·è¾“å…¥è¿½åŠ é‡‘é¢: ");
+            h = findHospitalizationByNo(g_hosHead, recordNo);
             if (h) {
                 addPrepay(h, prepay);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸Ã×¡Ôº¼ÇÂ¼£¡\n");
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥ä½é™¢è®°å½•ï¼\n");
             }
             break;
         }
-
-        case 8: {  // ĞŞ¸Ä×¡ÔºĞÅÏ¢£¨×ª´² + ×·¼ÓÔ¤½»½ğ£©
-            printf("ÇëÊäÈë×¡Ôºµ¥ºÅ:\n ");     scanf("%19s", recordNo);
-            printf("ÇëÊäÈëĞÂ´²Î»ºÅ(²»×ª´²Êä0): \n");  scanf("%19s", bedNo);
-            printf("ÇëÊäÈë×·¼ÓÔ¤½»½ğ(²»×·¼ÓÊä0): \n"); scanf("%lf", &prepay);
+        case 8: {
+            safeReadString("è¯·è¾“å…¥ä½é™¢å•å·: ", recordNo, 20);
+            safeReadString("è¯·è¾“å…¥æ–°åºŠä½å·(ä¸è½¬åºŠè¾“0): ", bedNo, 20);
+            prepay = safeReadDouble("è¯·è¾“å…¥è¿½åŠ é¢„äº¤é‡‘(ä¸è¿½åŠ è¾“0): ");
             if (strcmp(bedNo, "0") == 0) {
-                strcpy(bedNo, "");        // ¿Õ×Ö·û´®±íÊ¾²»×ª´²
+                strcpy(bedNo, "");
             }
             modifyHospitalization(g_hosHead, recordNo, bedNo, prepay);
             break;
         }
-
         case 0:
             return;
-
         default:
-            printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡\n");
+            printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼\n");
         }
     }
 }
-//--------------------
+
 
 //--------------------
-// ÒÔÏÂÊÇ´²Î»¹ÜÀí²Ëµ¥º¯Êı
+// ä»¥ä¸‹æ˜¯åºŠä½ç®¡ç†èœå•å‡½æ•°
+//--------------------
 void showBedManagement(void) {
     int choice;
     char ward[30], bedNo[20];
     int total, occupied;
     Bed* b;
-
     while (1) {
-        printf("\n-------- ´²Î»¹ÜÀí --------\n");
-        printf("1. Ìí¼Ó´²Î»     5. ²éÕÒ¿ÕÏĞ´²Î»\n");
-        printf("2. É¾³ı´²Î»     6. ²¡ÇøÍ³¼Æ\n");
-        printf("3. °´´²Î»ºÅ²éÑ¯ 7. ÏÔÊ¾ËùÓĞ´²Î»\n");
-        printf("4. °´²¡Çø²éÑ¯   0. ·µ»ØÉÏ¼¶²Ëµ¥\n");
-        printf("ÇëÑ¡Ôñ: ");
+        printf("\n-------- åºŠä½ç®¡ç† --------\n");
+        printf("1. æ·»åŠ åºŠä½     5. æŸ¥æ‰¾ç©ºé—²åºŠä½\n");
+        printf("2. åˆ é™¤åºŠä½     6. ç—…åŒºç»Ÿè®¡\n");
+        printf("3. æŒ‰åºŠä½å·æŸ¥è¯¢ 7. æ˜¾ç¤ºæ‰€æœ‰åºŠä½\n");
+        printf("4. æŒ‰ç—…åŒºæŸ¥è¯¢   0. è¿”å›ä¸Šçº§èœå•\n");
 
-        scanf("%d", &choice);
-        getchar();
+        choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 7);
 
         switch (choice) {
-        case 1:  // Ìí¼Ó
-            printf("\nÇëÊäÈë´²Î»ĞÅÏ¢:\n");
-            printf("²¡Çø: ");   scanf("%29s", ward);
-            printf("´²Î»ºÅ: "); scanf("%19s", bedNo);
+        case 1:
+            printf("\nè¯·è¾“å…¥åºŠä½ä¿¡æ¯:\n");
+            safeReadString("ç—…åŒº: ", ward, 30);
+            safeReadString("åºŠä½å·: ", bedNo, 20);
             addBed(&g_bedHead, &g_bedTail, ward, bedNo);
-            printf("[OK] ´²Î»Ìí¼Ó³É¹¦£¡\n");
+            printf("[OK] åºŠä½æ·»åŠ æˆåŠŸï¼\n");
             break;
-
-        case 2:  // É¾³ı
-            printf("ÇëÊäÈëÒªÉ¾³ıµÄ´²Î»ºÅ: ");
-            scanf("%19s", bedNo);
+        case 2:
+            safeReadString("è¯·è¾“å…¥è¦åˆ é™¤çš„åºŠä½å·: ", bedNo, 20);
             b = findBedByNo(g_bedHead, bedNo);
             if (b) {
                 delBed(&g_bedHead, &g_bedTail, b);
-                printf("[OK] ´²Î»ÒÑÉ¾³ı£¡\n");
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸Ã´²Î»£¡\n");
+                printf("[OK] åºŠä½å·²åˆ é™¤ï¼\n");
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥åºŠä½ï¼\n");
             }
             break;
-
-        case 3:  // °´´²Î»ºÅ²éÑ¯
-            printf("ÇëÊäÈë´²Î»ºÅ: "); scanf("%19s", bedNo);
+        case 3:
+            safeReadString("è¯·è¾“å…¥åºŠä½å·: ", bedNo, 20);
             b = findBedByNo(g_bedHead, bedNo);
             if (b) {
                 printf("%-10s %-10s %-12s %-10s %-10s\n",
-                    "²¡Çø", "´²Î»ºÅ", "²¡ÈË¿¨ºÅ", "²¡ÈËĞÕÃû", "×´Ì¬");
+                       "ç—…åŒº", "åºŠä½å·", "ç—…äººå¡å·", "ç—…äººå§“å", "çŠ¶æ€");
                 printf("%-10s %-10s %-12s %-10s %-10s\n",
-                    b->data.ward, b->data.bedNo, b->data.patientCardNo,
-                    b->data.patientName, b->data.status);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸Ã´²Î»£¡\n");
+                       b->data.ward, b->data.bedNo, b->data.patientCardNo,
+                       b->data.patientName, b->data.status);
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥åºŠä½ï¼\n");
             }
             break;
-
-        case 4:  // °´²¡Çø²éÑ¯
-            printf("ÇëÊäÈë²¡Çø: "); scanf("%29s", ward);
+        case 4:
+            safeReadString("è¯·è¾“å…¥ç—…åŒº: ", ward, 30);
             listBedsByWard(g_bedHead, ward);
             break;
-
-        case 5:  // ²éÕÒ¿ÕÏĞ´²Î»
+        case 5:
             b = findAvailableBeds(g_bedHead);
             if (b) {
-                printf("¿ÕÏĞ´²Î»: %s (²¡Çø: %s)\n", b->data.bedNo, b->data.ward);
-            }
-            else {
-                printf("µ±Ç°ÎŞ¿ÕÏĞ´²Î»¡£\n");
+                printf("ç©ºé—²åºŠä½: %s (ç—…åŒº: %s)\n", b->data.bedNo, b->data.ward);
+            } else {
+                printf("å½“å‰æ— ç©ºé—²åºŠä½ã€‚\n");
             }
             break;
-
-        case 6:  // ²¡ÇøÍ³¼Æ
-            printf("ÇëÊäÈë²¡Çø: "); scanf("%29s", ward);
+        case 6:
+            safeReadString("è¯·è¾“å…¥ç—…åŒº: ", ward, 30);
             getWardStats(g_bedHead, ward, &total, &occupied);
-            printf("²¡Çø %s£º×Ü´²Î» %d£¬ÒÑÕ¼ÓÃ %d£¬¿ÕÏĞ %d\n",
-                ward, total, occupied, total - occupied);
+            printf("ç—…åŒº %sï¼šæ€»åºŠä½ %dï¼Œå·²å ç”¨ %dï¼Œç©ºé—² %d\n",
+                   ward, total, occupied, total - occupied);
             break;
-
         case 7:
             listAllBeds(g_bedHead);
             break;
-
         case 0:
             return;
-
         default:
-            printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡\n");
+            printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼\n");
         }
     }
 }
-//--------------------
+
+
 
 //--------------------
-// ÒÔÏÂÎª¹ÒºÅ¹ÜÀí²Ëµ¥
-void showRegistrationManagement(void)
-{
+// ä»¥ä¸‹ä¸ºæŒ‚å·ç®¡ç†èœå•
+//--------------------
+void showRegistrationManagement(void) {
     int choice;
     char patientCardNo[20], patientName[50];
     char doctorEmpNo[20], doctorName[50], dept[50];
     char regNo[20], appointmentDate[20], appointmentTime[20];
     int year, month, day;
+    int role = g_currentUserRole;  /*è·å–å½“å‰è§’è‰² */
 
     while (1) {
-        printf("\n========== ¹ÒºÅ¹ÜÀíÏµÍ³ ==========\n");
-        printf("--- »¼Õß¹¦ÄÜ ---\n");
-        printf("1. Ô¤Ô¼¹ÒºÅ        4. ²é¿´ÎÒµÄ¹ÒºÅ\n");
-        printf("2. È¡ÏûÎÒµÄ¹ÒºÅ\n");
-        printf("--- »¤Ê¿¹¦ÄÜ ---\n");
-        printf("3. ÏÖ³¡¹ÒºÅ        5. ²é¿´¿ÆÊÒºòÕï¶ÓÁĞ\n");
-        printf("--- Ò½Éú¹¦ÄÜ ---\n");
-        printf("6. ½ĞºÅ£¨ÏÂÒ»Î»£©  7. ²é¿´ÎÒµÄºòÕïÁĞ±í\n");
-        printf("8. Íê³Éµ±Ç°¾ÍÕï\n");
-        printf("--- Í¨ÓÃ¹¦ÄÜ ---\n");
-        printf("9. ÏÔÊ¾È«²¿¹ÒºÅ¼ÇÂ¼\n");
-        printf("0. ·µ»ØÉÏ¼¶²Ëµ¥\n");
-        printf("ÇëÑ¡Ôñ: ");
+        printf("\n========== æŒ‚å·ç®¡ç†ç³»ç»Ÿ ==========\n");
 
-        scanf("%d", &choice);
-        getchar();
+        /*æ ¹æ®è§’è‰²æ˜¾ç¤ºä¸åŒèœå• */
+        if (role == PATIENT) {
+            printf("--- æ‚£è€…åŠŸèƒ½ ---\n");
+            printf("1. é¢„çº¦æŒ‚å·\n");
+            printf("2. å–æ¶ˆæˆ‘çš„æŒ‚å·\n");
+            printf("3. æŸ¥çœ‹æˆ‘çš„æŒ‚å·\n");
+            printf("0. è¿”å›ä¸Šçº§èœå•\n");
+            choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 3);
+        }
+        else if (role == NURSE) {
+            printf("--- æŠ¤å£«åŠŸèƒ½ ---\n");
+            printf("1. ç°åœºæŒ‚å·\n");
+            printf("2. æŸ¥çœ‹ç§‘å®¤å€™è¯Šé˜Ÿåˆ—\n");
+            printf("3. å–æ¶ˆæŒ‚å·\n");
+            printf("0. è¿”å›ä¸Šçº§èœå•\n");
+            choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 3);
+        }
+        else if (role == DOCTOR) {
+            printf("--- åŒ»ç”ŸåŠŸèƒ½ ---\n");
+            printf("1. å«å·ï¼ˆä¸‹ä¸€ä½ï¼‰\n");
+            printf("2. æŸ¥çœ‹æˆ‘çš„å€™è¯Šåˆ—è¡¨\n");
+            printf("3. å®Œæˆå½“å‰å°±è¯Š\n");
+            printf("0. è¿”å›ä¸Šçº§èœå•\n");
+            choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 3);
+        }
+        else {
+            /* [MOD-10] ç®¡ç†å‘˜æ˜¾ç¤ºå…¨éƒ¨ */
+            printf("--- æ‚£è€…åŠŸèƒ½ ---\n");
+            printf("1. é¢„çº¦æŒ‚å·        5. æŸ¥çœ‹æˆ‘çš„æŒ‚å·\n");
+            printf("2. å–æ¶ˆæˆ‘çš„æŒ‚å·\n");
+            printf("--- æŠ¤å£«åŠŸèƒ½ ---\n");
+            printf("3. ç°åœºæŒ‚å·        6. æŸ¥çœ‹ç§‘å®¤å€™è¯Šé˜Ÿåˆ—\n");
+            printf("--- åŒ»ç”ŸåŠŸèƒ½ ---\n");
+            printf("7. å«å·ï¼ˆä¸‹ä¸€ä½ï¼‰  8. æŸ¥çœ‹æˆ‘çš„å€™è¯Šåˆ—è¡¨\n");
+            printf("9. å®Œæˆå½“å‰å°±è¯Š\n");
+            printf("--- é€šç”¨åŠŸèƒ½ ---\n");
+            printf("10. æ˜¾ç¤ºå…¨éƒ¨æŒ‚å·è®°å½•\n");
+            printf("0. è¿”å›ä¸Šçº§èœå•\n");
+            choice = safeReadInt("è¯·é€‰æ‹©: ", 0, 10);
+            /* ç®¡ç†å‘˜é€‰é¡¹å·æ˜ å°„ä¸ºç»Ÿä¸€å†…éƒ¨ç¼–å· */
+            if (choice == 10) choice = 99;
+        }
 
-        switch (choice) {
-            // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ »¼Õß£ºÔ¤Ô¼¹ÒºÅ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
+        /* [MOD-10] è§’è‰²é€‰é¡¹å· â†’ ç»Ÿä¸€å¤„ç†ç¼–å· */
+        int action = choice;
+        if (role == PATIENT) {
+            if (choice == 3) action = 5;      /* æŸ¥çœ‹æŒ‚å· â†’ ç»Ÿä¸€ç¼–å· */
+        }
+        else if (role == NURSE) {
+            if (choice == 2) action = 6;      /* å€™è¯Šé˜Ÿåˆ— */
+            if (choice == 3) action = 2;      /* å–æ¶ˆæŒ‚å· */
+        }
+        else if (role == DOCTOR) {
+            if (choice == 1) action = 7;      /* å«å· */
+            if (choice == 2) action = 8;      /* å€™è¯Šåˆ—è¡¨ */
+            if (choice == 3) action = 9;      /* å®Œæˆå°±è¯Š */
+        }
+
+        switch (action) {
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ é¢„çº¦æŒ‚å·ï¼ˆæ‚£è€…/ç®¡ç†å‘˜ï¼‰ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         case 1: {
-            printf("\n--- Ô¤Ô¼¹ÒºÅ ---\n");
-            printf("ÇëÊäÈëÄúµÄ¿¨ºÅ: ");      scanf("%19s", patientCardNo);
+            printf("\n--- é¢„çº¦æŒ‚å· ---\n");
+            safeReadString("è¯·è¾“å…¥æ‚¨çš„å¡å·: ", patientCardNo, 20);
             Patient* p = findPatientByCardNo(g_patientHead, patientCardNo);
             if (p == NULL) {
-                printf("[ERROR] Î´ÕÒµ½¸Ã»¼Õß£¬ÇëÏÈ×¢²á\n");
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥æ‚£è€…ï¼Œè¯·å…ˆæ³¨å†Œ\n");
                 break;
             }
             strcpy(patientName, p->data.name);
 
-            printf("ÇëÊäÈëÒ½Éú¹¤ºÅ: ");      scanf("%19s", doctorEmpNo);
-            Doctor* d = findDoctorByEmpNo(g_doctorHead, doctorEmpNo);
-            if (d == NULL) {
-                printf("[ERROR] Î´ÕÒµ½¸ÃÒ½Éú\n");
+            /*åˆ—å‡ºæ‰€æœ‰åŒ»ç”Ÿä¾›é€‰æ‹©ï¼Œä¸å†è¦æ±‚è¾“å…¥å·¥å· */
+            printf("\nå¯é€‰åŒ»ç”Ÿåˆ—è¡¨ï¼š\n");
+            printf("%-4s %-12s %-10s %-10s %-20s\n",
+                   "åºå·", "å·¥å·", "å§“å", "ç§‘å®¤", "å‡ºè¯Šæ—¶é—´");
+            Doctor* doc = g_doctorHead;
+            int docCount = 0;
+            while (doc != NULL) {
+                printf("%-4d %-12s %-10s %-10s %-20s\n",
+                       ++docCount, doc->data.empNo, doc->data.name,
+                       doc->data.dept, doc->data.schedule);
+                doc = doc->next;
+            }
+            if (docCount == 0) {
+                printf("[ERROR] æš‚æ— åŒ»ç”Ÿä¿¡æ¯\n");
                 break;
             }
-            strcpy(doctorName, d->data.name);
-            strcpy(dept, d->data.dept);
+            int sel = safeReadInt("è¯·é€‰æ‹©åŒ»ç”Ÿåºå·: ", 1, docCount);
+            doc = g_doctorHead;
+            for (int i = 1; i < sel; i++) doc = doc->next;
+            strcpy(doctorEmpNo, doc->data.empNo);
+            strcpy(doctorName, doc->data.name);
+            strcpy(dept, doc->data.dept);
 
             getCurrentTime(&year, &month, &day);
-            printf("ÇëÊäÈëÔ¤Ô¼ÈÕÆÚ (YYYY-MM-DD£¬ÖÁÉÙ½ñÌì %04d-%02d-%02d): ",
-                year, month, day);
+            printf("è¯·è¾“å…¥é¢„çº¦æ—¥æœŸ (YYYY-MM-DDï¼Œè‡³å°‘ä»Šå¤© %04d-%02d-%02d): ",
+                   year, month, day);
             scanf("%19s", appointmentDate);
-            printf("ÇëÊäÈëÔ¤Ô¼Ê±¼ä (HH:MM): ");
-            scanf("%19s", appointmentTime);
+            safeReadString("è¯·è¾“å…¥é¢„çº¦æ—¶é—´ (HH:MM): ", appointmentTime, 20);
 
             addRegistration(&g_regHead, &g_regTail,
-                patientCardNo, patientName,
-                doctorEmpNo, doctorName, dept,
-                appointmentDate, appointmentTime, PATIENT);
+                            patientCardNo, patientName,
+                            doctorEmpNo, doctorName, dept,
+                            appointmentDate, appointmentTime, PATIENT);
             break;
         }
 
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ »¼Õß£ºÈ¡Ïû¹ÒºÅ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ å–æ¶ˆæŒ‚å·ï¼ˆæ‚£è€…/æŠ¤å£«/ç®¡ç†å‘˜ï¼‰ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         case 2: {
-            printf("ÇëÊäÈëÄúµÄ¿¨ºÅ: ");      scanf("%19s", patientCardNo);
-            printf("ÇëÊäÈëÒªÈ¡ÏûµÄ¹ÒºÅ±àºÅ: "); scanf("%19s", regNo);
+            /* æ‚£è€…ï¼šåˆ—å‡ºæ‰€æœ‰ PENDING æŒ‚å·ä¾›é€‰æ‹©åºå· */
+            if (role == PATIENT || role == DOCTOR) {
+                safeReadString("è¯·è¾“å…¥æ‚¨çš„å¡å·: ", patientCardNo, 20);
+            } else {
+                safeReadString("è¯·è¾“å…¥æ‚£è€…å¡å·: ", patientCardNo, 20);
+            }
+
+            /* åˆ—å‡ºè¯¥æ‚£è€…çš„ PENDING æŒ‚å· */
+            printf("\næ‚¨çš„å¾…å°±è¯ŠæŒ‚å·ï¼š\n");
+            printf("%-4s %-16s %-10s %-10s %-12s %-10s\n",
+                   "åºå·", "æŒ‚å·ç¼–å·", "åŒ»ç”Ÿ", "ç§‘å®¤", "é¢„çº¦æ—¶é—´", "æ–¹å¼");
+            Registration* cur = g_regHead;
+            Registration** pendingArr = NULL;
+            int pCount = 0, arrCap = 10;
+            pendingArr = (Registration**)malloc(arrCap * sizeof(Registration*));
+
+            while (cur != NULL) {
+                if (strcmp(cur->data.patientCardNo, patientCardNo) == 0 &&
+                    cur->data.status == PENDING) {
+                    if (pCount >= arrCap) {
+                        arrCap *= 2;
+                        pendingArr = (Registration**)realloc(pendingArr, arrCap * sizeof(Registration*));
+                    }
+                    pendingArr[pCount] = cur;
+                    char* mStr = (cur->data.createdBy == PATIENT) ? "é¢„çº¦" : "ç°åœº";
+                    printf("%-4d %-16s %-10s %-10s %-12s %-10s\n",
+                           pCount + 1, cur->data.regNo, cur->data.doctorName,
+                           cur->data.dept, cur->data.appointmentTime, mStr);
+                    pCount++;
+                }
+                cur = cur->next;
+            }
+
+            if (pCount == 0) {
+                printf("æš‚æ— å¾…å°±è¯Šçš„æŒ‚å·è®°å½•\n");
+                free(pendingArr);
+                break;
+            }
+
+            int sel = safeReadInt("è¯·è¾“å…¥è¦å–æ¶ˆçš„åºå·: ", 1, pCount);
+            Registration* target = pendingArr[sel - 1];
             patientCancelRegistration(&g_regHead, &g_regTail,
-                patientCardNo, regNo);
+                                      patientCardNo, target->data.regNo);
+            free(pendingArr);
             break;
         }
 
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ »¤Ê¿£ºÏÖ³¡¹ÒºÅ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ ç°åœºæŒ‚å·ï¼ˆæŠ¤å£«/ç®¡ç†å‘˜ï¼‰ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         case 3: {
-            printf("\n--- ÏÖ³¡¹ÒºÅ ---\n");
-            printf("ÇëÊäÈë»¼Õß¿¨ºÅ: ");      scanf("%19s", patientCardNo);
+            printf("\n--- ç°åœºæŒ‚å· ---\n");
+            safeReadString("è¯·è¾“å…¥æ‚£è€…å¡å·: ", patientCardNo, 20);
             Patient* p = findPatientByCardNo(g_patientHead, patientCardNo);
             if (p == NULL) {
-                printf("[ERROR] Î´ÕÒµ½¸Ã»¼Õß\n");
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥æ‚£è€…\n");
                 break;
             }
             strcpy(patientName, p->data.name);
 
-            printf("ÇëÊäÈëÒ½Éú¹¤ºÅ: ");      scanf("%19s", doctorEmpNo);
-            Doctor* d = findDoctorByEmpNo(g_doctorHead, doctorEmpNo);
-            if (d == NULL) {
-                printf("[ERROR] Î´ÕÒµ½¸ÃÒ½Éú\n");
+            /*åŒæ ·åˆ—å‡ºåŒ»ç”Ÿä¾›é€‰æ‹© */
+            printf("\nå¯é€‰åŒ»ç”Ÿåˆ—è¡¨ï¼š\n");
+            printf("%-4s %-12s %-10s %-10s\n",
+                   "åºå·", "å·¥å·", "å§“å", "ç§‘å®¤");
+            Doctor* doc = g_doctorHead;
+            int docCount = 0;
+            while (doc != NULL) {
+                printf("%-4d %-12s %-10s %-10s\n",
+                       ++docCount, doc->data.empNo, doc->data.name, doc->data.dept);
+                doc = doc->next;
+            }
+            if (docCount == 0) {
+                printf("[ERROR] æš‚æ— åŒ»ç”Ÿ\n");
                 break;
             }
-            strcpy(doctorName, d->data.name);
-            strcpy(dept, d->data.dept);
+            int sel = safeReadInt("è¯·é€‰æ‹©åŒ»ç”Ÿåºå·: ", 1, docCount);
+            doc = g_doctorHead;
+            for (int i = 1; i < sel; i++) doc = doc->next;
+            strcpy(doctorEmpNo, doc->data.empNo);
+            strcpy(doctorName, doc->data.name);
+            strcpy(dept, doc->data.dept);
 
-            // ÏÖ³¡¹ÒºÅ£ºÔ¤Ô¼ÈÕÆÚºÍÊ±¼ä¶¼Ìîµ±Ììµ±Ç°
             getCurrentTime(&year, &month, &day);
             sprintf(appointmentDate, "%04d-%02d-%02d", year, month, day);
-
             time_t now = time(0);
             struct tm* ti = localtime(&now);
             sprintf(appointmentTime, "%02d:%02d", ti->tm_hour, ti->tm_min);
 
             addRegistration(&g_regHead, &g_regTail,
-                patientCardNo, patientName,
-                doctorEmpNo, doctorName, dept,
-                appointmentDate, appointmentTime, NURSE);
+                            patientCardNo, patientName,
+                            doctorEmpNo, doctorName, dept,
+                            appointmentDate, appointmentTime, NURSE);
             break;
         }
 
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ »¼Õß£º²é¿´ÎÒµÄ¹ÒºÅ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        case 4: {
-            printf("ÇëÊäÈëÄúµÄ¿¨ºÅ: ");      scanf("%19s", patientCardNo);
-            findRegistrationsByPatient(g_regHead, patientCardNo);
-            break;
-        }
-
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ »¤Ê¿£º²é¿´¿ÆÊÒºòÕï¶ÓÁĞ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ æŸ¥çœ‹æˆ‘çš„æŒ‚å· â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         case 5: {
-            printf("ÇëÊäÈë¿ÆÊÒ: ");          scanf("%49s", dept);
-            printf("ÇëÊäÈëÒ½Éú¹¤ºÅ(²é¿´È«²¿Êä0): "); scanf("%19s", doctorEmpNo);
+            safeReadString("è¯·è¾“å…¥æ‚¨çš„å¡å·: ", patientCardNo, 20);
+            patientViewOwnRegistrations(g_regHead, patientCardNo);
+            break;
+        }
 
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ æŸ¥çœ‹ç§‘å®¤å€™è¯Šé˜Ÿåˆ— â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        case 6: {
+            safeReadString("è¯·è¾“å…¥ç§‘å®¤: ", dept, 50);
+            safeReadString("è¯·è¾“å…¥åŒ»ç”Ÿå·¥å·(æŸ¥çœ‹å…¨éƒ¨è¾“0): ", doctorEmpNo, 20);
             getCurrentTime(&year, &month, &day);
             char today[20];
             sprintf(today, "%04d-%02d-%02d", year, month, day);
-
             if (strcmp(doctorEmpNo, "0") == 0) {
-                // ²é¿´Õû¸ö¿ÆÊÒËùÓĞÒ½ÉúµÄºòÕï¶ÓÁĞ
                 Doctor* d = g_doctorHead;
                 while (d != NULL) {
                     if (strcmp(d->data.dept, dept) == 0) {
                         Registration* queue = buildWaitingQueue(g_regHead,
                             d->data.empNo, today);
                         listWaitingQueue(queue, d->data.name);
-                        // ÊÍ·ÅÁÙÊ±¶ÓÁĞ
                         Registration* cur = queue;
                         while (cur != NULL) {
                             Registration* tmp = cur;
@@ -811,100 +907,94 @@ void showRegistrationManagement(void)
                     }
                     d = d->next;
                 }
-            }
-            else {
+            } else {
                 doctorViewWaitingList(g_regHead, doctorEmpNo);
             }
             break;
         }
 
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ Ò½Éú£º½ĞºÅ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        case 6: {
-            printf("ÇëÊäÈëÄúµÄ¹¤ºÅ: ");      scanf("%19s", doctorEmpNo);
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ å«å· â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        case 7: {
+            safeReadString("è¯·è¾“å…¥æ‚¨çš„å·¥å·: ", doctorEmpNo, 20);
             doctorCallNextPatient(&g_regHead, &g_regTail, doctorEmpNo);
             break;
         }
 
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ Ò½Éú£º²é¿´ºòÕïÁĞ±í ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        case 7: {
-            printf("ÇëÊäÈëÄúµÄ¹¤ºÅ: ");      scanf("%19s", doctorEmpNo);
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ æŸ¥çœ‹å€™è¯Šåˆ—è¡¨ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        case 8: {
+            safeReadString("è¯·è¾“å…¥æ‚¨çš„å·¥å·: ", doctorEmpNo, 20);
             doctorViewWaitingList(g_regHead, doctorEmpNo);
             break;
         }
 
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ Ò½Éú£ºÍê³É¾ÍÕï ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        case 8: {
-            printf("ÇëÊäÈë¹ÒºÅ±àºÅ: ");      scanf("%19s", regNo);
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ å®Œæˆå°±è¯Š â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        case 9: {
+            safeReadString("è¯·è¾“å…¥æŒ‚å·ç¼–å·: ", regNo, 20);
             Registration* r = findRegistrationByNo(g_regHead, regNo);
             if (r) {
                 completeRegistration(r);
-                rebuildRegistrationFile(g_regHead);
-            }
-            else {
-                printf("[ERROR] Î´ÕÒµ½¸Ã¹ÒºÅ\n");
+            } else {
+                printf("[ERROR] æœªæ‰¾åˆ°è¯¥æŒ‚å·\n");
             }
             break;
         }
 
-              // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ Í¨ÓÃ£ºÏÔÊ¾È«²¿ ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        case 9: {
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ æ˜¾ç¤ºå…¨éƒ¨ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        case 99:
             listAllRegistrations(g_regHead);
             break;
-        }
 
         case 0:
             return;
 
         default:
-            printf("[ERROR] ÎŞĞ§Ñ¡Ôñ\n");
+            printf("[ERROR] æ— æ•ˆé€‰æ‹©\n");
         }
     }
 }
-//--------------------
 
-//ÒÔÏÂÎªÖ÷º¯Êı
+
+//--------------------
+//ä¸»å‡½æ•°
+//--------------------
 int main(void) {
     initUI();
-
     while (1) {
         int status = showLoginPage();
-
         if (status == LOGIN_EXIT) {
-            printf("¸ĞĞ»Ê¹ÓÃ£¬ÔÙ¼û£¡\n");
+            printf("æ„Ÿè°¢ä½¿ç”¨ï¼Œå†è§ï¼\n");
             break;
         }
         if (status == LOGIN_FAILED) {
-            printf("µÇÂ¼Ê§°Ü£¬ÇëÖØÊÔ¡£\n");
+            printf("ç™»å½•å¤±è´¥ï¼Œè¯·é‡è¯•ã€‚\n");
             continue;
         }
 
-        // µÇÂ¼³É¹¦ºó½øÈëÖ÷Ñ­»·
+        /* ç™»å½•æˆåŠŸåæ ¹æ®è§’è‰²è¿›å…¥ä¸»å¾ªç¯ */
         while (1) {
-            showMainMenu();
-            printf("ÇëÑ¡Ôñ¹¦ÄÜÄ£¿é: ");
-            int module;
-            scanf("%d", &module);
-            getchar();
+            /* showMainMenuByRole è¿”å›ç”¨æˆ·é€‰æ‹©çš„æ¨¡å—å· */
+            int module = showMainMenuByRole(g_currentUserRole, g_currentUsername);
 
             switch (module) {
             case 1: showPatientManagement();         break;
-            case 2: showDoctorManagement();          break;
-            case 3: showRegistrationManagement();    break;
-            case 4: showMedicineManagement();         break;
-            case 5: showHospitalizationManagement(); break;
-            case 6: showBedManagement();             break;
+            case 2: showRegistrationManagement();    break;
+            case 3: showDoctorManagement();          break;
+            case 4: showBedManagement();             break;
+            case 5: showMedicineManagement();         break;
+            case 6: showHospitalizationManagement(); break;
             case 7: showStatisticsMenu();           break;
             case 8: showQueryMenu();                 break;
             case 0:
-                printf("ÕıÔÚÍË³öÏµÍ³...\n");
+                printf("æ­£åœ¨é€€å‡ºåˆ°ç™»å½•ç•Œé¢...\n");
                 closeUI();
-                return 0;
+                /* è·³å‡ºå†…å±‚å¾ªç¯ï¼Œå›åˆ°ç™»å½• */
+                goto logout;
             default:
-                printf("[ERROR] ÎŞĞ§Ñ¡Ôñ£¡\n");
+                printf("[ERROR] æ— æ•ˆé€‰æ‹©ï¼\n");
             }
         }
+    logout:;
     }
-
     closeUI();
     return 0;
 }

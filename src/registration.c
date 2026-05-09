@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "patient.h"        // 患者模块头文件
 #include "doctor.h"         // 医生模块头文件
 #include "registration.h"	// 挂号模块头文件
 #include "login.h"          // 登录模块头文件
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
+#include "ui.h" 
 
 
-// 外部全局变量（假设在其他地方定义）
-extern char g_currentUsername[50];  // 当前登录用户名
+
 
 //-------------------------
 //函数名：addRegistration
@@ -23,11 +24,17 @@ extern char g_currentUsername[50];  // 当前登录用户名
 //   appointmentTime — 预约时间（HH:MM），现场挂号时传当前时间
 //   createdBy — PATIENT（患者预约）或 NURSE（护士现场挂号）
 //返回值：成功返回1，失败返回0
-int addRegistration(Registration** head, Registration** tail,
+int addRegistration(Registration** head, Registration** tail, 
     char* patientCardNo, char* patientName,
     char* doctorEmpNo, char* doctorName, char* dept,
     char* appointmentDate, char* appointmentTime, UserRole createdBy){
     
+    // 1. 查找指定医生是否存在
+    Doctor* d = findDoctorByEmpNo(getDoctorHead(), doctorEmpNo);
+    if (d == NULL) {
+        printf("[ERROR]未找到工号为%s 医生\n",doctorEmpNo);
+        return 0;
+    }
 
 
     // 2. 检查医生是否还有名额（仅对当天挂号进行号源检查）
@@ -192,14 +199,14 @@ int completeRegistration(Registration* r) {
     }
 
     // 检查挂号状态是否为"待就诊"或"就诊中"
-    if (strcmp(r->data.status, "待就诊") != 0 &&
-        strcmp(r->data.status, "就诊中") != 0) {
+    if (r->data.status != PENDING &&
+        r->data.status != IN_PROGRESS) {
         printf("挂号信息状态异常，无法完成就诊\n");
         return 0;
     }
 
     // 修改状态为"已完成"
-    strcpy(r->data.status, "已完成");
+    r->data.status = COMPLETED;
 
     printf("患者%s就诊完成\n", r->data.patientName);
 
@@ -570,5 +577,5 @@ void listAllRegistrations(Registration* head) {
 
     printf("[OK] 共 %d 条记录\n", count);
 }
-}
+
 //-------------------------

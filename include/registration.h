@@ -1,19 +1,19 @@
-//-----------------
-// ¹ÒºÅ¼ÇÂ¼¹ÜÀíÄ£¿é
+ï»¿//-----------------
+// æŒ‚å·è®°å½•ç®¡ç†æ¨¡å—
 //-----------------
 
-/*¹ÒºÅÄ£¿é¸ºÔğ¹ÜÀí²¡ÈËµÄ¹ÒºÅ¼ÇÂ¼£º
-- ²¡ÈË¹ÒºÅ£¨×Ô¶¯¼ì²éÒ½ÉúÃû¶î£©
-- È¡Ïû¹ÒºÅ
-- Íê³É¾ÍÕï
-- Ê±¼ä·¶Î§²éÑ¯
+/*æŒ‚å·æ¨¡å—è´Ÿè´£ç®¡ç†ç—…äººçš„æŒ‚å·è®°å½•ï¼š
+- ç—…äººæŒ‚å·ï¼ˆè‡ªåŠ¨æ£€æŸ¥åŒ»ç”Ÿåé¢ï¼‰
+- å–æ¶ˆæŒ‚å·
+- å®Œæˆå°±è¯Š
+- æ—¶é—´èŒƒå›´æŸ¥è¯¢
 */
 
-/*ÒµÎñ¹æÔò
+/*ä¸šåŠ¡è§„åˆ™
 
-1. ²¡ÈË±ØĞë´æÔÚ
-2. Ò½Éú±ØĞëÓĞÊ£ÓàÃû¶î
-3. Í¬Ò»Ò½ÉúÍ¬Ê±Ö»ÄÜÓĞÒ»¸ö´ı¾ÍÕï¹ÒºÅ
+1. ç—…äººå¿…é¡»å­˜åœ¨
+2. åŒ»ç”Ÿå¿…é¡»æœ‰å‰©ä½™åé¢
+3. åŒä¸€åŒ»ç”ŸåŒæ—¶åªèƒ½æœ‰ä¸€ä¸ªå¾…å°±è¯ŠæŒ‚å·
 */
 
 #ifndef _REGISTRATION_H_
@@ -22,27 +22,27 @@
 #include "login.h"
 
 typedef enum {
-    PENDING = 0,     // ´ı¾ÍÕï
-    IN_PROGRESS = 1, // ¾ÍÕïÖĞ
-    COMPLETED = 2,   // ÒÑÍê³É
-    CANCELLED = 3    // ÒÑÈ¡Ïû
+    PENDING = 0,     // å¾…å°±è¯Š
+    IN_PROGRESS = 1, // å°±è¯Šä¸­
+    COMPLETED = 2,   // å·²å®Œæˆ
+    CANCELLED = 3    // å·²å–æ¶ˆ
 } RegStatus;
 
 typedef struct RegistrationData {
-    char regNo[20];              // ¹ÒºÅµ¥ºÅ
-    char patientCardNo[20];      // ²¡ÈË¿¨ºÅ
-    char patientName[50];        // ²¡ÈËĞÕÃû
-    char doctorEmpNo[20];        // Ò½Éú¹¤ºÅ
-    char doctorName[50];         // Ò½ÉúĞÕÃû
-    char dept[50];               // ¿ÆÊÒ
-    char date[20];               // ¹ÒºÅÈÕÆÚ£¨¸ñÊ½£ºYYYY-MM-DD£©
-    char time[20];               // ¹ÒºÅÊ±¼ä£¨¸ñÊ½£ºHH:MM:SS£©
-    char appointmentDate[20];    // Ô¤Ô¼ÈÕÆÚ£¨Ô¤Ô¼¹ÒºÅ=»¼ÕßÖ¸¶¨ÈÕÆÚ£»ÏÖ³¡¹ÒºÅ=µ±ÌìÈÕÆÚ£©
-    char appointmentTime[20];    // Ô¤Ô¼Ê±¼ä£¨Ô¤Ô¼¹ÒºÅ=»¼ÕßÖ¸¶¨Ê±¶Î£»ÏÖ³¡¹ÒºÅ=µ±Ç°Ê±¼ä£©
-    RegStatus status;            // ¹ÒºÅ×´Ì¬£¨PENDING/IN_PROGRESS/COMPLETED/CANCELLED£©
-    UserRole createdBy;          // ¹ÒºÅ·½Ê½£¨PATIENT-Ô¤Ô¼¹ÒºÅ, NURSE-ÏÖ³¡¹ÒºÅ£©
-    float consultationFee;       // ÕïÁÆ·ÑÓÃ
-    char remarks[100];           // ±¸×¢ĞÅÏ¢
+    char regNo[20];              // æŒ‚å·å•å·
+    char patientCardNo[20];      // ç—…äººå¡å·
+    char patientName[50];        // ç—…äººå§“å
+    char doctorEmpNo[20];        // åŒ»ç”Ÿå·¥å·
+    char doctorName[50];         // åŒ»ç”Ÿå§“å
+    char dept[50];               // ç§‘å®¤
+    char date[20];               // æŒ‚å·æ—¥æœŸï¼ˆæ ¼å¼ï¼šYYYY-MM-DDï¼‰
+    char time[20];               // æŒ‚å·æ—¶é—´ï¼ˆæ ¼å¼ï¼šHH:MM:SSï¼‰
+    char appointmentDate[20];    // é¢„çº¦æ—¥æœŸï¼ˆæ ¼å¼ï¼šYYYY-MM-DDï¼Œé¢„çº¦æŒ‚å·=æ‚£è€…æŒ‡å®šæ—¥æœŸï¼›ç°åœºæŒ‚å·=å½“å¤©æ—¥æœŸï¼‰
+    char appointmentTime[20];    // é¢„çº¦æ—¶é—´ï¼ˆæ ¼å¼ï¼šHH:MMï¼Œé¢„çº¦æŒ‚å·=æ‚£è€…æŒ‡å®šæ—¶æ®µï¼›ç°åœºæŒ‚å·=å½“å‰æ—¶é—´ï¼‰
+    RegStatus status;            // æŒ‚å·çŠ¶æ€ï¼ˆPENDING/IN_PROGRESS/COMPLETED/CANCELLEDï¼‰
+    UserRole createdBy;          // æŒ‚å·æ–¹å¼ï¼ˆPATIENT-é¢„çº¦æŒ‚å·, NURSE-ç°åœºæŒ‚å·ï¼‰
+    float consultationFee;       // è¯Šç–—è´¹ç”¨
+    char remarks[100];           // å¤‡æ³¨ä¿¡æ¯
 } RegistrationData;
 
 typedef struct Registration {
@@ -51,33 +51,29 @@ typedef struct Registration {
     struct Registration* pre;
 } Registration;
 
-//¹ÒºÅ²Ù×÷
+//æŒ‚å·æ“ä½œ
 int addRegistration(Registration** head, Registration** tail,
     char* patientCardNo, char* patientName,
     char* doctorEmpNo, char* doctorName, char* dept,
-    char* appointmentDate, char* appointmentTime, UserRole createdBy);  //Ìí¼Ó¹ÒºÅ¼ÇÂ¼
+    char* appointmentDate, char* appointmentTime, UserRole createdBy);  //æ·»åŠ æŒ‚å·è®°å½•
 int cancelRegistration(Registration** head, Registration** tail,
-    Registration* r);                                                   //È¡Ïû¹ÒºÅ
-int completeRegistration(Registration* r);                              //Íê³É¾ÍÕï                               
+    Registration* r);                                                   //å–æ¶ˆæŒ‚å·
+int completeRegistration(Registration* r);                              //å®Œæˆå°±è¯Š                               
 
 Registration* buildWaitingQueue(Registration* head,
-    char* doctorEmpNo, char* today);                                    //Éú³ÉºòÕï¶ÓÁĞ
-void listWaitingQueue(Registration* queueHead, char* doctorName);       //ÏÔÊ¾Ö¸¶¨Ò½ÉúµÄºòÕï¶ÓÁĞ
+    char* doctorEmpNo, char* today);                                    //ç”Ÿæˆå€™è¯Šé˜Ÿåˆ—
+void listWaitingQueue(Registration* queueHead, char* doctorName);       //æ˜¾ç¤ºæŒ‡å®šåŒ»ç”Ÿçš„å€™è¯Šé˜Ÿåˆ—
 int callNextPatient(Registration** head, Registration** tail,
-    char* doctorEmpNo);                                                 //Ò½Éú½ĞºÅ
+    char* doctorEmpNo);                                                 //åŒ»ç”Ÿå«å·
 
 
-//²éÑ¯º¯Êı
-Registration* findRegistrationByNo(Registration* head, char* regNo);    //°´¹ÒºÅµ¥ºÅ²éÑ¯
-Registration* findRegistrationsByPatient(Registration* head, 
-    char* patientCardNo);                                               //°´²¡ÈË¿¨ºÅ²éÑ¯
-Registration* findRegistrationsByDoctor(Registration* head, 
-    char* doctorEmpNo);                                                 //°´Ò½Éú²éÑ¯
-Registration* findRegistrationsByDateRange(Registration* head, int y1, 
-    int m1, int d1, int y2, int m2, int d2);                            //°´Ê±¼ä·¶Î§²éÑ¯
-Registration* findRegistrationsByStatus(Registration* head,
-    RegStatus status);                                                  //°´×´Ì¬²éÑ¯
+//æŸ¥è¯¢å‡½æ•°
+Registration* findRegistrationByNo(Registration* head, char* regNo);    //æŒ‰æŒ‚å·å•å·æŸ¥è¯¢
+Registration* findRegistrationsByPatient(Registration* head,char* patientCardNo);                                               //æŒ‰ç—…äººå¡å·æŸ¥è¯¢
+Registration* findRegistrationsByDoctor(Registration* head,char* doctorEmpNo);                                                 //æŒ‰åŒ»ç”ŸæŸ¥è¯¢
+Registration* findRegistrationsByDateRange(Registration* head, int y1,int m1, int d1, int y2, int m2, int d2);                            //æŒ‰æ—¶é—´èŒƒå›´æŸ¥è¯¢
+Registration* findRegistrationsByStatus(Registration* head,RegStatus status);                                                  //æŒ‰çŠ¶æ€æŸ¥è¯¢
 
-void listAllRegistrations(Registration* head);                          //ÁĞ±íÏÔÊ¾
+void listAllRegistrations(Registration* head);                          //åˆ—è¡¨æ˜¾ç¤º
 
 #endif // !_REGISTRATION_H_
