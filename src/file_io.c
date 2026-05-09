@@ -720,6 +720,7 @@ void freeRegistrationChain(Registration** head) {
 	*head = NULL;
 }
 
+
 void freeUserChain(User** head) {
 	if (!head || !*head) return;
 	User* p = *head;
@@ -731,6 +732,7 @@ void freeUserChain(User** head) {
 	}
 	*head = NULL;
 }
+
 
 void freeRegistrationResultChain(Registration** head) {
 	if (!head || !*head) return;
@@ -744,6 +746,7 @@ void freeRegistrationResultChain(Registration** head) {
 	*head = NULL;
 }
 
+
 void freeDoctorsResultChain(Doctor** head) {
 	if (!head || !*head) return;
 	Doctor* p = *head;
@@ -755,6 +758,7 @@ void freeDoctorsResultChain(Doctor** head) {
 	}
 	*head = NULL;
 }
+
 
 void freePatientsResultChain(Patient** head) {
 	if (!head || !*head) return;
@@ -768,6 +772,7 @@ void freePatientsResultChain(Patient** head) {
 	*head = NULL;
 }
 
+
 void freeMedicineResultChain(Medicine** head) {
 	if (!head || !*head) return;
 	Medicine* p = *head;
@@ -779,6 +784,7 @@ void freeMedicineResultChain(Medicine** head) {
 	}
 	*head = NULL;
 }
+
 
 void freeHospitalizationResultChain(Hospitalization** head){
 	if (!head || !*head) return;
@@ -792,6 +798,7 @@ void freeHospitalizationResultChain(Hospitalization** head){
 	*head = NULL;
 	}
 
+
 void freeBedResultChain(Bed** head) {
 	if (!head || !*head) return;
 	Bed* p = *head;
@@ -803,6 +810,7 @@ void freeBedResultChain(Bed** head) {
 	}
 	*head = NULL;
 }
+
 //-----------------
 
 //-----------------
