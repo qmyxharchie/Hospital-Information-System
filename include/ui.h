@@ -46,6 +46,6 @@ void showHospitalizationManagement(void);//住院管理菜单
 void showBedManagement(void);//床位管理菜单
 void showStatisticsMenu(void);//统计报表菜单
 void showQueryMenu(void);//查询菜单
-
+static void statDoctorByDept(void);//按科室统计医生数量
 
 #endif
