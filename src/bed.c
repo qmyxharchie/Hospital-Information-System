@@ -74,7 +74,9 @@ void addBed(Bed** head, Bed** tail, char* ward, char* bedNo)
 	strcpy(b->data.patientName, "无");    // 初始化患者姓名为"无"
 	strcpy(b->data.status, "空闲");       // 初始化状态为空闲
 	strcpy(b->data.ward, ward);           // 设置病房号
-	strcpy(b->data.bedNo, bedNo);         // 设置床位号
+	char id[20];
+	generateUniqueId("BED", id);
+	strcpy(b->data.bedNo, id);         // 设置床位号
 	b->next = b->pre = NULL;              // 初始化前后指针为空
 	
 	if (*tail == NULL)//如果尾指针为空则插入节点

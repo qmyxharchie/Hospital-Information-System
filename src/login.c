@@ -55,7 +55,9 @@ LoginStatus login(char username[], char password[]) {
 			g_currentUserRole = cur->data.role;
 			g_isLoggedIn = 1;									//记录登录状态
 
-			getCurrentTime(cur->data.lastLogin);				//更新登录时间
+			int y=0, m=0, d=0;
+			getCurrentTime(&y, &m, &d);
+			sprintf(cur->data.lastLogin, "%04d-%02d-%02d", y, m, d);				//更新登录时间
 
 			rebuildUserFile(g_userHead);						//保存回文件
 

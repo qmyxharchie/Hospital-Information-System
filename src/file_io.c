@@ -95,7 +95,7 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 			fscanf(fp, "%s", node->data.dept);
 			fscanf(fp, "%s", node->data.schedule);
 			fscanf(fp, "%d", &node->data.maxPatients);
-			fscanf(fp, "%d", &node->currentPatients);
+			fscanf(fp, "%d", &node->data.currentPatients);
 
 			if (*head == NULL) {
 				*head = node;
@@ -143,8 +143,8 @@ void buildMedicineChain(Medicine** head, Medicine** tail) {
 			fscanf(fp, "%s", node->data.brandName);
 			fscanf(fp, "%s", node->data.spec);
 			fscanf(fp, "%lf", &node->data.price);
-			fscanf(fp, "%d", &node->currentPatients);
-			fscanf(fp, "%d", &node->minStock);
+			fscanf(fp, "%d", &node->data.stock);
+			fscanf(fp, "%d", &node->data.minStock);
 
 			if (*head == NULL) {
 				*head = node;
@@ -192,7 +192,7 @@ void buildPurchaseChain(Purchase** head, Purchase** tail) {
 			fscanf(fp, "%s", node->data.medNo);
 			fscanf(fp, "%d", &node->data.quantity);
 			fscanf(fp, "%lf", &node->data.totalCost);
-			fscanf(fp, "%s", node->date);
+			fscanf(fp, "%s", node->data.date);
 
 			if (*head == NULL) {
 				*head = node;
@@ -240,8 +240,8 @@ void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail) {
 			fscanf(fp, "%s", node->data.patientName);
 			fscanf(fp, "%s", node->data.bedNo);
 			fscanf(fp, "%lf", &node->data.totalCost);
-			fscanf(fp, "%s", node->admissionDate);
-			fscanf(fp, "%s", node->status);
+			fscanf(fp, "%s", node->data.admissionDate);
+			fscanf(fp, "%s", node->data.status);
 
 			if (*head == NULL) {
 				*head = node;
@@ -288,7 +288,7 @@ void buildBedChain(Bed** head, Bed** tail) {
 			fscanf(fp, "%s", node->data.bedNo);
 			fscanf(fp, "%s", node->data.patientCardNo);
 			fscanf(fp, "%s", node->data.patientName);
-			fscanf(fp, "%s", node->status);
+			fscanf(fp, "%s", node->data.status);
 
 			if (*head == NULL) {
 				*head = node;
