@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 #include "ui.h"
+#include "utils.h"          
+
 
 // ============================================================
 // 全局链表指针定义（唯一定义点，所有模块共享）
@@ -805,7 +807,7 @@ void showRegistrationManagement(void) {
             strcpy(doctorEmpNo, doc->data.empNo);
             strcpy(doctorName, doc->data.name);
             strcpy(dept, doc->data.dept);
-            int year, month, day;
+            int year=month=day=0;
             getCurrentTime(&year, &month, &day);
             printf("请输入预约日期 (YYYY-MM-DD，至少今天 %04d-%02d-%02d): ",
                    year, month, day);
@@ -925,7 +927,7 @@ void showRegistrationManagement(void) {
         case 6: {
             safeReadString("请输入科室: ", dept, 50);
             safeReadString("请输入医生工号(查看全部输0): ", doctorEmpNo, 20);
-            int year, month, day;
+            int year=month=day=0;
             getCurrentTime(&year, &month, &day);
             char today[20];
             sprintf(today, "%04d-%02d-%02d", year, month, day);

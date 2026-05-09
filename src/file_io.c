@@ -17,10 +17,11 @@
 void buildPatientChain(Patient** head, Patient** tail) {
 	FILE* fp = fopen(PATIENT_FILE, "r");
 	if (fp == NULL) {
-		fopen(PATIENT_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(PATIENT_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -66,10 +67,11 @@ void buildPatientChain(Patient** head, Patient** tail) {
 void buildDoctorChain(Doctor** head, Doctor** tail) {
 	FILE* fp = fopen(DOCTOR_FILE, "r");
 	if (fp == NULL) {
-		fopen(DOCTOR_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(DOCTOR_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -118,10 +120,11 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 void buildMedicineChain(Medicine** head, Medicine** tail) {
 	FILE* fp = fopen(MEDICINE_FILE, "r");
 	if (fp == NULL) {
-		fopen(MEDICINE_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(MEDICINE_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -167,10 +170,11 @@ void buildMedicineChain(Medicine** head, Medicine** tail) {
 void buildPurchaseChain(Purchase** head, Purchase** tail) {
 	FILE* fp = fopen(PURCHASE_FILE, "r");
 	if (fp == NULL) {
-		fopen(PURCHASE_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(PURCHASE_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -215,10 +219,11 @@ void buildPurchaseChain(Purchase** head, Purchase** tail) {
 void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail) {
 	FILE* fp = fopen(HOSPITAL_FILE, "r");
 	if (fp == NULL) {
-		fopen(HOSPITAL_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(HOSPITAL_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -264,10 +269,11 @@ void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail) {
 void buildBedChain(Bed** head, Bed** tail) {
 	FILE* fp = fopen(BED_FILE, "r");
 	if (fp == NULL) {
-		fopen(BED_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(BED_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -311,10 +317,11 @@ void buildBedChain(Bed** head, Bed** tail) {
 void buildRegistrationChain(Registration** head, Registration** tail) {
 	FILE* fp = fopen(REGISTRATION_FILE, "r");
 	if (fp == NULL) {
-		fopen(REGISTRATION_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(REGISTRATION_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -361,10 +368,11 @@ void buildRegistrationChain(Registration** head, Registration** tail) {
 void buildUserChain(User** head, User** tail) {
 	FILE* fp = fopen(USER_FILE, "r");
 	if (fp == NULL) {
-		fopen(USER_FILE, "w");
-		fprintf(fp, "-1\n");
-		fclose(fp);
-
+		fp = fopen(USER_FILE, "w");
+		if (fp != NULL) {
+			fprintf(fp, "-1\n");
+			fclose(fp);
+		}
 		*head = NULL;
 		*tail = NULL;
 		return;
@@ -597,7 +605,7 @@ void rebuildRegistrationFile(Registration* head) {
 		fprintf(fp, "%s\n", p->data.doctorName);
 		fprintf(fp, "%s\n", p->data.dept);
 		fprintf(fp, "%s\n", p->data.date);
-		fprintf(fp, "%s\n", p->data.status);
+		fprintf(fp, "%d\n", p->data.status);
 
 		fprintf(fp, "\n");
 		p = p->next;

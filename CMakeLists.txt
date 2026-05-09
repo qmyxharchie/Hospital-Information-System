@@ -10,6 +10,7 @@ if(MSVC)
     add_compile_options(/utf-8)      # 强制 UTF-8 读取源文件
     add_compile_options(/wd4996)     # 关闭 strcpy 安全警告
     add_compile_options(/wd4819)     # 关闭编码警告
+    add_compile_options(/wd6031)     # 关闭"返回值被忽略"分析警告
 endif()
 
 # ============ 源文件（main() 在 ui.c 中） ============
