@@ -391,7 +391,42 @@ void listAllDoctors(Doctor* head) {
         current = current->next;                         // 移动到下一个节点
     }
 }
+//--------------------
 
+//--------------------
+// 以下为按科室打印函数
+// 功能：按科室分组打印医生人数
+// 参数：head - 链表头指针
+void statDoctorByDept(void) {
+    char depts[20][50];
+    int  counts[20] = { 0 };
+    int  deptCount = 0;
+
+    Doctor* d = g_doctorHead;
+    while (d != NULL) {
+        int found = 0;
+        for (int i = 0; i < deptCount; i++) {
+            if (strcmp(depts[i], d->data.dept) == 0) {
+                counts[i]++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found && deptCount < 20) {
+            strcpy(depts[deptCount], d->data.dept);
+            counts[deptCount] = 1;
+            deptCount++;
+        }
+        d = d->next;
+    }
+
+    printf("\n--- 科室分布 ---\n");
+    printf("%-20s %-10s\n", "科室", "医生人数");
+    printf("------------------------------\n");
+    for (int i = 0; i < deptCount; i++) {
+        printf("%-20s %-10d\n", depts[i], counts[i]);
+    }
+}
 
 
 

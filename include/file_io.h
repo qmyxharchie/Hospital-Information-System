@@ -88,6 +88,7 @@ void freeBedChain(Bed** head);												// 释放床位列表
 void freeRegistrationChain(Registration** head);									// 释放挂号记录
 void freeUserChain(User** head);													// 释放用户列表
 
+
 //数据备份
 int backupAllData();								 // 备份所有数据文件
 int copyFile(char* source, char* dest);				 // 复制单个文件
