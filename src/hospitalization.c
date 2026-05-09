@@ -19,8 +19,8 @@
 //返回值：无
 void addHospitalization(Hospitalization** head,
                         Hospitalization** tail,
-                        const char* patientCardNo,
-                        const char* patientName,
+                        char* patientCardNo,
+                        char* patientName,
                         double prepay)
 {
     // =========================

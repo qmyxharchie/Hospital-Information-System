@@ -300,7 +300,7 @@ void listAllPatients(Patient* head) {
     Patient* current = head;                              // 从头节点开始
     while (current != NULL) {
         // 格式化输出当前病人的各项信息
-        printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
+        printf("%-20s %-50s %-10d %-10s %-20s %-15s %-10s\n",
             current->data.cardNo,                         // 门诊卡号
             current->data.name,                           // 姓名
             current->data.age,                            // 年龄
