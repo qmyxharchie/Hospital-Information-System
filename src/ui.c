@@ -1,5 +1,32 @@
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include "ui.h"
+
+// ============================================================
+// 全局链表指针定义（唯一定义点，所有模块共享）
+// ============================================================
+Patient* g_patientHead = NULL;
+Patient* g_patientTail = NULL;
+Doctor* g_doctorHead = NULL;
+Doctor* g_doctorTail = NULL;
+Registration* g_regHead = NULL;
+Registration* g_regTail = NULL;
+Medicine* g_medHead = NULL;
+Medicine* g_medTail = NULL;
+Purchase* g_purHead = NULL;
+Purchase* g_purTail = NULL;
+Hospitalization* g_hosHead = NULL;
+Hospitalization* g_hosTail = NULL;
+Bed* g_bedHead = NULL;
+Bed* g_bedTail = NULL;
+User* g_userHead = NULL;
+User* g_userTail = NULL;
+
+// 登录相关全局
+char g_currentUsername[50] = "";
 
 /* 安全读取 int，带范围校验和错误清缓冲 */
 int safeReadInt(const char* prompt, int minVal, int maxVal) {

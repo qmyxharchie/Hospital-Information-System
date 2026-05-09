@@ -5,16 +5,8 @@
 #include "registration.h"   // 挂号模块头文件
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
+#include "ui.h" 
 
-//--------------------
-
-//--------------------
-// 全局变量定义 - 医生链表的头指针和尾指针
-static Doctor* g_doctorHead = NULL;  // 医生链表头指针 - 指向链表的第一个节点
-static Doctor* g_doctorTail = NULL;  // 医生链表尾指针 - 指向链表的最后一个节点
-//--------------------
-
-//--------------------
 // Getter 函数实现 - 用于其他模块访问本模块的全局变量
 Doctor* getDoctorHead(void) {
     // 获取医生链表头指针的函数
@@ -386,7 +378,7 @@ void listAllDoctors(Doctor* head) {
         "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
 
     // 3. 遍历链表并输出每个医生的信息
-    Doctor* current = head;                              // 从头节点开始
+    Doctor* current = head;
     while (current != NULL) {
         // 格式化输出当前医生的各项信息
         printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",

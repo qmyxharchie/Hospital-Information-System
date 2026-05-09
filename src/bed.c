@@ -4,6 +4,7 @@
 #include "file_io.h"  // 文件输入输出模块
 #include "utils.h"    // 工具函数模块
 #include "bed.h"      // 床位模块
+#include "ui.h"
 
 //-------------------------
 //函数名：allocateBed

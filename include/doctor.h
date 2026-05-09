@@ -12,6 +12,8 @@
 #ifndef _DOCTOR_H_
 #define _DOCTOR_H_
 
+#include "registration.h"
+
 typedef struct DoctorData {
     char empNo[20];              // ¹¤ºÅ
     char name[50];               // ÐÕÃû

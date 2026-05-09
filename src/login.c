@@ -6,6 +6,7 @@
 #include "file_io.h"
 #include "utils.h"
 #include "patient.h"
+#include "ui.h"
 
 // 全局变量定义
 static User* g_currUser = NULL;     // 当前登录用户

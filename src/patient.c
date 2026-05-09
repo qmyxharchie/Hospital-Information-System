@@ -5,24 +5,13 @@
 #include "registration.h"   // 挂号模块头文件
 #include "file_io.h"        // 文件输入输出模块
 #include "utils.h"          // 工具函数模块
+#include "ui.h" 
 
-//--------------------
-
-//--------------------
-// 全局变量定义 - 病人链表的头指针和尾指针
-static Patient* g_patientHead = NULL;  // 病人链表头指针 - 指向链表的第一个节点
-static Patient* g_patientTail = NULL;  // 病人链表尾指针 - 指向链表的最后一个节点
-//--------------------
-
-//--------------------
 // Getter 函数实现 - 用于其他模块访问本模块的全局变量
 Patient* getPatientHead(void) {
-    // 获取病人链表头指针的函数
-    return g_patientHead;
+    return g_patientHead;  // 直接使用 ui.h 中 extern 声明的变量
 }
-
 Patient* getPatientTail(void) {
-    // 获取病人链表尾指针的函数
     return g_patientTail;
 }
 //--------------------

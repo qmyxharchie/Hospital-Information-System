@@ -10,6 +10,7 @@
 #include "medicine.h"
 #include "hospitalization.h"
 #include "bed.h"
+#include "ui.h"
 
 //-----------------
 //	╤ах║нд╪Ч

@@ -69,14 +69,10 @@ int callNextPatient(Registration** head, Registration** tail,
 
 //查询函数
 Registration* findRegistrationByNo(Registration* head, char* regNo);    //按挂号单号查询
-Registration* findRegistrationsByPatient(Registration* head, 
-    char* patientCardNo);                                               //按病人卡号查询
-Registration* findRegistrationsByDoctor(Registration* head, 
-    char* doctorEmpNo);                                                 //按医生查询
-Registration* findRegistrationsByDateRange(Registration* head, int y1, 
-    int m1, int d1, int y2, int m2, int d2);                            //按时间范围查询
-Registration* findRegistrationsByStatus(Registration* head,
-    RegStatus status);                                                  //按状态查询
+Registration* findRegistrationsByPatient(Registration* head,char* patientCardNo);                                               //按病人卡号查询
+Registration* findRegistrationsByDoctor(Registration* head,char* doctorEmpNo);                                                 //按医生查询
+Registration* findRegistrationsByDateRange(Registration* head, int y1,int m1, int d1, int y2, int m2, int d2);                            //按时间范围查询
+Registration* findRegistrationsByStatus(Registration* head,RegStatus status);                                                  //按状态查询
 
 void listAllRegistrations(Registration* head);                          //列表显示
 

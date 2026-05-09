@@ -4,7 +4,7 @@
 #include "medicine.h"
 #include "file_io.h"
 #include "utils.h"
-
+#include "ui.h"
 //-------------------------
 //以下为库存检查预警函数
 // 功能：检查药品库存是否低于最低库存并发出预警

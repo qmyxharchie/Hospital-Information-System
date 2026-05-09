@@ -24,6 +24,8 @@ extern Hospitalization* g_hosHead;
 extern Hospitalization* g_hosTail;
 extern Bed* g_bedHead;
 extern Bed* g_bedTail;
+extern User* g_userHead;
+extern User* g_userTail;
 
 //颜色定义
 #define COLOR_BG           RGB(240, 248, 255)  // 背景色（AliceBlue）
@@ -54,7 +56,7 @@ int showLoginPage(void);//显示登录状态
 //* 1 = LOGIN_SUCCESS_USER  （普通用户登录成功）
 //* 2 = LOGIN_SUCCESS_ADMIN （管理员登录成功）
 //* 3 = LOGIN_EXIT         （退出系统）
-void showMainMenuByRole(int userRole, char* username);//按照不同身份显示菜单
+int showMainMenuByRole(int userRole, char* username);//按照不同身份显示菜单
 void showPatientManagement(void);//病人管理菜单
 void showDoctorManagement(void);//医生管理菜单
 void showRegistrationManagement(void);//挂号管理菜单
