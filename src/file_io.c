@@ -95,6 +95,10 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 			fscanf(fp, "%s", node->data.dept);
 			fscanf(fp, "%s", node->data.schedule);
 			fscanf(fp, "%d", &node->data.maxPatients);
+
+
+
+
 			fscanf(fp, "%d", &node->data.currentPatients);
 
 			if (*head == NULL) {
