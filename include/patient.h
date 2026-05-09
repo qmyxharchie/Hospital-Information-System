@@ -1,14 +1,14 @@
-//--------------
-// ²¡ÈËÄ£¿é
+ï»¿//--------------
+// ç—…äººæ¨¡å—
 //--------------
 
-//¹¦ÄÜ
-//²¡ÈËÄ£¿é¸ºÔğ¹ÜÀí²¡ÈËµÄ»ù±¾ĞÅÏ¢£º
-//-Ìí¼ÓĞÂ²¡ÈË£¨×Ô¶¯Éú³ÉÃÅÕï¿¨ºÅ£©
-//- É¾³ı²¡ÈË
-//- ĞŞ¸Ä²¡ÈËĞÅÏ¢
-//- ²éÑ¯²¡ÈË
-//- ÁĞ±íÏÔÊ¾ËùÓĞ²¡ÈË
+//åŠŸèƒ½
+//ç—…äººæ¨¡å—è´Ÿè´£ç®¡ç†ç—…äººçš„åŸºæœ¬ä¿¡æ¯ï¼š
+//-æ·»åŠ æ–°ç—…äººï¼ˆè‡ªåŠ¨ç”Ÿæˆé—¨è¯Šå¡å·ï¼‰
+//- åˆ é™¤ç—…äºº
+//- ä¿®æ”¹ç—…äººä¿¡æ¯
+//- æŸ¥è¯¢ç—…äºº
+//- åˆ—è¡¨æ˜¾ç¤ºæ‰€æœ‰ç—…äºº
 
 #ifndef _PATIENT_H_
 #define _PATIENT_H_
@@ -16,37 +16,37 @@
 #include "registration.h"
 
 typedef struct PatientData {
-    char cardNo[20];          // ÃÅÕï¿¨ºÅ£¨Î¨Ò»±êÊ¶£©
-    char name[50];            // ĞÕÃû
-    int age;                   // ÄêÁä
-    char gender[10];          // ĞÔ±ğ
-    char idCard[20];          // Éí·İÖ¤ºÅ
-    char phone[15];           // ÁªÏµµç»°
-    int isActive;             // ÊÇ·ñ×¡Ôº£¨0=·ñ£¬1=ÊÇ£©
+    char cardNo[20];          // é—¨è¯Šå¡å·ï¼ˆå”¯ä¸€æ ‡è¯†ï¼‰
+    char name[50];            // å§“å
+    int age;                   // å¹´é¾„
+    char gender[10];          // æ€§åˆ«
+    char idCard[20];          // èº«ä»½è¯å·
+    char phone[15];           // è”ç³»ç”µè¯
+    int isActive;             // æ˜¯å¦ä½é™¢ï¼ˆ0=å¦ï¼Œ1=æ˜¯ï¼‰
 } PatientData;
 
 typedef struct Patient {
     PatientData data;
-    struct Patient* next;     // ÏÂÒ»¸ö½Úµã
-    struct Patient* pre;      // ÉÏÒ»¸ö½Úµã
+    struct Patient* next;     // ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+    struct Patient* pre;      // ä¸Šä¸€ä¸ªèŠ‚ç‚¹
 } Patient;
 
-Patient* getPatientHead(void);                                          // Getter º¯ÊıÊµÏÖ
+Patient* getPatientHead(void);                                          // Getter å‡½æ•°å®ç°
 Patient* getPatientTail(void);
 void addPatient(Patient** head, Patient** tail,
-    char name[], int age, char gender[], char idCard[], char phone[]);  //Ìí¼Ó²¡ÈË
-void delPatient(Patient** head, Patient** tail, PatientData p);         //É¾³ı²¡ÈË
-int modifyPatient(Patient* head, char* cardNo, PatientData newData);    //ĞŞ¸Ä²¡ÈËĞÅÏ¢
+    char name[], int age, char gender[], char idCard[], char phone[]);  //æ·»åŠ ç—…äºº
+void delPatient(Patient** head, Patient** tail, PatientData p);         //åˆ é™¤ç—…äºº
+int modifyPatient(Patient* head, char* cardNo, PatientData newData);    //ä¿®æ”¹ç—…äººä¿¡æ¯
 
-//¹ÒºÅ
+//æŒ‚å·
 void patientViewOwnRegistrations(Registration* regHead, 
-    char* patientCardNo);                                               //²é¿´¹ÒºÅ¼ÇÂ¼
+    char* patientCardNo);                                               //æŸ¥çœ‹æŒ‚å·è®°å½•
 int patientCancelRegistration(Registration** regHead, Registration** regTail,
-    char* patientCardNo, char* regNo);                                  //È¡Ïû×Ô¼º¹ÒºÅ
+    char* patientCardNo, char* regNo);                                  //å–æ¶ˆè‡ªå·±æŒ‚å·
 
-//²éÕÒ
-Patient* findPatientByCardNo(Patient* head, char* cardNo);              //°´¿¨ºÅ¾«È·²éÕÒ
-Patient* findPatientsByName(Patient* head, char* name);                 //°´ĞÕÃûÄ£ºı/¾«È·²éÕÒ
-void listAllPatients(Patient* head);                                    //ÁĞ±íÏÔÊ¾
+//æŸ¥æ‰¾
+Patient* findPatientByCardNo(Patient* head, char* cardNo);              //æŒ‰å¡å·ç²¾ç¡®æŸ¥æ‰¾
+Patient* findPatientsByName(Patient* head, char* name);                 //æŒ‰å§“åæ¨¡ç³Š/ç²¾ç¡®æŸ¥æ‰¾
+void listAllPatients(Patient* head);                                    //åˆ—è¡¨æ˜¾ç¤º
 
 #endif                       

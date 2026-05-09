@@ -1,29 +1,29 @@
-//---------------
-//×¡ÔºÄ£¿é
+ï»¿//---------------
+//ä½é™¢æ¨¡å—
 //---------------
 
 /*
-**×¡Ôº¹ÜÀí**£º
-ÈëÔºµÇ¼Ç£¨×Ô¶¯·ÖÅä´²Î»£©
-³öÔº½áËã£¨¼ÆËã·ÑÓÃ¡¢ÊÍ·Å´²Î»£©
-×¡Ôº×´Ì¬¸ú×Ù¡£
+**ä½é™¢ç®¡ç†**ï¼š
+å…¥é™¢ç™»è®°ï¼ˆè‡ªåŠ¨åˆ†é…åºŠä½ï¼‰
+å‡ºé™¢ç»“ç®—ï¼ˆè®¡ç®—è´¹ç”¨ã€é‡Šæ”¾åºŠä½ï¼‰
+ä½é™¢çŠ¶æ€è·Ÿè¸ªã€‚
 */
 
 #ifndef _HOSPITALIZATION_H_
 #define _HOSPITALIZATION_H_
 
-//×¡Ôº¼ÇÂ¼
+//ä½é™¢è®°å½•
 typedef struct HospitalizationData 
 {
-    char recordNo[20];       // ×¡Ôºµ¥ºÅ£¨Èç"HOS001"£©
-    char patientCardNo[20];  // ²¡ÈË¿¨ºÅ
-    char patientName[50];   // ²¡ÈËĞÕÃû
-    char bedNo[20];         // ´²Î»ºÅ
-    double prepay;           // Ô¤½»½ğ¶î
-    double totalCost;        // ×Ü·ÑÓÃ
-    char admissionDate[20];  // ÈëÔºÈÕÆÚ
-    char status[20];         // ×´Ì¬£¨ÔÚÔº/ÒÑ³öÔº£©
-} HospitalizationData;  // ×¢£ºÍÅ¶ÓÍ·ÎÄ¼şÖĞ Hospitalization ¼´Îª HospitalizationData
+    char recordNo[20];       // ä½é™¢å•å·ï¼ˆå¦‚"HOS001"ï¼‰
+    char patientCardNo[20];  // ç—…äººå¡å·
+    char patientName[50];   // ç—…äººå§“å
+    char bedNo[20];         // åºŠä½å·
+    double prepay;           // é¢„äº¤é‡‘é¢
+    double totalCost;        // æ€»è´¹ç”¨
+    char admissionDate[20];  // å…¥é™¢æ—¥æœŸ
+    char status[20];         // çŠ¶æ€ï¼ˆåœ¨é™¢/å·²å‡ºé™¢ï¼‰
+} HospitalizationData;  // æ³¨ï¼šå›¢é˜Ÿå¤´æ–‡ä»¶ä¸­ Hospitalization å³ä¸º HospitalizationData
 
 typedef struct Hospitalization {
     HospitalizationData data;
@@ -32,13 +32,13 @@ typedef struct Hospitalization {
 } Hospitalization;
 
 void addHospitalization(Hospitalization** head, Hospitalization** tail, char* patientCardNo,
-    char* patientName, double prepay);    //ÈëÔºµÇ¼Ç
-void dischargePatient(Hospitalization* h, double totalCost);                     //³öÔº½áËã
-//²éÕÒ²¡ÈË
-Hospitalization* findHospitalizationByCardNo(Hospitalization* head, char* cardNo);  // °´²¡ÈË¿¨ºÅ²é×¡Ôº¼ÇÂ¼
-Hospitalization* findHospitalizationByNo(Hospitalization* head, char* recordNo);    // °´×¡Ôºµ¥ºÅ²é×¡Ôº¼ÇÂ¼
-Hospitalization* findCurrentHospitalizations(Hospitalization* head);                  // ²éÕÒµ±Ç°ÔÚÔº²¡ÈË
-void listAllHospitalizations(Hospitalization* head);  // ËùÓĞ×¡Ôº¼ÇÂ¼ÁĞ±í
-void addPrepay(Hospitalization* h, double amount); // ×·¼ÓÔ¤½»½ğ£¨amount > 0£©
-int modifyHospitalization(Hospitalization* head, char* recordNo, char* newBedNo, double addPrepayAmount);// ĞŞ¸Ä×¡ÔºĞÅÏ¢£º×ª´² + ×·¼ÓÔ¤½»½ğ£¬·µ»Ø 1=³É¹¦£¬0=Ê§°Ü
+    char* patientName, double prepay);    //å…¥é™¢ç™»è®°
+void dischargePatient(Hospitalization* h, double totalCost);                     //å‡ºé™¢ç»“ç®—
+//æŸ¥æ‰¾ç—…äºº
+Hospitalization* findHospitalizationByCardNo(Hospitalization* head, char* cardNo);  // æŒ‰ç—…äººå¡å·æŸ¥ä½é™¢è®°å½•
+Hospitalization* findHospitalizationByNo(Hospitalization* head, char* recordNo);    // æŒ‰ä½é™¢å•å·æŸ¥ä½é™¢è®°å½•
+Hospitalization* findCurrentHospitalizations(Hospitalization* head);                  // æŸ¥æ‰¾å½“å‰åœ¨é™¢ç—…äºº
+void listAllHospitalizations(Hospitalization* head);  // æ‰€æœ‰ä½é™¢è®°å½•åˆ—è¡¨
+void addPrepay(Hospitalization* h, double amount); // è¿½åŠ é¢„äº¤é‡‘ï¼ˆamount > 0ï¼‰
+int modifyHospitalization(Hospitalization* head, char* recordNo, char* newBedNo, double addPrepayAmount);// ä¿®æ”¹ä½é™¢ä¿¡æ¯ï¼šè½¬åºŠ + è¿½åŠ é¢„äº¤é‡‘ï¼Œè¿”å› 1=æˆåŠŸï¼Œ0=å¤±è´¥
 #endif

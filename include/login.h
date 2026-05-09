@@ -1,12 +1,12 @@
-//===============
-//   µÇÂ¼Ä£¿é
+ï»¿//===============
+//   ç™»å½•æ¨¡å—
 //===============
 
-/*µÇÂ¼Ä£¿é¸ºÔğÓÃ»§Éí·İÑéÖ¤£º
-- ÓÃ»§µÇÂ¼
-- ¹ÜÀíÔ±µÇÂ¼
-- ÓÃ»§×¢²á
-- ÃÜÂë¼ÓÃÜ´æ´¢*/
+/*ç™»å½•æ¨¡å—è´Ÿè´£ç”¨æˆ·èº«ä»½éªŒè¯ï¼š
+- ç”¨æˆ·ç™»å½•
+- ç®¡ç†å‘˜ç™»å½•
+- ç”¨æˆ·æ³¨å†Œ
+- å¯†ç åŠ å¯†å­˜å‚¨*/
 
 #ifndef _LOGIN_H_
 #define _LOGIN_H_
@@ -14,17 +14,17 @@
 #include <stdbool.h>
 
 typedef enum {
-    PATIENT = 0, // »¼Õß
-    NURSE = 1,   // »¤Ê¿
-    DOCTOR = 2,  // Ò½Éú
-    ADMIN = 3    // ¹ÜÀíÔ±
+    PATIENT = 0, // æ‚£è€…
+    NURSE = 1,   // æŠ¤å£«
+    DOCTOR = 2,  // åŒ»ç”Ÿ
+    ADMIN = 3    // ç®¡ç†å‘˜
 } UserRole;
 
 typedef struct UserData {
-    char username[50];           // ÓÃ»§Ãû
-    char password[100];          // ÃÜÂë£¨MD5¹şÏ££©
-    UserRole role;               // ½ÇÉ« (0=»¼Õß, 1=»¤Ê¿, 2=Ò½Éú, 3=¹ÜÀíÔ±£©
-    char lastLogin[30];          // ×îºóµÇÂ¼Ê±¼ä
+    char username[50];           // ç”¨æˆ·å
+    char password[100];          // å¯†ç ï¼ˆMD5å“ˆå¸Œï¼‰
+    UserRole role;               // è§’è‰² (0=æ‚£è€…, 1=æŠ¤å£«, 2=åŒ»ç”Ÿ, 3=ç®¡ç†å‘˜ï¼‰
+    char lastLogin[30];          // æœ€åç™»å½•æ—¶é—´
 } UserData;
 
 typedef struct User {
@@ -38,7 +38,7 @@ typedef enum {
     LOGIN_SUCCESS_USER = 1,
     LOGIN_SUCCESS_ADMIN = 2,
     LOGIN_EXIT = 3
-} LoginStatus;                    // µÇÂ¼×´Ì¬
+} LoginStatus;                    // ç™»å½•çŠ¶æ€
 
 typedef struct {
     int loginStatus;
@@ -46,14 +46,14 @@ typedef struct {
     char username[50];
 } LoginResult;
 
-extern char g_currentUsername[50];        // µ±Ç°µÇÂ¼ÓÃ»§Ãû
-extern UserRole g_currentUserRole;        // µ±Ç°ÓÃ»§½ÇÉ«£º0=ÓÃ»§, 1=»¤Ê¿, 2=Ò½Éú, 3=¹ÜÀíÔ±
-extern bool g_isLoggedIn;                 // ÊÇ·ñÒÑµÇÂ¼
+extern char g_currentUsername[50];        // å½“å‰ç™»å½•ç”¨æˆ·å
+extern UserRole g_currentUserRole;        // å½“å‰ç”¨æˆ·è§’è‰²ï¼š0=ç”¨æˆ·, 1=æŠ¤å£«, 2=åŒ»ç”Ÿ, 3=ç®¡ç†å‘˜
+extern bool g_isLoggedIn;                 // æ˜¯å¦å·²ç™»å½•
 
-LoginStatus login(char username[], char password[]);                  // ÓÃ»§µÇÂ¼
-int registerUser(char username[], char password[], int role);         // ÓÃ»§×¢²á
-User* findUserByName(User* head, char* username);                     // ÓÃ»§²éÑ¯
-User* getCurrentUser(void);                                           // »ñÈ¡µ±Ç°µÇÂ¼ÓÃ»§
+LoginStatus login(char username[], char password[]);                  // ç”¨æˆ·ç™»å½•
+int registerUser(char username[], char password[], int role);         // ç”¨æˆ·æ³¨å†Œ
+User* findUserByName(User* head, char* username);                     // ç”¨æˆ·æŸ¥è¯¢
+User* getCurrentUser(void);                                           // è·å–å½“å‰ç™»å½•ç”¨æˆ·
 UserRole getUserRoleByUsername(const char* username);
 int hasPermission(UserRole role, const char* operation);
 int isPatient(UserRole role);

@@ -1,12 +1,12 @@
-//---------------
-//´²Î»Ä£¿é
+ï»¿//---------------
+//åºŠä½æ¨¡å—
 //---------------
 
 /*
-**´²Î»¹ÜÀí**£º
-´²Î»ÔöÉ¾¸Ä²é
-²¡Çø¹ÜÀí
-´²Î»×´Ì¬¸ú×Ù£¨¿ÕÏĞ/Õ¼ÓÃ/Î¬ĞŞ£©
+**åºŠä½ç®¡ç†**ï¼š
+åºŠä½å¢åˆ æ”¹æŸ¥
+ç—…åŒºç®¡ç†
+åºŠä½çŠ¶æ€è·Ÿè¸ªï¼ˆç©ºé—²/å ç”¨/ç»´ä¿®ï¼‰
 */
 
 #ifndef _BED_H_
@@ -14,32 +14,32 @@
 
 
 typedef struct BedData {
-    char ward[30];           // ²¡Çø
-    char bedNo[20];          // ´²Î»ºÅ
-    char patientCardNo[20];  // ²¡ÈË¿¨ºÅ£¨¿Õ=ÎŞ²¡ÈË£©
-    char patientName[50];    // ²¡ÈËĞÕÃû
-    char status[20];         // ×´Ì¬£¨¿ÕÏĞ/Õ¼ÓÃ/Î¬ĞŞ£©
+    char ward[30];           // ç—…åŒº
+    char bedNo[20];          // åºŠä½å·
+    char patientCardNo[20];  // ç—…äººå¡å·ï¼ˆç©º=æ— ç—…äººï¼‰
+    char patientName[50];    // ç—…äººå§“å
+    char status[20];         // çŠ¶æ€ï¼ˆç©ºé—²/å ç”¨/ç»´ä¿®ï¼‰
 } BedData;
 
-// ÏÈÉùÃ÷½á¹¹Ìå±êÇ©
+// å…ˆå£°æ˜ç»“æ„ä½“æ ‡ç­¾
 typedef struct Bed {
     BedData data;
     struct Bed* next;
     struct Bed* pre;
-} Bed; // ×îºóÔÙ typedef ³É Bed
+} Bed; // æœ€åå† typedef æˆ Bed
 
-char* allocateBed(Bed* head, char* patientCardNo, char* patientName);    //×Ô¶¯·ÖÅä´²Î»
-void freeBed(Bed* b);                                                    //ÊÍ·Å´²Î»
-void addBed(Bed** head, Bed** tail, char* ward, char* bedNo);    // Ìí¼Ó´²Î»
-void delBed(Bed** head, Bed** tail, Bed* b);                                //É¾³ı´²Î»
-//²éÕÒ´²Î»
-Bed* findBedByNo(Bed* head, char* bedNo);              // °´´²Î»ºÅ¾«È·²éÕÒ
-Bed* findBedsByWard(Bed* head, char* ward);            // °´²¡Çø²éÕÒ£¨·µ»ØµÚÒ»¸öÆ¥Åä£©
-Bed* findAvailableBeds(Bed* head);                      // ²éÕÒµÚÒ»¸ö¿ÕÏĞ´²Î»
-void getWardStats(Bed* head, char* ward, int* total, int* occupied);//²¡ÇøÍ³¼Æ
-//´²Î»ÁĞ±í
-void listAllBeds(Bed*head);      //´²Î»ĞÅÏ¢ÁĞ±í
-void listBedsByWard(Bed* head, char* ward);                  // Ö¸¶¨²¡Çø´²Î»ÁĞ±í
+char* allocateBed(Bed* head, char* patientCardNo, char* patientName);    //è‡ªåŠ¨åˆ†é…åºŠä½
+void freeBed(Bed* b);                                                    //é‡Šæ”¾åºŠä½
+void addBed(Bed** head, Bed** tail, char* ward, char* bedNo);    // æ·»åŠ åºŠä½
+void delBed(Bed** head, Bed** tail, Bed* b);                                //åˆ é™¤åºŠä½
+//æŸ¥æ‰¾åºŠä½
+Bed* findBedByNo(Bed* head, char* bedNo);              // æŒ‰åºŠä½å·ç²¾ç¡®æŸ¥æ‰¾
+Bed* findBedsByWard(Bed* head, char* ward);            // æŒ‰ç—…åŒºæŸ¥æ‰¾ï¼ˆè¿”å›ç¬¬ä¸€ä¸ªåŒ¹é…ï¼‰
+Bed* findAvailableBeds(Bed* head);                      // æŸ¥æ‰¾ç¬¬ä¸€ä¸ªç©ºé—²åºŠä½
+void getWardStats(Bed* head, char* ward, int* total, int* occupied);//ç—…åŒºç»Ÿè®¡
+//åºŠä½åˆ—è¡¨
+void listAllBeds(Bed*head);      //åºŠä½ä¿¡æ¯åˆ—è¡¨
+void listBedsByWard(Bed* head, char* ward);                  // æŒ‡å®šç—…åŒºåºŠä½åˆ—è¡¨
 
 
 #endif

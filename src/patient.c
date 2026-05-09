@@ -1,15 +1,15 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "patient.h"        // ²¡ÈËÄ£¿éÍ·ÎÄ¼þ
-#include "registration.h"   // ¹ÒºÅÄ£¿éÍ·ÎÄ¼þ
-#include "file_io.h"        // ÎÄ¼þÊäÈëÊä³öÄ£¿é
-#include "utils.h"          // ¹¤¾ßº¯ÊýÄ£¿é
+#include "patient.h"        // ç—…äººæ¨¡å—å¤´æ–‡ä»¶
+#include "registration.h"   // æŒ‚å·æ¨¡å—å¤´æ–‡ä»¶
+#include "file_io.h"        // æ–‡ä»¶è¾“å…¥è¾“å‡ºæ¨¡å—
+#include "utils.h"          // å·¥å…·å‡½æ•°æ¨¡å—
 #include "ui.h" 
 
-// Getter º¯ÊýÊµÏÖ - ÓÃÓÚÆäËûÄ£¿é·ÃÎÊ±¾Ä£¿éµÄÈ«¾Ö±äÁ¿
+// Getter å‡½æ•°å®žçŽ° - ç”¨äºŽå…¶ä»–æ¨¡å—è®¿é—®æœ¬æ¨¡å—çš„å…¨å±€å˜é‡
 Patient* getPatientHead(void) {
-    return g_patientHead;  // Ö±½ÓÊ¹ÓÃ ui.h ÖÐ extern ÉùÃ÷µÄ±äÁ¿
+    return g_patientHead;  // ç›´æŽ¥ä½¿ç”¨ ui.h ä¸­ extern å£°æ˜Žçš„å˜é‡
 }
 Patient* getPatientTail(void) {
     return g_patientTail;
@@ -17,166 +17,166 @@ Patient* getPatientTail(void) {
 //--------------------
 
 //--------------------
-// ÒÔÏÂÎªÌí¼Ó²¡ÈËº¯Êý
-// ¹¦ÄÜ£ºÏò²¡ÈËÁ´±íÖÐÌí¼ÓÒ»¸öÐÂµÄ²¡ÈË½Úµã
-// ²ÎÊý£ºhead - Ö¸ÏòÁ´±íÍ·Ö¸ÕëµÄÖ¸Õë£¬tail - Ö¸ÏòÁ´±íÎ²Ö¸ÕëµÄÖ¸Õë
-//      name - ÐÕÃû£¬age - ÄêÁä£¬ gender - ÐÔ±ð£¬idCard - Éí·ÝÖ¤ºÅ£¬phone - µç»°ºÅÂë
+// ä»¥ä¸‹ä¸ºæ·»åŠ ç—…äººå‡½æ•°
+// åŠŸèƒ½ï¼šå‘ç—…äººé“¾è¡¨ä¸­æ·»åŠ ä¸€ä¸ªæ–°çš„ç—…äººèŠ‚ç‚¹
+// å‚æ•°ï¼šhead - æŒ‡å‘é“¾è¡¨å¤´æŒ‡é’ˆçš„æŒ‡é’ˆï¼Œtail - æŒ‡å‘é“¾è¡¨å°¾æŒ‡é’ˆçš„æŒ‡é’ˆ
+//      name - å§“åï¼Œage - å¹´é¾„ï¼Œ gender - æ€§åˆ«ï¼ŒidCard - èº«ä»½è¯å·ï¼Œphone - ç”µè¯å·ç 
 void addPatient(Patient** head, Patient** tail,
     char name[], int age, char gender[], char idCard[], char phone[]) {
-    // 1. ÎªÐÂ½Úµã·ÖÅäÄÚ´æ¿Õ¼ä
+    // 1. ä¸ºæ–°èŠ‚ç‚¹åˆ†é…å†…å­˜ç©ºé—´
     Patient* newNode = (Patient*)malloc(sizeof(Patient));
     
-    // 2. ³õÊ¼»¯ÐÂ½ÚµãµÄÖ¸ÕëÓò£¬·ÀÖ¹Ò°Ö¸Õë
-    newNode->next = newNode->pre = NULL;                // ÉêÇëÐÂ½ÚµãµÚÒ»¼þÊÂ¾ÍÊÇÖ¸Õë³õÊ¼»¯£¡·Ç³£ÖØÒª
+    // 2. åˆå§‹åŒ–æ–°èŠ‚ç‚¹çš„æŒ‡é’ˆåŸŸï¼Œé˜²æ­¢é‡ŽæŒ‡é’ˆ
+    newNode->next = newNode->pre = NULL;                // ç”³è¯·æ–°èŠ‚ç‚¹ç¬¬ä¸€ä»¶äº‹å°±æ˜¯æŒ‡é’ˆåˆå§‹åŒ–ï¼éžå¸¸é‡è¦
     
-    // 3. Éú³ÉÎ¨Ò»µÄÃÅÕï¿¨ºÅ
+    // 3. ç”Ÿæˆå”¯ä¸€çš„é—¨è¯Šå¡å·
     char id[20];
-    generateUniqueId("PT", id);                         // Éú³ÉÒÔ"PT"¿ªÍ·µÄÎ¨Ò»ID
+    generateUniqueId("PT", id);                         // ç”Ÿæˆä»¥"PT"å¼€å¤´çš„å”¯ä¸€ID
     
-    // 4. ±£´æ²¡ÈË¾ßÌåÐÅÏ¢µ½ÐÂ½ÚµãµÄÊý¾ÝÓò
-    strcpy(newNode->data.cardNo, id);                   // ÃÅÕï¿¨ºÅ
-    strcpy(newNode->data.name, name);                   // ÐÕÃû
-    newNode->data.age = age;                            // ÄêÁä
-    strcpy(newNode->data.gender, gender);               // ÐÔ±ð
-    strcpy(newNode->data.idCard, idCard);               // Éí·ÝÖ¤ºÅ
-    strcpy(newNode->data.phone, phone);                 // µç»°ºÅÂë
-    newNode->data.isActive = 0;                         // ÉèÖÃ³õÊ¼×¡Ôº×´Ì¬Îª0£¨Î´×¡Ôº£©
+    // 4. ä¿å­˜ç—…äººå…·ä½“ä¿¡æ¯åˆ°æ–°èŠ‚ç‚¹çš„æ•°æ®åŸŸ
+    strcpy(newNode->data.cardNo, id);                   // é—¨è¯Šå¡å·
+    strcpy(newNode->data.name, name);                   // å§“å
+    newNode->data.age = age;                            // å¹´é¾„
+    strcpy(newNode->data.gender, gender);               // æ€§åˆ«
+    strcpy(newNode->data.idCard, idCard);               // èº«ä»½è¯å·
+    strcpy(newNode->data.phone, phone);                 // ç”µè¯å·ç 
+    newNode->data.isActive = 0;                         // è®¾ç½®åˆå§‹ä½é™¢çŠ¶æ€ä¸º0ï¼ˆæœªä½é™¢ï¼‰
     
-    // 5. ½«ÐÂ½Úµã²åÈëµ½Á´±íÎ²²¿
+    // 5. å°†æ–°èŠ‚ç‚¹æ’å…¥åˆ°é“¾è¡¨å°¾éƒ¨
     if (*tail == NULL) {
-        // Èç¹ûÁ´±íÎª¿Õ£¨Î²Ö¸ÕëÎªNULL£©£¬ÔòÐÂ½Úµã¼ÈÊÇÍ·½ÚµãÒ²ÊÇÎ²½Úµã
-        *head = newNode;                                // ÉèÖÃÍ·Ö¸ÕëÖ¸ÏòÐÂ½Úµã
-        *tail = newNode;                                // ÉèÖÃÎ²Ö¸ÕëÖ¸ÏòÐÂ½Úµã
+        // å¦‚æžœé“¾è¡¨ä¸ºç©ºï¼ˆå°¾æŒ‡é’ˆä¸ºNULLï¼‰ï¼Œåˆ™æ–°èŠ‚ç‚¹æ—¢æ˜¯å¤´èŠ‚ç‚¹ä¹Ÿæ˜¯å°¾èŠ‚ç‚¹
+        *head = newNode;                                // è®¾ç½®å¤´æŒ‡é’ˆæŒ‡å‘æ–°èŠ‚ç‚¹
+        *tail = newNode;                                // è®¾ç½®å°¾æŒ‡é’ˆæŒ‡å‘æ–°èŠ‚ç‚¹
     }
     else {
-        // Èç¹ûÁ´±í²»Îª¿Õ£¬Ôò½«ÐÂ½ÚµãÁ¬½Óµ½Î²½ÚµãÖ®ºó
-        (*tail)->next = newNode;                        // µ±Ç°Î²½ÚµãµÄnextÖ¸ÏòÐÂ½Úµã
-        newNode->pre = *tail;                           // ÐÂ½ÚµãµÄpreÖ¸ÏòÇ°Ò»¸öÎ²½Úµã
-        *tail = newNode;                                // ¸üÐÂÎ²Ö¸ÕëÖ¸ÏòÐÂ½Úµã
+        // å¦‚æžœé“¾è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†æ–°èŠ‚ç‚¹è¿žæŽ¥åˆ°å°¾èŠ‚ç‚¹ä¹‹åŽ
+        (*tail)->next = newNode;                        // å½“å‰å°¾èŠ‚ç‚¹çš„nextæŒ‡å‘æ–°èŠ‚ç‚¹
+        newNode->pre = *tail;                           // æ–°èŠ‚ç‚¹çš„preæŒ‡å‘å‰ä¸€ä¸ªå°¾èŠ‚ç‚¹
+        *tail = newNode;                                // æ›´æ–°å°¾æŒ‡é’ˆæŒ‡å‘æ–°èŠ‚ç‚¹
     }
     
-    // 6. ½«¸üÐÂºóµÄÁ´±íÊý¾Ý±£´æµ½ÎÄ¼þ
+    // 6. å°†æ›´æ–°åŽçš„é“¾è¡¨æ•°æ®ä¿å­˜åˆ°æ–‡ä»¶
     rebuildPatientFile(*head);
     
-    // 7. Êä³öÌí¼Ó³É¹¦µÄÌáÊ¾ÐÅÏ¢
-    printf("[OK] Ìí¼Ó³É¹¦,¿¨ºÅÎª%s¡£\n", id);
+    // 7. è¾“å‡ºæ·»åŠ æˆåŠŸçš„æç¤ºä¿¡æ¯
+    printf("[OK] æ·»åŠ æˆåŠŸ,å¡å·ä¸º%sã€‚\n", id);
 }
 //--------------------
 
 //--------------------
-// ÒÔÏÂÎªÉ¾³ý²¡ÈËº¯Êý
-// ¹¦ÄÜ£º´Ó²¡ÈËÁ´±íÖÐÉ¾³ýÖ¸¶¨µÄ²¡ÈË½Úµã
-// ²ÎÊý£ºhead - Ö¸ÏòÁ´±íÍ·Ö¸ÕëµÄÖ¸Õë£¬tail - Ö¸ÏòÁ´±íÎ²Ö¸ÕëµÄÖ¸Õë
-//      p - ÒªÉ¾³ýµÄ²¡ÈËÊý¾Ý£¨¸ù¾ÝcardNoÆ¥Åä£©
+// ä»¥ä¸‹ä¸ºåˆ é™¤ç—…äººå‡½æ•°
+// åŠŸèƒ½ï¼šä»Žç—…äººé“¾è¡¨ä¸­åˆ é™¤æŒ‡å®šçš„ç—…äººèŠ‚ç‚¹
+// å‚æ•°ï¼šhead - æŒ‡å‘é“¾è¡¨å¤´æŒ‡é’ˆçš„æŒ‡é’ˆï¼Œtail - æŒ‡å‘é“¾è¡¨å°¾æŒ‡é’ˆçš„æŒ‡é’ˆ
+//      p - è¦åˆ é™¤çš„ç—…äººæ•°æ®ï¼ˆæ ¹æ®cardNoåŒ¹é…ï¼‰
 void delPatient(Patient** head, Patient** tail, PatientData p) {
-    // 1. ¼ì²éÁ´±íÊÇ·ñÎª¿Õ
+    // 1. æ£€æŸ¥é“¾è¡¨æ˜¯å¦ä¸ºç©º
     if (*head == NULL) {
-        printf("[ERROR] ÔÝÎÞ²¡ÈËÊý¾Ý¡£\n");
+        printf("[ERROR] æš‚æ— ç—…äººæ•°æ®ã€‚\n");
         return;
     }
     
-    // 2. ±éÀúÁ´±íÑ°ÕÒÒªÉ¾³ýµÄ½Úµã
-    Patient* cur = *head;                               // µ±Ç°½ÚµãÖ¸Õë
-    Patient* pre = NULL;                                // Ç°Ò»¸ö½ÚµãÖ¸Õë
+    // 2. éåŽ†é“¾è¡¨å¯»æ‰¾è¦åˆ é™¤çš„èŠ‚ç‚¹
+    Patient* cur = *head;                               // å½“å‰èŠ‚ç‚¹æŒ‡é’ˆ
+    Patient* pre = NULL;                                // å‰ä¸€ä¸ªèŠ‚ç‚¹æŒ‡é’ˆ
     while (cur != NULL) {
-        if (strcmp(cur->data.cardNo, p.cardNo) == 0) {  // µ±¿¨ºÅÆ¥ÅäµÄÊ±ºò
-            break;                                      // Ìø³öÑ­»·
+        if (strcmp(cur->data.cardNo, p.cardNo) == 0) {  // å½“å¡å·åŒ¹é…çš„æ—¶å€™
+            break;                                      // è·³å‡ºå¾ªçŽ¯
         }
-        pre = cur;                                      // ¼ÇÂ¼Ç°Ò»¸ö½Úµã
-        cur = cur->next;                                // ÒÆ¶¯µ½ÏÂÒ»¸ö½Úµã
+        pre = cur;                                      // è®°å½•å‰ä¸€ä¸ªèŠ‚ç‚¹
+        cur = cur->next;                                // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
     }
     
-    // 3. ¼ì²éÊÇ·ñÕÒµ½ÒªÉ¾³ýµÄ½Úµã
+    // 3. æ£€æŸ¥æ˜¯å¦æ‰¾åˆ°è¦åˆ é™¤çš„èŠ‚ç‚¹
     if (cur == NULL) {
-        printf("[ERROR] Î´ÕÒµ½¸Ã²¡ÈË£¬ÎÞ·¨É¾³ý¡£\n");
+        printf("[ERROR] æœªæ‰¾åˆ°è¯¥ç—…äººï¼Œæ— æ³•åˆ é™¤ã€‚\n");
         return;
     }
     
-    // 4. ¸ù¾ÝÒªÉ¾³ý½ÚµãµÄÎ»ÖÃÖ´ÐÐ²»Í¬µÄÉ¾³ý²Ù×÷
+    // 4. æ ¹æ®è¦åˆ é™¤èŠ‚ç‚¹çš„ä½ç½®æ‰§è¡Œä¸åŒçš„åˆ é™¤æ“ä½œ
     if (cur == *head && cur == *tail) {
-        *head = NULL;                                   // 1.Á´±íÖ»ÓÐÒ»¸ö½Úµã£¬É¾³ýºóÁ´±í±ä¿Õ
+        *head = NULL;                                   // 1.é“¾è¡¨åªæœ‰ä¸€ä¸ªèŠ‚ç‚¹ï¼Œåˆ é™¤åŽé“¾è¡¨å˜ç©º
         *tail = NULL;
     }
     else if (cur == *head) {
-        *head = cur->next;                              // 2.É¾³ýÍ·½Úµã£¬Í·Ö¸ÕëÖ¸ÏòÏÂÒ»¸ö½Úµã
-        (*head)->pre = NULL;                            // ÐÂÍ·½ÚµãµÄÇ°ÇýÉèÎªNULL
+        *head = cur->next;                              // 2.åˆ é™¤å¤´èŠ‚ç‚¹ï¼Œå¤´æŒ‡é’ˆæŒ‡å‘ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+        (*head)->pre = NULL;                            // æ–°å¤´èŠ‚ç‚¹çš„å‰é©±è®¾ä¸ºNULL
     }
     else if (cur == *tail) {
-        *tail = cur->pre;                               // 3.É¾³ýÎ²½Úµã£¬Î²Ö¸ÕëÖ¸ÏòÇ°Ò»¸ö½Úµã
-        (*tail)->next = NULL;                           // ÐÂÎ²½ÚµãµÄºó¼ÌÉèÎªNULL
+        *tail = cur->pre;                               // 3.åˆ é™¤å°¾èŠ‚ç‚¹ï¼Œå°¾æŒ‡é’ˆæŒ‡å‘å‰ä¸€ä¸ªèŠ‚ç‚¹
+        (*tail)->next = NULL;                           // æ–°å°¾èŠ‚ç‚¹çš„åŽç»§è®¾ä¸ºNULL
     }
     else {
-        pre->next = cur->next;                          // 4.É¾³ýÖÐ¼ä½Úµã£¬Ç°½ÚµãµÄnextÖ¸Ïòºó½Úµã
-        cur->next->pre = pre;                           // ºó½ÚµãµÄpreÖ¸ÏòÇ°½Úµã
+        pre->next = cur->next;                          // 4.åˆ é™¤ä¸­é—´èŠ‚ç‚¹ï¼Œå‰èŠ‚ç‚¹çš„nextæŒ‡å‘åŽèŠ‚ç‚¹
+        cur->next->pre = pre;                           // åŽèŠ‚ç‚¹çš„preæŒ‡å‘å‰èŠ‚ç‚¹
     }
     
-    // 5. ÊÍ·Å±»É¾³ý½ÚµãµÄÄÚ´æ
+    // 5. é‡Šæ”¾è¢«åˆ é™¤èŠ‚ç‚¹çš„å†…å­˜
     free(cur);
     
-    // 6. Êä³öÉ¾³ý³É¹¦µÄÌáÊ¾ÐÅÏ¢
-    printf("[OK] É¾³ý³É¹¦¡£\n");
+    // 6. è¾“å‡ºåˆ é™¤æˆåŠŸçš„æç¤ºä¿¡æ¯
+    printf("[OK] åˆ é™¤æˆåŠŸã€‚\n");
     
-    // 7. ½«¸üÐÂºóµÄÁ´±íÊý¾Ý±£´æµ½ÎÄ¼þ
+    // 7. å°†æ›´æ–°åŽçš„é“¾è¡¨æ•°æ®ä¿å­˜åˆ°æ–‡ä»¶
     rebuildPatientFile(*head);
 }
 //--------------------
 
 //--------------------
-// ÒÔÏÂÎªÐÞ¸Ä²¡ÈËÐÅÏ¢º¯Êý
-// ¹¦ÄÜ£ºÐÞ¸ÄÖ¸¶¨ÃÅÕï¿¨ºÅµÄ²¡ÈËÐÅÏ¢
-// ²ÎÊý£ºhead - Á´±íÍ·Ö¸Õë£¬cardNo - ÒªÐÞ¸ÄµÄ²¡ÈË¿¨ºÅ£¬newData - ÐÂµÄ²¡ÈËÊý¾Ý
-// ·µ»ØÖµ£º1-ÐÞ¸Ä³É¹¦£¬0-ÐÞ¸ÄÊ§°Ü
+// ä»¥ä¸‹ä¸ºä¿®æ”¹ç—…äººä¿¡æ¯å‡½æ•°
+// åŠŸèƒ½ï¼šä¿®æ”¹æŒ‡å®šé—¨è¯Šå¡å·çš„ç—…äººä¿¡æ¯
+// å‚æ•°ï¼šhead - é“¾è¡¨å¤´æŒ‡é’ˆï¼ŒcardNo - è¦ä¿®æ”¹çš„ç—…äººå¡å·ï¼ŒnewData - æ–°çš„ç—…äººæ•°æ®
+// è¿”å›žå€¼ï¼š1-ä¿®æ”¹æˆåŠŸï¼Œ0-ä¿®æ”¹å¤±è´¥
 int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     Patient* target = NULL;
     
-    // 1. ¸ù¾Ý¿¨ºÅ²éÕÒÒªÐÞ¸ÄµÄ²¡ÈË½Úµã
+    // 1. æ ¹æ®å¡å·æŸ¥æ‰¾è¦ä¿®æ”¹çš„ç—…äººèŠ‚ç‚¹
     target = findPatientByCardNo(head, cardNo);
     
-    // 2. ¼ì²éÊÇ·ñÕÒµ½ÒªÐÞ¸ÄµÄ²¡ÈË
+    // 2. æ£€æŸ¥æ˜¯å¦æ‰¾åˆ°è¦ä¿®æ”¹çš„ç—…äºº
     if (target == NULL) {
-        printf("[ERROR] Î´ÕÒµ½ÃÅÕï¿¨ºÅÎª%sµÄ²¡ÈË¡£\n", cardNo);
-        return 0;                                       // ·µ»Ø0±íÊ¾ÐÞ¸ÄÊ§°Ü
+        printf("[ERROR] æœªæ‰¾åˆ°é—¨è¯Šå¡å·ä¸º%sçš„ç—…äººã€‚\n", cardNo);
+        return 0;                                       // è¿”å›ž0è¡¨ç¤ºä¿®æ”¹å¤±è´¥
     }
     
-    // 3. ÏÔÊ¾µ±Ç°²¡ÈËÐÅÏ¢
-    printf("µ±Ç°»¼ÕßÐÅÏ¢Îª£º\n");
-    printf("ÃÅÕï¿¨ºÅ£º%s\n", target->data.cardNo);
-    printf("ÐÕÃû£º%s\n", target->data.name);
-    printf("ÄêÁä£º%d\n", target->data.age);
-    printf("ÐÔ±ð£º%s\n", target->data.gender);
-    printf("Éí·ÝÖ¤ºÅ£º%s\n", target->data.idCard);
-    printf("ÁªÏµµç»°£º%s\n", target->data.phone);
-    printf("ÊÇ·ñ×¡Ôº£º%s\n", target->data.isActive ? "×¡Ôº" : "·Ç×¡Ôº");
+    // 3. æ˜¾ç¤ºå½“å‰ç—…äººä¿¡æ¯
+    printf("å½“å‰æ‚£è€…ä¿¡æ¯ä¸ºï¼š\n");
+    printf("é—¨è¯Šå¡å·ï¼š%s\n", target->data.cardNo);
+    printf("å§“åï¼š%s\n", target->data.name);
+    printf("å¹´é¾„ï¼š%d\n", target->data.age);
+    printf("æ€§åˆ«ï¼š%s\n", target->data.gender);
+    printf("èº«ä»½è¯å·ï¼š%s\n", target->data.idCard);
+    printf("è”ç³»ç”µè¯ï¼š%s\n", target->data.phone);
+    printf("æ˜¯å¦ä½é™¢ï¼š%s\n", target->data.isActive ? "ä½é™¢" : "éžä½é™¢");
     
-    // 4. ¸üÐÂ²¡ÈËÐÅÏ¢
-    safeStringCopy(target->data.name, newData.name, 50);        // °²È«¸´ÖÆÐÕÃû
-    target->data.age = newData.age;                             // ¸´ÖÆÄêÁä
-    safeStringCopy(target->data.gender, newData.gender, 10);    // °²È«¸´ÖÆÐÔ±ð
-    safeStringCopy(target->data.idCard, newData.idCard, 20);    // °²È«¸´ÖÆÉí·ÝÖ¤ºÅ
-    safeStringCopy(target->data.phone, newData.phone, 15);      // °²È«¸´ÖÆµç»°ºÅÂë
-    target->data.isActive = newData.isActive;                   // ¸üÐÂ×¡Ôº×´Ì¬
+    // 4. æ›´æ–°ç—…äººä¿¡æ¯
+    safeStringCopy(target->data.name, newData.name, 50);        // å®‰å…¨å¤åˆ¶å§“å
+    target->data.age = newData.age;                             // å¤åˆ¶å¹´é¾„
+    safeStringCopy(target->data.gender, newData.gender, 10);    // å®‰å…¨å¤åˆ¶æ€§åˆ«
+    safeStringCopy(target->data.idCard, newData.idCard, 20);    // å®‰å…¨å¤åˆ¶èº«ä»½è¯å·
+    safeStringCopy(target->data.phone, newData.phone, 15);      // å®‰å…¨å¤åˆ¶ç”µè¯å·ç 
+    target->data.isActive = newData.isActive;                   // æ›´æ–°ä½é™¢çŠ¶æ€
     
-    // 5. ½«¸üÐÂºóµÄÁ´±íÊý¾Ý±£´æµ½ÎÄ¼þ
+    // 5. å°†æ›´æ–°åŽçš„é“¾è¡¨æ•°æ®ä¿å­˜åˆ°æ–‡ä»¶
     rebuildPatientFile(head);
     
-    // 6. Êä³öÐÞ¸Ä³É¹¦µÄÌáÊ¾ÐÅÏ¢
-    printf("[OK] »¼ÕßÐÅÏ¢ÐÞ¸Ä³É¹¦£¡\n");
+    // 6. è¾“å‡ºä¿®æ”¹æˆåŠŸçš„æç¤ºä¿¡æ¯
+    printf("[OK] æ‚£è€…ä¿¡æ¯ä¿®æ”¹æˆåŠŸï¼\n");
     
-    return 1;                                             // ·µ»Ø1±íÊ¾ÐÞ¸Ä³É¹¦
+    return 1;                                             // è¿”å›ž1è¡¨ç¤ºä¿®æ”¹æˆåŠŸ
 }
 //--------------------
 
 //--------------------
-// ÒÔÏÂÎª²é¿´¹ÒºÅ¼ÇÂ¼º¯Êý
-// ¹¦ÄÜ£º»¼Õß²é¿´¸öÈË¹ÒºÅ¼ÇÂ¼
-// ²ÎÊý£ºregHead ¡ª ¹ÒºÅÁ´±íÍ·£¬patientCardNo ¡ª »¼Õß¿¨ºÅ
+// ä»¥ä¸‹ä¸ºæŸ¥çœ‹æŒ‚å·è®°å½•å‡½æ•°
+// åŠŸèƒ½ï¼šæ‚£è€…æŸ¥çœ‹ä¸ªäººæŒ‚å·è®°å½•
+// å‚æ•°ï¼šregHead â€” æŒ‚å·é“¾è¡¨å¤´ï¼ŒpatientCardNo â€” æ‚£è€…å¡å·
 //--------------------
 void patientViewOwnRegistrations(Registration* regHead, 
     char* patientCardNo){
-    printf("\n========== ÎÒµÄ¹ÒºÅ¼ÇÂ¼ ==========\n");
+    printf("\n========== æˆ‘çš„æŒ‚å·è®°å½• ==========\n");
     printf("%-14s %-10s %-10s %-12s %-10s %-10s\n",
-        "¹ÒºÅ±àºÅ", "Ò½Éú", "¿ÆÊÒ", "Ô¤Ô¼Ê±¼ä", "×´Ì¬", "·½Ê½");
-    printf("©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤\n");
+        "æŒ‚å·ç¼–å·", "åŒ»ç”Ÿ", "ç§‘å®¤", "é¢„çº¦æ—¶é—´", "çŠ¶æ€", "æ–¹å¼");
+    printf("â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n");
 
     Registration* cur = regHead;
     int count = 0;
@@ -184,13 +184,13 @@ void patientViewOwnRegistrations(Registration* regHead,
         if (strcmp(cur->data.patientCardNo, patientCardNo) == 0) {
             char* statusStr;
             switch (cur->data.status) {
-            case PENDING:     statusStr = "´ý¾ÍÕï"; break;
-            case IN_PROGRESS: statusStr = "¾ÍÕïÖÐ"; break;
-            case COMPLETED:   statusStr = "ÒÑÍê³É"; break;
-            case CANCELLED:   statusStr = "ÒÑÈ¡Ïû"; break;
-            default:          statusStr = "Î´Öª";
+            case PENDING:     statusStr = "å¾…å°±è¯Š"; break;
+            case IN_PROGRESS: statusStr = "å°±è¯Šä¸­"; break;
+            case COMPLETED:   statusStr = "å·²å®Œæˆ"; break;
+            case CANCELLED:   statusStr = "å·²å–æ¶ˆ"; break;
+            default:          statusStr = "æœªçŸ¥";
             }
-            char* methodStr = (cur->data.createdBy == PATIENT) ? "Ô¤Ô¼" : "ÏÖ³¡";
+            char* methodStr = (cur->data.createdBy == PATIENT) ? "é¢„çº¦" : "çŽ°åœº";
 
             printf("%-14s %-10s %-10s %-12s %-10s %-10s\n",
                 cur->data.regNo, cur->data.doctorName, cur->data.dept,
@@ -201,61 +201,61 @@ void patientViewOwnRegistrations(Registration* regHead,
     }
 
     if (count == 0) {
-        printf("ÔÝÎÞ¹ÒºÅ¼ÇÂ¼\n");
+        printf("æš‚æ— æŒ‚å·è®°å½•\n");
     }
     else {
-        printf("¹² %d Ìõ¼ÇÂ¼\n", count);
+        printf("å…± %d æ¡è®°å½•\n", count);
     }
 }
 //--------------------
 
 //--------------------
-// ÒÔÏÂÎªÈ¡Ïû×Ô¼º¹ÒºÅº¯Êý
-// ¹¦ÄÜ£º»¼ÕßÈ¡Ïû×Ô¼ºµÄ¹ÒºÅ£¨´øÈ¨ÏÞÐ£Ñé£ºÖ»ÄÜÈ¡Ïû×Ô¼ºµÄ¡¢PENDING ×´Ì¬µÄ£©
-// ²ÎÊý£ºregHead/regTail ¡ª ¹ÒºÅÁ´±í£¬patientCardNo ¡ª »¼Õß¿¨ºÅ£¬regNo ¡ª ¹ÒºÅ±àºÅ
+// ä»¥ä¸‹ä¸ºå–æ¶ˆè‡ªå·±æŒ‚å·å‡½æ•°
+// åŠŸèƒ½ï¼šæ‚£è€…å–æ¶ˆè‡ªå·±çš„æŒ‚å·ï¼ˆå¸¦æƒé™æ ¡éªŒï¼šåªèƒ½å–æ¶ˆè‡ªå·±çš„ã€PENDING çŠ¶æ€çš„ï¼‰
+// å‚æ•°ï¼šregHead/regTail â€” æŒ‚å·é“¾è¡¨ï¼ŒpatientCardNo â€” æ‚£è€…å¡å·ï¼ŒregNo â€” æŒ‚å·ç¼–å·
 //---------------------
 int patientCancelRegistration(Registration** regHead, Registration** regTail,
     char* patientCardNo, char* regNo)
 {
-    // 1. °´¹ÒºÅ±àºÅ²éÕÒ
+    // 1. æŒ‰æŒ‚å·ç¼–å·æŸ¥æ‰¾
     Registration* r = findRegistrationByNo(*regHead, regNo);
     if (r == NULL) {
-        printf("[ERROR] Î´ÕÒµ½¹ÒºÅ±àºÅ %s\n", regNo);
+        printf("[ERROR] æœªæ‰¾åˆ°æŒ‚å·ç¼–å· %s\n", regNo);
         return 0;
     }
 
-    // 2. È¨ÏÞÐ£Ñé£ºÖ»ÄÜÈ¡Ïû×Ô¼ºµÄ¹ÒºÅ
+    // 2. æƒé™æ ¡éªŒï¼šåªèƒ½å–æ¶ˆè‡ªå·±çš„æŒ‚å·
     if (strcmp(r->data.patientCardNo, patientCardNo) != 0) {
-        printf("[ERROR] ÎÞÈ¨È¡ÏûËûÈËµÄ¹ÒºÅ¼ÇÂ¼\n");
+        printf("[ERROR] æ— æƒå–æ¶ˆä»–äººçš„æŒ‚å·è®°å½•\n");
         return 0;
     }
 
-    // 3. µ÷ÓÃÍ¨ÓÃÈ¡Ïûº¯Êý
+    // 3. è°ƒç”¨é€šç”¨å–æ¶ˆå‡½æ•°
     return cancelRegistration(regHead, regTail, r);
 }
 //--------------------
 
 //--------------------
-//ÒÔÏÂÎª²éÕÒ²¡ÈËÐÅÏ¢º¯Êý
+//ä»¥ä¸‹ä¸ºæŸ¥æ‰¾ç—…äººä¿¡æ¯å‡½æ•°
 
-//°´¿¨ºÅ¾«È·²éÕÒ
-// ¹¦ÄÜ£º¸ù¾ÝÃÅÕï¿¨ºÅ¾«È·²éÕÒ²¡ÈË
-// ²ÎÊý£ºhead - Á´±íÍ·Ö¸Õë£¬cardNo - Òª²éÕÒµÄÃÅÕï¿¨ºÅ
-// ·µ»ØÖµ£ºÕÒµ½µÄ²¡ÈË½ÚµãÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+//æŒ‰å¡å·ç²¾ç¡®æŸ¥æ‰¾
+// åŠŸèƒ½ï¼šæ ¹æ®é—¨è¯Šå¡å·ç²¾ç¡®æŸ¥æ‰¾ç—…äºº
+// å‚æ•°ï¼šhead - é“¾è¡¨å¤´æŒ‡é’ˆï¼ŒcardNo - è¦æŸ¥æ‰¾çš„é—¨è¯Šå¡å·
+// è¿”å›žå€¼ï¼šæ‰¾åˆ°çš„ç—…äººèŠ‚ç‚¹æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›žNULL
 Patient* findPatientByCardNo(Patient* head, char* cardNo) {
-    Patient* p = head;                                    // ´ÓÍ·½Úµã¿ªÊ¼²éÕÒ
+    Patient* p = head;                                    // ä»Žå¤´èŠ‚ç‚¹å¼€å§‹æŸ¥æ‰¾
     while (p != NULL) {
-        if (strcmp(p->data.cardNo, cardNo) == 0) {        // ±È½ÏÃÅÕï¿¨ºÅÊÇ·ñÆ¥Åä
-            return p;                                     // ÕÒµ½Ôò·µ»Ø¸Ã½ÚµãÖ¸Õë
+        if (strcmp(p->data.cardNo, cardNo) == 0) {        // æ¯”è¾ƒé—¨è¯Šå¡å·æ˜¯å¦åŒ¹é…
+            return p;                                     // æ‰¾åˆ°åˆ™è¿”å›žè¯¥èŠ‚ç‚¹æŒ‡é’ˆ
         }
-        p = p->next;                                      // ÒÆ¶¯µ½ÏÂÒ»¸ö½Úµã
+        p = p->next;                                      // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
     }
-    return NULL;                                          // Î´ÕÒµ½·µ»ØNULL
+    return NULL;                                          // æœªæ‰¾åˆ°è¿”å›žNULL
 }
 
-//°´ÐÕÃûÄ£ºý
+//æŒ‰å§“åæ¨¡ç³Š
 Patient* findPatientsByName(Patient* head, char* name) {
-    Patient* p = head;                                    // ´ÓÍ·½Úµã¿ªÊ¼²éÕÒ
+    Patient* p = head;                                    // ä»Žå¤´èŠ‚ç‚¹å¼€å§‹æŸ¥æ‰¾
     Patient* resultHead = NULL;
     Patient* resultTail = NULL;
     while (p != NULL) {
@@ -274,40 +274,40 @@ Patient* findPatientsByName(Patient* head, char* name) {
                 resultTail = newNode;
             }
         }           
-        p = p->next;                                      // ÒÆ¶¯µ½ÏÂÒ»¸ö½Úµã
+        p = p->next;                                      // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
     }
     return resultHead;
 }
 //--------------------
 
 //--------------------
-//ÒÔÏÂÎªÁÐ±íÏÔÊ¾º¯Êý
-// ¹¦ÄÜ£º±éÀú²¢ÏÔÊ¾ËùÓÐ²¡ÈËÐÅÏ¢
-// ²ÎÊý£ºhead - Á´±íÍ·Ö¸Õë
+//ä»¥ä¸‹ä¸ºåˆ—è¡¨æ˜¾ç¤ºå‡½æ•°
+// åŠŸèƒ½ï¼šéåŽ†å¹¶æ˜¾ç¤ºæ‰€æœ‰ç—…äººä¿¡æ¯
+// å‚æ•°ï¼šhead - é“¾è¡¨å¤´æŒ‡é’ˆ
 void listAllPatients(Patient* head) {
-    // 1. ¼ì²éÁ´±íÊÇ·ñÎª¿Õ
+    // 1. æ£€æŸ¥é“¾è¡¨æ˜¯å¦ä¸ºç©º
     if (head == NULL) {
-        printf("ÔÝÎÞ²¡ÈËÐÅÏ¢\n");
+        printf("æš‚æ— ç—…äººä¿¡æ¯\n");
         return;
     }
     
-    // 2. Êä³ö±íÍ·ÐÅÏ¢
-    printf("=== ²¡ÈËÁÐ±í ===\n");
+    // 2. è¾“å‡ºè¡¨å¤´ä¿¡æ¯
+    printf("=== ç—…äººåˆ—è¡¨ ===\n");
     printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-        "¿¨ºÅ", "ÐÕÃû", "ÄêÁä", "ÐÔ±ð", "Éí·ÝÖ¤", "µç»°", "×¡Ôº×´Ì¬");
+        "å¡å·", "å§“å", "å¹´é¾„", "æ€§åˆ«", "èº«ä»½è¯", "ç”µè¯", "ä½é™¢çŠ¶æ€");
 
-    // 3. ±éÀúÁ´±í²¢Êä³öÃ¿¸ö²¡ÈËµÄÐÅÏ¢
-    Patient* current = head;                              // ´ÓÍ·½Úµã¿ªÊ¼
+    // 3. éåŽ†é“¾è¡¨å¹¶è¾“å‡ºæ¯ä¸ªç—…äººçš„ä¿¡æ¯
+    Patient* current = head;                              // ä»Žå¤´èŠ‚ç‚¹å¼€å§‹
     while (current != NULL) {
-        // ¸ñÊ½»¯Êä³öµ±Ç°²¡ÈËµÄ¸÷ÏîÐÅÏ¢
+        // æ ¼å¼åŒ–è¾“å‡ºå½“å‰ç—…äººçš„å„é¡¹ä¿¡æ¯
         printf("%-20s %-50s %-10s %-20s %-15s %-10s\n",
-            current->data.cardNo,                         // ÃÅÕï¿¨ºÅ
-            current->data.name,                           // ÐÕÃû
-            current->data.age,                            // ÄêÁä
-            current->data.gender,                         // ÐÔ±ð
-            current->data.idCard,                         // Éí·ÝÖ¤ºÅ
-            current->data.phone,                          // µç»°ºÅÂë
-            current->data.isActive ? "×¡Ôº" : "·Ç×¡Ôº");  // ×¡Ôº×´Ì¬£¨0=·Ç×¡Ôº£¬1=×¡Ôº£©
-        current = current->next;                          // ÒÆ¶¯µ½ÏÂÒ»¸ö½Úµã
+            current->data.cardNo,                         // é—¨è¯Šå¡å·
+            current->data.name,                           // å§“å
+            current->data.age,                            // å¹´é¾„
+            current->data.gender,                         // æ€§åˆ«
+            current->data.idCard,                         // èº«ä»½è¯å·
+            current->data.phone,                          // ç”µè¯å·ç 
+            current->data.isActive ? "ä½é™¢" : "éžä½é™¢");  // ä½é™¢çŠ¶æ€ï¼ˆ0=éžä½é™¢ï¼Œ1=ä½é™¢ï¼‰
+        current = current->next;                          // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
     }
 }

@@ -1,48 +1,48 @@
-//---------------
-//Ò©Æ·Ä£¿é
+ï»¿//---------------
+//è¯å“æ¨¡å—
 //---------------
 
 
 
 /*
-Ò©Æ·Ä£¿é¸ºÔğ¹ÜÀíÒ©Æ·µÄ¿â´æĞÅÏ¢£º
-- Ìí¼ÓĞÂÒ©Æ·
-- É¾³ıÒ©Æ·
-- ĞŞ¸ÄÒ©Æ·ĞÅÏ¢
-- ²¹³ä¿â´æ
-- ¿â´æÔ¤¾¯¼ì²é
-- ¹ºÒ©£¨¿Û¼õ¿â´æ£©
-- ¹ºÒ©¼ÇÂ¼¹ÜÀí
+è¯å“æ¨¡å—è´Ÿè´£ç®¡ç†è¯å“çš„åº“å­˜ä¿¡æ¯ï¼š
+- æ·»åŠ æ–°è¯å“
+- åˆ é™¤è¯å“
+- ä¿®æ”¹è¯å“ä¿¡æ¯
+- è¡¥å……åº“å­˜
+- åº“å­˜é¢„è­¦æ£€æŸ¥
+- è´­è¯ï¼ˆæ‰£å‡åº“å­˜ï¼‰
+- è´­è¯è®°å½•ç®¡ç†
 */
 
 #ifndef _MEDICINE_H_
 #define _MEDICINE_H_
 
-//Ò©Æ·ĞÅÏ¢
+//è¯å“ä¿¡æ¯
 typedef struct MedicineData {
-    char medNo[20];     // Ò©Æ·±àºÅ£¨Î¨Ò»ID£¬Èç"MED001"£©
-    char genericName[50];  // Í¨ÓÃÃû£¨Èç"°¢ÄªÎ÷ÁÖ"£©
-    char brandName[50];    // ÉÌÆ·Ãû£¨Èç"°¢ÄªÎ÷ÁÖ½ºÄÒ"£©
-    char spec[50];         // ¹æ¸ñ£¨Èç"0.5g*24Á£"£©
-    double price;          // µ¥¼Û£¨Ôª£©
-    int stock;             // µ±Ç°¿â´æ
-    int minStock;          // ×îµÍ¿â´æÔ¤¾¯Öµ
-} MedicineData;   // ×¢£ºÍÅ¶ÓÍ·ÎÄ¼şÖĞ Medicine ¼´Îª MedicineData
+    char medNo[20];     // è¯å“ç¼–å·ï¼ˆå”¯ä¸€IDï¼Œå¦‚"MED001"ï¼‰
+    char genericName[50];  // é€šç”¨åï¼ˆå¦‚"é˜¿è«è¥¿æ—"ï¼‰
+    char brandName[50];    // å•†å“åï¼ˆå¦‚"é˜¿è«è¥¿æ—èƒ¶å›Š"ï¼‰
+    char spec[50];         // è§„æ ¼ï¼ˆå¦‚"0.5g*24ç²’"ï¼‰
+    double price;          // å•ä»·ï¼ˆå…ƒï¼‰
+    int stock;             // å½“å‰åº“å­˜
+    int minStock;          // æœ€ä½åº“å­˜é¢„è­¦å€¼
+} MedicineData;   // æ³¨ï¼šå›¢é˜Ÿå¤´æ–‡ä»¶ä¸­ Medicine å³ä¸º MedicineData
 
 typedef struct Medicine {
-    MedicineData data;          // Ò©Æ·Êı¾İ
+    MedicineData data;          // è¯å“æ•°æ®
     struct Medicine* next;
     struct Medicine* pre;
 } Medicine;
 
-//¹ºÒ©¼ÇÂ¼
+//è´­è¯è®°å½•
 typedef struct PurchaseData {
-    char purNo[20];         // ¹ºÒ©µ¥ºÅ
-    char patientCardNo[20];  // ²¡ÈË¿¨ºÅ
-    char medNo[20];         // Ò©Æ·±àºÅ
-    int quantity;           // ¹ºÂòÊıÁ¿
-    double totalCost;       // ×Ü·ÑÓÃ
-    char date[20];          // ¹ºÒ©ÈÕÆÚ
+    char purNo[20];         // è´­è¯å•å·
+    char patientCardNo[20];  // ç—…äººå¡å·
+    char medNo[20];         // è¯å“ç¼–å·
+    int quantity;           // è´­ä¹°æ•°é‡
+    double totalCost;       // æ€»è´¹ç”¨
+    char date[20];          // è´­è¯æ—¥æœŸ
 } PurchaseData;
 
 typedef struct Purchase {
@@ -51,18 +51,18 @@ typedef struct Purchase {
     struct Purchase* pre;
 } Purchase;
 
-void checkLowStock(Medicine* head);                                          //¿â´æ¼ì²é
-void purchaseMedicine(Medicine* head, char* medNo, int quantity);            //¹ºÒ©£¨¿Û¼õ¿â´æ£©
-void replenishStock(Medicine* head, char* medNo, int quantity);              //²¹³ä¿â´æ
+void checkLowStock(Medicine* head);                                          //åº“å­˜æ£€æŸ¥
+void purchaseMedicine(Medicine* head, char* medNo, int quantity);            //è´­è¯ï¼ˆæ‰£å‡åº“å­˜ï¼‰
+void replenishStock(Medicine* head, char* medNo, int quantity);              //è¡¥å……åº“å­˜
 void addPurchaseRecord(Purchase** head, Purchase** tail, char patientCardNo[20],
-    char medNo[20], int quantity, double totalCost, char date[20]);   //¹ºÒ©¼ÇÂ¼£¨¿Û¼õÒ©Æ·¿â´æ£©
-//²éÑ¯Ò©Æ·
-Medicine* findMedicineByNo(Medicine* head, char* medNo);       // °´Ò©Æ·±àºÅ²éÕÒ
-Medicine* findMedicineByName(Medicine* head, char* name);     // °´Ò©Æ·Ãû²éÕÒ
-void listAllMedicines(Medicine* head);    //ÁĞ³öËùÓĞÒ©Æ·
+    char medNo[20], int quantity, double totalCost, char date[20]);   //è´­è¯è®°å½•ï¼ˆæ‰£å‡è¯å“åº“å­˜ï¼‰
+//æŸ¥è¯¢è¯å“
+Medicine* findMedicineByNo(Medicine* head, char* medNo);       // æŒ‰è¯å“ç¼–å·æŸ¥æ‰¾
+Medicine* findMedicineByName(Medicine* head, char* name);     // æŒ‰è¯å“åæŸ¥æ‰¾
+void listAllMedicines(Medicine* head);    //åˆ—å‡ºæ‰€æœ‰è¯å“
 void addMedicine(Medicine** head, Medicine** tail, char genericName[], char brandName[],
-    char spec[], double price, int stock, int minStock);//Ìí¼ÓÒ©Æ·
-void delMedicine(Medicine** head, Medicine** tail, char* medNo);//É¾³ıÖ¸¶¨±àºÅµÄÒ©Æ·
-int modifyMedicine(Medicine* head, char* medNo, MedicineData newData); // ĞŞ¸ÄÒ©Æ·ĞÅÏ¢£¬·µ»Ø 1=³É¹¦£¬0=Ê§°Ü
+    char spec[], double price, int stock, int minStock);//æ·»åŠ è¯å“
+void delMedicine(Medicine** head, Medicine** tail, char* medNo);//åˆ é™¤æŒ‡å®šç¼–å·çš„è¯å“
+int modifyMedicine(Medicine* head, char* medNo, MedicineData newData); // ä¿®æ”¹è¯å“ä¿¡æ¯ï¼Œè¿”å› 1=æˆåŠŸï¼Œ0=å¤±è´¥
 
 #endif

@@ -1,4 +1,4 @@
-#ifndef _UI_H_
+ï»¿#ifndef _UI_H_
 #define _UI_H_
 
 
@@ -9,7 +9,7 @@
 #include "hospitalization.h"
 #include "bed.h"
 
-//È«ÓòÁ´±íÖ¸Õë¶¨Òå
+//å…¨åŸŸé“¾è¡¨æŒ‡é’ˆå®šä¹‰
 extern Patient* g_patientHead;
 extern Patient* g_patientTail;
 extern Doctor* g_doctorHead;
@@ -27,53 +27,53 @@ extern Bed* g_bedTail;
 extern User* g_userHead;
 extern User* g_userTail;
 
-//ÑÕÉ«¶¨Òå
-#define COLOR_BG           RGB(240, 248, 255)  // ±³¾°É«£¨AliceBlue£©
-#define COLOR_TITLE        RGB(70, 130, 180)    // ±êÌâÉ«£¨SteelBlue£©
-#define COLOR_TEXT         RGB(50, 50, 50)      // ÎÄ±¾É«£¨Éî»ÒÉ«£©
-#define COLOR_BUTTON       RGB(100, 149, 237)  // °´Å¥É«£¨CornflowerBlue£©
-#define COLOR_BUTTON_HOVER RGB(70, 130, 180)   // °´Å¥ĞüÍ£É«
-#define COLOR_SUCCESS      RGB(34, 139, 34)    // ³É¹¦É«£¨Green£©
-#define COLOR_WARNING      RGB(255, 140, 0)    // ¾¯¸æÉ«£¨DarkOrange£©
-#define COLOR_ERROR        RGB(220, 20, 60)    // ´íÎóÉ«£¨Crimson£©
+//é¢œè‰²å®šä¹‰
+#define COLOR_BG           RGB(240, 248, 255)  // èƒŒæ™¯è‰²ï¼ˆAliceBlueï¼‰
+#define COLOR_TITLE        RGB(70, 130, 180)    // æ ‡é¢˜è‰²ï¼ˆSteelBlueï¼‰
+#define COLOR_TEXT         RGB(50, 50, 50)      // æ–‡æœ¬è‰²ï¼ˆæ·±ç°è‰²ï¼‰
+#define COLOR_BUTTON       RGB(100, 149, 237)  // æŒ‰é’®è‰²ï¼ˆCornflowerBlueï¼‰
+#define COLOR_BUTTON_HOVER RGB(70, 130, 180)   // æŒ‰é’®æ‚¬åœè‰²
+#define COLOR_SUCCESS      RGB(34, 139, 34)    // æˆåŠŸè‰²ï¼ˆGreenï¼‰
+#define COLOR_WARNING      RGB(255, 140, 0)    // è­¦å‘Šè‰²ï¼ˆDarkOrangeï¼‰
+#define COLOR_ERROR        RGB(220, 20, 60)    // é”™è¯¯è‰²ï¼ˆCrimsonï¼‰
 
-//³ß´ç¶¨Òå
-#define WINDOW_WIDTH   1000   // ´°¿Ú¿í¶È
-#define WINDOW_HEIGHT  700    // ´°¿Ú¸ß¶È
-#define BUTTON_WIDTH   200    // °´Å¥¿í¶È
-#define BUTTON_HEIGHT  50     // °´Å¥¸ß¶È
-#define INPUT_WIDTH    300    // ÊäÈë¿ò¿í¶È
-#define INPUT_HEIGHT   40     // ÊäÈë¿ò¸ß¶È
+//å°ºå¯¸å®šä¹‰
+#define WINDOW_WIDTH   1000   // çª—å£å®½åº¦
+#define WINDOW_HEIGHT  700    // çª—å£é«˜åº¦
+#define BUTTON_WIDTH   200    // æŒ‰é’®å®½åº¦
+#define BUTTON_HEIGHT  50     // æŒ‰é’®é«˜åº¦
+#define INPUT_WIDTH    300    // è¾“å…¥æ¡†å®½åº¦
+#define INPUT_HEIGHT   40     // è¾“å…¥æ¡†é«˜åº¦
 
-//º¯ÊıÉùÃ÷
-int safeReadInt( int minVal, int maxVal);//°²È«¶ÁÈ¡intÀàĞÍ±äÁ¿
-double safeReadDouble(void);//°²È«¶ÁÈ¡doubleÀàĞÍº¯Êı
-void safeReadString(char* buf, int maxLen);//°²È«¶ÁÈ¡×Ö·û´®£¨´ø³¤¶ÈÏŞÖÆ£©
-void initUI(void);  //³õÊ¼»¯½çÃæ
-void closeUI(void); //¹Ø±Õ½çÃæÊÍ·Å×ÊÔ´
-int showLoginPage(void);//ÏÔÊ¾µÇÂ¼×´Ì¬
-//* 0 = LOGIN_FAILED      £¨µÇÂ¼Ê§°Ü£©
-//* 1 = LOGIN_SUCCESS_USER  £¨ÆÕÍ¨ÓÃ»§µÇÂ¼³É¹¦£©
-//* 2 = LOGIN_SUCCESS_ADMIN £¨¹ÜÀíÔ±µÇÂ¼³É¹¦£©
-//* 3 = LOGIN_EXIT         £¨ÍË³öÏµÍ³£©
-int showMainMenuByRole(int userRole, char* username);//°´ÕÕ²»Í¬Éí·İÏÔÊ¾²Ëµ¥
-void showPatientManagement(void);//²¡ÈË¹ÜÀí²Ëµ¥
-void showDoctorManagement(void);//Ò½Éú¹ÜÀí²Ëµ¥
-void showRegistrationManagement(void);//¹ÒºÅ¹ÜÀí²Ëµ¥
-void showMedicineManagement(void);//Ò©Æ·¹ÜÀí²Ëµ¥
-void showHospitalizationManagement(void);//×¡Ôº¹ÜÀí²Ëµ¥
-void showBedManagement(void);//´²Î»¹ÜÀí²Ëµ¥
-void showStatisticsMenu(void);//Í³¼Æ±¨±í²Ëµ¥
-void showQueryMenu(void);//²éÑ¯²Ëµ¥
+//å‡½æ•°å£°æ˜
+int safeReadInt( int minVal, int maxVal);//å®‰å…¨è¯»å–intç±»å‹å˜é‡
+double safeReadDouble(void);//å®‰å…¨è¯»å–doubleç±»å‹å‡½æ•°
+void safeReadString(char* buf, int maxLen);//å®‰å…¨è¯»å–å­—ç¬¦ä¸²ï¼ˆå¸¦é•¿åº¦é™åˆ¶ï¼‰
+void initUI(void);  //åˆå§‹åŒ–ç•Œé¢
+void closeUI(void); //å…³é—­ç•Œé¢é‡Šæ”¾èµ„æº
+int showLoginPage(void);//æ˜¾ç¤ºç™»å½•çŠ¶æ€
+//* 0 = LOGIN_FAILED      ï¼ˆç™»å½•å¤±è´¥ï¼‰
+//* 1 = LOGIN_SUCCESS_USER  ï¼ˆæ™®é€šç”¨æˆ·ç™»å½•æˆåŠŸï¼‰
+//* 2 = LOGIN_SUCCESS_ADMIN ï¼ˆç®¡ç†å‘˜ç™»å½•æˆåŠŸï¼‰
+//* 3 = LOGIN_EXIT         ï¼ˆé€€å‡ºç³»ç»Ÿï¼‰
+int showMainMenuByRole(int userRole, char* username);//æŒ‰ç…§ä¸åŒèº«ä»½æ˜¾ç¤ºèœå•
+void showPatientManagement(void);//ç—…äººç®¡ç†èœå•
+void showDoctorManagement(void);//åŒ»ç”Ÿç®¡ç†èœå•
+void showRegistrationManagement(void);//æŒ‚å·ç®¡ç†èœå•
+void showMedicineManagement(void);//è¯å“ç®¡ç†èœå•
+void showHospitalizationManagement(void);//ä½é™¢ç®¡ç†èœå•
+void showBedManagement(void);//åºŠä½ç®¡ç†èœå•
+void showStatisticsMenu(void);//ç»Ÿè®¡æŠ¥è¡¨èœå•
+void showQueryMenu(void);//æŸ¥è¯¢èœå•
 /**
- * @brief ÏûÏ¢ÌáÊ¾¿ò
- * @param title   ±êÌâ
- * @param message ÌáÊ¾ÄÚÈİ
+ * @brief æ¶ˆæ¯æç¤ºæ¡†
+ * @param title   æ ‡é¢˜
+ * @param message æç¤ºå†…å®¹
  */
 void showMessage(const char* title, const char* message);
 /**
- * @brief È·ÈÏ¶Ô»°¿ò
- * @return true = È·ÈÏ(y), false = È¡Ïû(n)
+ * @brief ç¡®è®¤å¯¹è¯æ¡†
+ * @return true = ç¡®è®¤(y), false = å–æ¶ˆ(n)
  */
 bool confirmDialog(const char* title, const char* message);
 

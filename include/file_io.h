@@ -1,10 +1,10 @@
-//===============
-//	  ÎÄ¼şIO
+ï»¿//===============
+//	  æ–‡ä»¶IO
 //===============
 
-/*¶ÁÈ¡ÎÄ¼ş£¨´ÓÎÄ¼ş¼ÓÔØµ½Á´±í£©
- -Ğ´ÈëÎÄ¼ş£¨´ÓÁ´±í±£´æµ½ÎÄ¼ş£©
- -Êı¾İ±¸·İ*/
+/*è¯»å–æ–‡ä»¶ï¼ˆä»æ–‡ä»¶åŠ è½½åˆ°é“¾è¡¨ï¼‰
+ -å†™å…¥æ–‡ä»¶ï¼ˆä»é“¾è¡¨ä¿å­˜åˆ°æ–‡ä»¶ï¼‰
+ -æ•°æ®å¤‡ä»½*/
 
 #ifndef _FILE_IO
 #define _FILE_IO
@@ -27,39 +27,39 @@
 #define REGISTRATION_FILE DATA_DIR "registration.txt"
 #define USER_FILE         DATA_DIR "user.txt"
 
-//¶ÁÈ¡ÎÄ¼ş
-void buildPatientChain(Patient** head, Patient** tail);										 // ¼ÓÔØ²¡ÈËÁĞ±í
-void buildDoctorChain(Doctor** head, Doctor** tail);											 // ¼ÓÔØÒ½ÉúÁĞ±í
-void buildMedicineChain(Medicine** head, Medicine** tail);							 // ¼ÓÔØÒ©Æ·ÁĞ±í
-void buildPurchaseChain(Purchase** head, Purchase** tail);							 // ¼ÓÔØ¹ºÒ©¼ÇÂ¼
-void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail);		 // ¼ÓÔØ×¡Ôº¼ÇÂ¼
-void buildBedChain(Bed** head, Bed** tail);											 // ¼ÓÔØ´²Î»ÁĞ±í
-void buildRegistrationChain(Registration** head, Registration** tail);						 // ¼ÓÔØ¹ÒºÅ¼ÇÂ¼
-void buildUserChain(User** head, User** tail);												 // ¼ÓÔØÓÃ»§ÁĞ±í
+//è¯»å–æ–‡ä»¶
+void buildPatientChain(Patient** head, Patient** tail);										 // åŠ è½½ç—…äººåˆ—è¡¨
+void buildDoctorChain(Doctor** head, Doctor** tail);											 // åŠ è½½åŒ»ç”Ÿåˆ—è¡¨
+void buildMedicineChain(Medicine** head, Medicine** tail);							 // åŠ è½½è¯å“åˆ—è¡¨
+void buildPurchaseChain(Purchase** head, Purchase** tail);							 // åŠ è½½è´­è¯è®°å½•
+void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail);		 // åŠ è½½ä½é™¢è®°å½•
+void buildBedChain(Bed** head, Bed** tail);											 // åŠ è½½åºŠä½åˆ—è¡¨
+void buildRegistrationChain(Registration** head, Registration** tail);						 // åŠ è½½æŒ‚å·è®°å½•
+void buildUserChain(User** head, User** tail);												 // åŠ è½½ç”¨æˆ·åˆ—è¡¨
 
-//Ğ´ÈëÎÄ¼ş
-void rebuildPatientFile(Patient* head);											// ±£´æ²¡ÈËÁĞ±í
-void rebuildDoctorFile(Doctor* head);											// ±£´æÒ½ÉúÁĞ±í
-void rebuildMedicineFile(Medicine* head);									// ±£´æÒ©Æ·ÁĞ±í
-void rebuildPurchaseFile(Purchase* head);									// ±£´æ¹ºÒ©¼ÇÂ¼
-void rebuildHospitalizationFile(Hospitalization* head);						// ±£´æ×¡Ôº¼ÇÂ¼
-void rebuildBedFile(Bed* head);												// ±£´æ´²Î»ÁĞ±í
-void rebuildRegistrationFile(Registration* head);								// ±£´æ¹ÒºÅ¼ÇÂ¼
-void rebuildUserFile(User* head);												// ±£´æÓÃ»§ÁĞ±í
+//å†™å…¥æ–‡ä»¶
+void rebuildPatientFile(Patient* head);											// ä¿å­˜ç—…äººåˆ—è¡¨
+void rebuildDoctorFile(Doctor* head);											// ä¿å­˜åŒ»ç”Ÿåˆ—è¡¨
+void rebuildMedicineFile(Medicine* head);									// ä¿å­˜è¯å“åˆ—è¡¨
+void rebuildPurchaseFile(Purchase* head);									// ä¿å­˜è´­è¯è®°å½•
+void rebuildHospitalizationFile(Hospitalization* head);						// ä¿å­˜ä½é™¢è®°å½•
+void rebuildBedFile(Bed* head);												// ä¿å­˜åºŠä½åˆ—è¡¨
+void rebuildRegistrationFile(Registration* head);								// ä¿å­˜æŒ‚å·è®°å½•
+void rebuildUserFile(User* head);												// ä¿å­˜ç”¨æˆ·åˆ—è¡¨
 
-//ÊÍ·ÅÄÚ´æ
-void freePatientChain(Patient* head);											// ÊÍ·Å²¡ÈËÁĞ±í
-void freeDoctorChain(Doctor* head);												// ÊÍ·ÅÒ½ÉúÁĞ±í
-void freeMedicineChain(Medicine* head);										// ÊÍ·ÅÒ©Æ·ÁĞ±í
-void freePurchaseChain(Purchase* head);										// ÊÍ·Å¹ºÒ©¼ÇÂ¼
-void freeHospitalizationChain(Hospitalization* head);						// ÊÍ·Å×¡Ôº¼ÇÂ¼
-void freeBedChain(Bed* head);												// ÊÍ·Å´²Î»ÁĞ±í
-void freeRegistrationChain(Registration* head);									// ÊÍ·Å¹ÒºÅ¼ÇÂ¼
-void freeUserChain(User* head);													// ÊÍ·ÅÓÃ»§ÁĞ±í
+//é‡Šæ”¾å†…å­˜
+void freePatientChain(Patient* head);											// é‡Šæ”¾ç—…äººåˆ—è¡¨
+void freeDoctorChain(Doctor* head);												// é‡Šæ”¾åŒ»ç”Ÿåˆ—è¡¨
+void freeMedicineChain(Medicine* head);										// é‡Šæ”¾è¯å“åˆ—è¡¨
+void freePurchaseChain(Purchase* head);										// é‡Šæ”¾è´­è¯è®°å½•
+void freeHospitalizationChain(Hospitalization* head);						// é‡Šæ”¾ä½é™¢è®°å½•
+void freeBedChain(Bed* head);												// é‡Šæ”¾åºŠä½åˆ—è¡¨
+void freeRegistrationChain(Registration* head);									// é‡Šæ”¾æŒ‚å·è®°å½•
+void freeUserChain(User* head);													// é‡Šæ”¾ç”¨æˆ·åˆ—è¡¨
 
 
-//Êı¾İ±¸·İ
-int backupAllData();								 // ±¸·İËùÓĞÊı¾İÎÄ¼ş
-int copyFile(char* source, char* dest);				 // ¸´ÖÆµ¥¸öÎÄ¼ş
+//æ•°æ®å¤‡ä»½
+int backupAllData();								 // å¤‡ä»½æ‰€æœ‰æ•°æ®æ–‡ä»¶
+int copyFile(char* source, char* dest);				 // å¤åˆ¶å•ä¸ªæ–‡ä»¶
 
 #endif

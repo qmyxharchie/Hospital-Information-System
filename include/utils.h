@@ -1,39 +1,39 @@
-//=============
-//	¹¤¾ßº¯Êı
+ï»¿//=============
+//	å·¥å…·å‡½æ•°
 //=============
 
-/*¹¤¾ßº¯ÊıÊÇÏîÄ¿ÖĞËùÓĞÄ£¿é¹²ÏíµÄµ×²ã¸¨Öúº¯Êı£¬°üÀ¨£º
-- Ê±¼ä´¦Àí
-- ×Ö·û´®´¦Àí
-- ÊäÈëÑéÖ¤
-- È«¾ÖÊ±¼ä×´Ì¬*/
+/*å·¥å…·å‡½æ•°æ˜¯é¡¹ç›®ä¸­æ‰€æœ‰æ¨¡å—å…±äº«çš„åº•å±‚è¾…åŠ©å‡½æ•°ï¼ŒåŒ…æ‹¬ï¼š
+- æ—¶é—´å¤„ç†
+- å­—ç¬¦ä¸²å¤„ç†
+- è¾“å…¥éªŒè¯
+- å…¨å±€æ—¶é—´çŠ¶æ€*/
 
 #ifndef _UTILS_H																			
 #define _UTILS_H	
 
-extern int g_currentYear;										//ÏµÍ³µ±Ç°Äê·İ
-extern int g_currentMonth;										//ÏµÍ³µ±Ç°ÔÂ·İ
-extern int g_currentDay;										//ÏµÍ³µ±Ç°ÈÕÆÚ
+extern int g_currentYear;										//ç³»ç»Ÿå½“å‰å¹´ä»½
+extern int g_currentMonth;										//ç³»ç»Ÿå½“å‰æœˆä»½
+extern int g_currentDay;										//ç³»ç»Ÿå½“å‰æ—¥æœŸ
 
-void getCurrentTime(int* year, int* month, int* day);			//»ñÈ¡µ±Ç°Ê±¼ä
-void generateUniqueId(const char* prefix, char* id);			//Éú³ÉÎ¨Ò»ID
-/*   Éú³ÉID¸ñÊ½ÎªprefixÇ°×º£¨ÀıÈçPT¡¢DOC)+ÄêÔÂÈÕÊ±·ÖÃë+2Î»¾²Ì¬¼ÆÊıÆ÷   */
+void getCurrentTime(int* year, int* month, int* day);			//è·å–å½“å‰æ—¶é—´
+void generateUniqueId(const char* prefix, char* id);			//ç”Ÿæˆå”¯ä¸€ID
+/*   ç”ŸæˆIDæ ¼å¼ä¸ºprefixå‰ç¼€ï¼ˆä¾‹å¦‚PTã€DOC)+å¹´æœˆæ—¥æ—¶åˆ†ç§’+2ä½é™æ€è®¡æ•°å™¨   */
 
 int compareDate(int year1, int month1, int day1,
-	int year2, int month2, int day2);							//±È½ÏÁ½¸öÈÕÆÚ
-/*   Öğ¼¶±È½Ï£¬ÏàÍ¬·µ»Ø0£¬1<2·µ»Ø¸ºÊı£¬·ñÔò·µ»ØÕıÊı   */
+	int year2, int month2, int day2);							//æ¯”è¾ƒä¸¤ä¸ªæ—¥æœŸ
+/*   é€çº§æ¯”è¾ƒï¼Œç›¸åŒè¿”å›0ï¼Œ1<2è¿”å›è´Ÿæ•°ï¼Œå¦åˆ™è¿”å›æ­£æ•°   */
 
-void safeStringCopy(char* dest, const char* src, int maxLen);	//°²È«×Ö·û´®¸´ÖÆ
-/*   ½«srcÖĞµÄ×Ö·û´®¸´ÖÆµ½dest£¬×Ö·û´®×î´ó³¤¶ÈÎªmaxLen   */
+void safeStringCopy(char* dest, const char* src, int maxLen);	//å®‰å…¨å­—ç¬¦ä¸²å¤åˆ¶
+/*   å°†srcä¸­çš„å­—ç¬¦ä¸²å¤åˆ¶åˆ°destï¼Œå­—ç¬¦ä¸²æœ€å¤§é•¿åº¦ä¸ºmaxLen   */
 
-void trim(char* str);											//È¥³ıÁ½¶Ë¿Õ°××Ö·û
-/*   È¥µôÍ·Î²µÄ¿Õ¸ñ   */
-int compareDateStr(char* date1, char* date2);					//±È½ÏÁ½¸ö YYYY-MM-DD ¸ñÊ½µÄÈÕÆÚ×Ö·û´®
-int stringToInt(const char* str);								//×Ö·û´®×ªÕûÊı
-double stringToDouble(const char* str);							//×Ö·û´®×ª¸¡µãÊı
-bool isValidPhone(const char* phone);							//11Î»ÊÖ»úºÅÑéÖ¤
-bool isValidIdCard(const char* idCard);							//18Î»Éí·İÖ¤ºÅÑéÖ¤
-bool isValidDate(int year, int month, int day);					//ÈÕÆÚÓĞĞ§ĞÔÑéÖ¤
-void pause(const char* message);								//ÌáÊ¾ÓëÑéÖ¤
+void trim(char* str);											//å»é™¤ä¸¤ç«¯ç©ºç™½å­—ç¬¦
+/*   å»æ‰å¤´å°¾çš„ç©ºæ ¼   */
+int compareDateStr(char* date1, char* date2);					//æ¯”è¾ƒä¸¤ä¸ª YYYY-MM-DD æ ¼å¼çš„æ—¥æœŸå­—ç¬¦ä¸²
+int stringToInt(const char* str);								//å­—ç¬¦ä¸²è½¬æ•´æ•°
+double stringToDouble(const char* str);							//å­—ç¬¦ä¸²è½¬æµ®ç‚¹æ•°
+bool isValidPhone(const char* phone);							//11ä½æ‰‹æœºå·éªŒè¯
+bool isValidIdCard(const char* idCard);							//18ä½èº«ä»½è¯å·éªŒè¯
+bool isValidDate(int year, int month, int day);					//æ—¥æœŸæœ‰æ•ˆæ€§éªŒè¯
+void pause(const char* message);								//æç¤ºä¸éªŒè¯
 
 #endif

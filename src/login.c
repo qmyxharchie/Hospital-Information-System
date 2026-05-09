@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -8,18 +8,18 @@
 #include "patient.h"
 #include "ui.h"
 
-// È«¾Ö±äÁ¿¶¨Òå
-static User* g_currUser = NULL;     // µ±Ç°µÇÂ¼ÓÃ»§
+// å…¨å±€å˜é‡å®šä¹‰
+static User* g_currUser = NULL;     // å½“å‰ç™»å½•ç”¨æˆ·
 
-// Getter º¯ÊıÊµÏÖ
+// Getter å‡½æ•°å®ç°
 User* getCurrentUser(void) {
 	return g_currUser;
 }
 
 //-----------------
-// ¼ò»¯°æMD5¹şÏ£º¯Êı£¨½öÓÃÓÚÑİÊ¾£¬²»°²È«£©
+// ç®€åŒ–ç‰ˆMD5å“ˆå¸Œå‡½æ•°ï¼ˆä»…ç”¨äºæ¼”ç¤ºï¼Œä¸å®‰å…¨ï¼‰
 void md5Hash(const char* input, char* output) {
-	// ÕâÀïÖ»ÊÇÒ»¸öÄ£ÄâÊµÏÖ£¬Êµ¼ÊÓ¦ÓÃÖĞĞèÒªÊ¹ÓÃÕæÕıµÄMD5Ëã·¨
+	// è¿™é‡Œåªæ˜¯ä¸€ä¸ªæ¨¡æ‹Ÿå®ç°ï¼Œå®é™…åº”ç”¨ä¸­éœ€è¦ä½¿ç”¨çœŸæ­£çš„MD5ç®—æ³•
 	unsigned int hash = 0;
 	unsigned int len = strlen(input);
 
@@ -27,39 +27,39 @@ void md5Hash(const char* input, char* output) {
 		hash = hash * 37 + input[i];
 	}
 
-	// ½«¹şÏ£Öµ×ª»»Îª32Î»Ê®Áù½øÖÆ×Ö·û´®£¨MD5±ê×¼³¤¶È£©
+	// å°†å“ˆå¸Œå€¼è½¬æ¢ä¸º32ä½åå…­è¿›åˆ¶å­—ç¬¦ä¸²ï¼ˆMD5æ ‡å‡†é•¿åº¦ï¼‰
 	sprintf(output, "%08x%08x%08x%08x", hash, hash, hash, hash);
 
-	// È·±£×Ö·û´®½áÊø
+	// ç¡®ä¿å­—ç¬¦ä¸²ç»“æŸ
 	output[32] = '\0';
 }//-----------------
 
 //-----------------
-// ÓÃ»§µÇÂ¼
-// ¹¦ÄÜ£ºÑéÖ¤ÓÃ»§µÇÂ¼ĞÅÏ¢²¢ÉèÖÃµÇÂ¼×´Ì¬
-// ²ÎÊı£ºusername - ÓÃ»§Ãû£¬password - ÃÜÂë
-// ·µ»ØÖµ£ºLoginStatusÀàĞÍµÄµÇÂ¼×´Ì¬
+// ç”¨æˆ·ç™»å½•
+// åŠŸèƒ½ï¼šéªŒè¯ç”¨æˆ·ç™»å½•ä¿¡æ¯å¹¶è®¾ç½®ç™»å½•çŠ¶æ€
+// å‚æ•°ï¼šusername - ç”¨æˆ·åï¼Œpassword - å¯†ç 
+// è¿”å›å€¼ï¼šLoginStatusç±»å‹çš„ç™»å½•çŠ¶æ€
 LoginStatus login(char username[], char password[]) {
-	buildUserChain(&g_userHead, &g_userTail);		//¼ÓÔØÓÃ»§Á´±í
+	buildUserChain(&g_userHead, &g_userTail);		//åŠ è½½ç”¨æˆ·é“¾è¡¨
 
 	char pwdHash[100];
-	md5Hash(password, pwdHash);						//ÃÜÂë×ªMD5
+	md5Hash(password, pwdHash);						//å¯†ç è½¬MD5
 
 	User* cur = g_userHead;
 
-	while (cur != NULL) {							//±éÀúÓÃ»§Á´±í
+	while (cur != NULL) {							//éå†ç”¨æˆ·é“¾è¡¨
 		if (strcmp(cur->data.username, username) == 0 &&
-			strcmp(cur->data.password, pwdHash) == 0) {			//Æ¥ÅäÓÃ»§ÃûºÍÃÜÂë¹şÏ£Öµ
+			strcmp(cur->data.password, pwdHash) == 0) {			//åŒ¹é…ç”¨æˆ·åå’Œå¯†ç å“ˆå¸Œå€¼
 
 			strcpy(g_currentUsername, username);
 			g_currentUserRole = cur->data.role;
-			g_isLoggedIn = 1;									//¼ÇÂ¼µÇÂ¼×´Ì¬
+			g_isLoggedIn = 1;									//è®°å½•ç™»å½•çŠ¶æ€
 
-			getCurrentTime(cur->data.lastLogin);				//¸üĞÂµÇÂ¼Ê±¼ä
+			getCurrentTime(cur->data.lastLogin);				//æ›´æ–°ç™»å½•æ—¶é—´
 
-			rebuildUserFile(g_userHead);						//±£´æ»ØÎÄ¼ş
+			rebuildUserFile(g_userHead);						//ä¿å­˜å›æ–‡ä»¶
 
-			//¹ÜÀíÔ±½ÇÉ«ÎªADMIN(3)£¬ÆÕÍ¨ÓÃ»§ÎªPATIENT(0)/NURSE(1)/DOCTOR(2)
+			//ç®¡ç†å‘˜è§’è‰²ä¸ºADMIN(3)ï¼Œæ™®é€šç”¨æˆ·ä¸ºPATIENT(0)/NURSE(1)/DOCTOR(2)
 			if (cur->data.role == PATIENT || cur->data.role == NURSE || 
 				cur->data.role == DOCTOR){
 				return LOGIN_SUCCESS_USER;
@@ -70,171 +70,171 @@ LoginStatus login(char username[], char password[]) {
 		}
 		cur = cur->next;
 	}
-	return LOGIN_FAILED;										//Î´ÕÒµ½ÓÃ»§
+	return LOGIN_FAILED;										//æœªæ‰¾åˆ°ç”¨æˆ·
 }
 //-----------------
 
 //-----------------
-// ÓÃ»§×¢²á
-// ¹¦ÄÜ£º´´½¨ĞÂÓÃ»§ÕË»§
-// ²ÎÊı£ºusername - ÓÃ»§Ãû£¬password - ÃÜÂë£¬
-//		 role - ÓÃ»§½ÇÉ«£¨0-¹ÜÀíÔ±£¬1-»¤Ê¿£¬2-Ò½Éú£¬3-¹ÜÀíÔ±£©
-// ·µ»ØÖµ£º1-×¢²á³É¹¦£¬0-×¢²áÊ§°Ü
+// ç”¨æˆ·æ³¨å†Œ
+// åŠŸèƒ½ï¼šåˆ›å»ºæ–°ç”¨æˆ·è´¦æˆ·
+// å‚æ•°ï¼šusername - ç”¨æˆ·åï¼Œpassword - å¯†ç ï¼Œ
+//		 role - ç”¨æˆ·è§’è‰²ï¼ˆ0-ç®¡ç†å‘˜ï¼Œ1-æŠ¤å£«ï¼Œ2-åŒ»ç”Ÿï¼Œ3-ç®¡ç†å‘˜ï¼‰
+// è¿”å›å€¼ï¼š1-æ³¨å†ŒæˆåŠŸï¼Œ0-æ³¨å†Œå¤±è´¥
 
 int registerUser(char username[], char password[], int role) {
-	buildUserChain(&g_userHead, &g_userTail);		//¼ÓÔØÓÃ»§Á´±í
+	buildUserChain(&g_userHead, &g_userTail);		//åŠ è½½ç”¨æˆ·é“¾è¡¨
 
-	User* cur = g_userHead;							//¼ì²éÓÃ»§ÊÇ·ñ´æÔÚ
+	User* cur = g_userHead;							//æ£€æŸ¥ç”¨æˆ·æ˜¯å¦å­˜åœ¨
 	while (cur != NULL) {
 		if (strcmp(cur->data.username, username) == 0) {
-			printf("ÓÃ»§ÃûÒÑ´æÔÚ£¡\n");
+			printf("ç”¨æˆ·åå·²å­˜åœ¨ï¼\n");
 			return 0;
 		}
 		cur = cur->next;
 	}
-	User* newUser = (User*)malloc(sizeof(User));	//´´½¨ĞÂ½Úµã
-	if (newUser == NULL) {							//¼ì²éÊÇ·ñ´´½¨³É¹¦
-		printf("ÄÚ´æ·ÖÅäÊ§°Ü£¡\n");
+	User* newUser = (User*)malloc(sizeof(User));	//åˆ›å»ºæ–°èŠ‚ç‚¹
+	if (newUser == NULL) {							//æ£€æŸ¥æ˜¯å¦åˆ›å»ºæˆåŠŸ
+		printf("å†…å­˜åˆ†é…å¤±è´¥ï¼\n");
 		return 0;
 	}
-	strcpy(newUser->data.username, username);		//Ìî³äÊı¾İ
+	strcpy(newUser->data.username, username);		//å¡«å……æ•°æ®
 
 	char hashed[100];								
-	md5Hash(password, hashed);						//ÃÜÂë¼ÓÃÜ
+	md5Hash(password, hashed);						//å¯†ç åŠ å¯†
 	strcpy(newUser->data.password, hashed);
 
 	newUser->data.role = (UserRole)role;
 	newUser->next = NULL;
 
-	if (g_userHead == NULL) {						//Î²²å·¨²åÈëÁ´±í
+	if (g_userHead == NULL) {						//å°¾æ’æ³•æ’å…¥é“¾è¡¨
 		g_userHead = newUser;
-		g_userTail = newUser;						//ĞŞÕı£º³õÊ¼»¯Î²Ö¸Õë
+		g_userTail = newUser;						//ä¿®æ­£ï¼šåˆå§‹åŒ–å°¾æŒ‡é’ˆ
 	}
 	else {
 		g_userTail->next = newUser;
-		newUser->pre = g_userTail;					//Î¬»¤Ë«ÏòÁ´±í
+		newUser->pre = g_userTail;					//ç»´æŠ¤åŒå‘é“¾è¡¨
 		g_userTail = newUser;
 	}
-	rebuildUserFile(g_userHead);					//±£´æµ½ÎÄ¼ş
+	rebuildUserFile(g_userHead);					//ä¿å­˜åˆ°æ–‡ä»¶
 
-	printf("×¢²á³É¹¦£¡\n");
+	printf("æ³¨å†ŒæˆåŠŸï¼\n");
 	return 1;
 }
 //-----------------
 
 //-----------------
-// ÓÃ»§²éÑ¯
-// ¹¦ÄÜ£º¸ù¾İÓÃ»§Ãû²éÕÒÓÃ»§ĞÅÏ¢
-// ²ÎÊı£ºhead - ÓÃ»§Á´±íÍ·Ö¸Õë£¬username - Òª²éÕÒµÄÓÃ»§Ãû
-// ·µ»ØÖµ£ºÕÒµ½µÄÓÃ»§½ÚµãÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+// ç”¨æˆ·æŸ¥è¯¢
+// åŠŸèƒ½ï¼šæ ¹æ®ç”¨æˆ·åæŸ¥æ‰¾ç”¨æˆ·ä¿¡æ¯
+// å‚æ•°ï¼šhead - ç”¨æˆ·é“¾è¡¨å¤´æŒ‡é’ˆï¼Œusername - è¦æŸ¥æ‰¾çš„ç”¨æˆ·å
+// è¿”å›å€¼ï¼šæ‰¾åˆ°çš„ç”¨æˆ·èŠ‚ç‚¹æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›NULL
 
 User* findUserByName(User* head, char* username) {
 	User* cur = head;
-	while (cur != NULL) {										//±éÀúÁ´±í
-		if (strcmp(cur->data.username, username) == 0) {		//±È½ÏÓÃ»§Ãû
+	while (cur != NULL) {										//éå†é“¾è¡¨
+		if (strcmp(cur->data.username, username) == 0) {		//æ¯”è¾ƒç”¨æˆ·å
 			return cur;
 		}
 		cur = cur->next;
 	}
-	return NULL;												//±éÀúÃ»ÓĞÕÒµ½
+	return NULL;												//éå†æ²¡æœ‰æ‰¾åˆ°
 }
 //-----------------
 
 //-----------------
-// ¸ù¾İÓÃ»§Ãû»ñÈ¡ÓÃ»§½ÇÉ«
-// ¹¦ÄÜ£º´ÓÓÃ»§Á´±íÖĞ²éÕÒÖ¸¶¨ÓÃ»§²¢·µ»ØÆä½ÇÉ«
-// ²ÎÊı£ºusername - Òª²éÑ¯µÄÓÃ»§Ãû
-// ·µ»ØÖµ£ºUserRoleÀàĞÍµÄÓÃ»§½ÇÉ«£¬Î´ÕÒµ½Ôò·µ»ØPATIENT
+// æ ¹æ®ç”¨æˆ·åè·å–ç”¨æˆ·è§’è‰²
+// åŠŸèƒ½ï¼šä»ç”¨æˆ·é“¾è¡¨ä¸­æŸ¥æ‰¾æŒ‡å®šç”¨æˆ·å¹¶è¿”å›å…¶è§’è‰²
+// å‚æ•°ï¼šusername - è¦æŸ¥è¯¢çš„ç”¨æˆ·å
+// è¿”å›å€¼ï¼šUserRoleç±»å‹çš„ç”¨æˆ·è§’è‰²ï¼Œæœªæ‰¾åˆ°åˆ™è¿”å›PATIENT
 UserRole getUserRoleByUsername(const char* username) {
-	buildUserChain(&g_userHead, &g_userTail); //¼ÓÔØÓÃ»§Á´±í
+	buildUserChain(&g_userHead, &g_userTail); //åŠ è½½ç”¨æˆ·é“¾è¡¨
 	User* user = findUserByName(g_userHead, (char*)username);
 	if (user != NULL) {
 		return user->data.role;
 	}
-	return PATIENT; //Ä¬ÈÏ·µ»Ø»¼Õß½ÇÉ«
+	return PATIENT; //é»˜è®¤è¿”å›æ‚£è€…è§’è‰²
 }
 //-----------------
 
 //-----------------
-// È¨ÏŞ¼ì²é
-// ¹¦ÄÜ£º¼ì²éÖ¸¶¨½ÇÉ«ÊÇ·ñÓµÓĞÄ³Ïî²Ù×÷È¨ÏŞ
-// ²ÎÊı£ºrole - ÓÃ»§½ÇÉ«£¬operation - Òª¼ì²éµÄ²Ù×÷ÀàĞÍ
-// ·µ»ØÖµ£º1-ÓĞÈ¨ÏŞ£¬0-ÎŞÈ¨ÏŞ
+// æƒé™æ£€æŸ¥
+// åŠŸèƒ½ï¼šæ£€æŸ¥æŒ‡å®šè§’è‰²æ˜¯å¦æ‹¥æœ‰æŸé¡¹æ“ä½œæƒé™
+// å‚æ•°ï¼šrole - ç”¨æˆ·è§’è‰²ï¼Œoperation - è¦æ£€æŸ¥çš„æ“ä½œç±»å‹
+// è¿”å›å€¼ï¼š1-æœ‰æƒé™ï¼Œ0-æ— æƒé™
 int hasPermission(UserRole role, const char* operation) {
 	if (strcmp(operation, "view_own_profile") == 0) {
-		return 1; // ËùÓĞ½ÇÉ«¶¼ÄÜ²é¿´×Ô¼ºµÄÊı¾İ
+		return 1; // æ‰€æœ‰è§’è‰²éƒ½èƒ½æŸ¥çœ‹è‡ªå·±çš„æ•°æ®
 	}
 
 	if (strcmp(operation, "view_registration") == 0) {
-		return role >= PATIENT; // ËùÓĞ½ÇÉ«¶¼ÄÜ²é¿´¹ÒºÅ
+		return role >= PATIENT; // æ‰€æœ‰è§’è‰²éƒ½èƒ½æŸ¥çœ‹æŒ‚å·
 	}
 
 	if (strcmp(operation, "manage_patients") == 0) {
-		return role >= NURSE; // »¤Ê¿¼°ÒÔÉÏ
+		return role >= NURSE; // æŠ¤å£«åŠä»¥ä¸Š
 	}
 
 	if (strcmp(operation, "manage_doctors") == 0) {
-		return role >= DOCTOR; // Ò½Éú¼°ÒÔÉÏ
+		return role >= DOCTOR; // åŒ»ç”ŸåŠä»¥ä¸Š
 	}
 
 	if (strcmp(operation, "system_admin") == 0) {
-		return role == ADMIN; // ½ö¹ÜÀíÔ±
+		return role == ADMIN; // ä»…ç®¡ç†å‘˜
 	}
 
 	if (strcmp(operation, "book_appointment") == 0) {
 		return role == PATIENT || role == NURSE || role == ADMIN;
 	}
 
-	return 0; // Ä¬ÈÏ¾Ü¾ø
+	return 0; // é»˜è®¤æ‹’ç»
 }
 //-----------------
 
 //-----------------
-// ¼ì²éÊÇ·ñÎªÄ³½ÇÉ«
-// ²ÎÊı£ºrole - ÓÃ»§½ÇÉ«
-// ·µ»ØÖµ£º1-ÊÇ£¬0-²»ÊÇ
-// ¹¦ÄÜ£ºÅĞ¶ÏÓÃ»§½ÇÉ«ÊÇ·ñÎª»¼Õß
+// æ£€æŸ¥æ˜¯å¦ä¸ºæŸè§’è‰²
+// å‚æ•°ï¼šrole - ç”¨æˆ·è§’è‰²
+// è¿”å›å€¼ï¼š1-æ˜¯ï¼Œ0-ä¸æ˜¯
+// åŠŸèƒ½ï¼šåˆ¤æ–­ç”¨æˆ·è§’è‰²æ˜¯å¦ä¸ºæ‚£è€…
 int isPatient(UserRole role) {
 	return role == PATIENT;
 }
 //-----------------
 
 //-----------------
-// ¼ì²éÊÇ·ñÎª»¤Ê¿½ÇÉ«
+// æ£€æŸ¥æ˜¯å¦ä¸ºæŠ¤å£«è§’è‰²
 int isNurse(UserRole role) {
 	return role == NURSE;
 }
 //-----------------
 
 //-----------------
-// ¼ì²éÊÇ·ñÎªÒ½Éú½ÇÉ«
+// æ£€æŸ¥æ˜¯å¦ä¸ºåŒ»ç”Ÿè§’è‰²
 int isDoctor(UserRole role) {
 	return role == DOCTOR;
 }
 //-----------------
 
 //-----------------
-// ¼ì²éÊÇ·ñÎª¹ÜÀíÔ±½ÇÉ«
+// æ£€æŸ¥æ˜¯å¦ä¸ºç®¡ç†å‘˜è§’è‰²
 int isAdmin(UserRole role) {
 	return role == ADMIN;
 }
 //-----------------
 
 //-----------------
-// ´ø½ÇÉ«ĞÅÏ¢µÄµÇÂ¼
-// ¹¦ÄÜ£ºÖ´ĞĞÓÃ»§µÇÂ¼²¢·µ»ØÏêÏ¸µÄµÇÂ¼½á¹û£¨°üÀ¨½ÇÉ«ĞÅÏ¢£©
-// ²ÎÊı£ºusername - ÓÃ»§Ãû£¬password - ÃÜÂë
-// ·µ»ØÖµ£ºLoginResult½á¹¹Ìå£¬°üº¬µÇÂ¼×´Ì¬¡¢ÓÃ»§½ÇÉ«ºÍÓÃ»§Ãû
+// å¸¦è§’è‰²ä¿¡æ¯çš„ç™»å½•
+// åŠŸèƒ½ï¼šæ‰§è¡Œç”¨æˆ·ç™»å½•å¹¶è¿”å›è¯¦ç»†çš„ç™»å½•ç»“æœï¼ˆåŒ…æ‹¬è§’è‰²ä¿¡æ¯ï¼‰
+// å‚æ•°ï¼šusername - ç”¨æˆ·åï¼Œpassword - å¯†ç 
+// è¿”å›å€¼ï¼šLoginResultç»“æ„ä½“ï¼ŒåŒ…å«ç™»å½•çŠ¶æ€ã€ç”¨æˆ·è§’è‰²å’Œç”¨æˆ·å
 LoginResult loginWithRole(char* username, char* password) {
 	LoginResult result = { 0 };
 
-	// µ÷ÓÃÄúÏÖÓĞµÄµÇÂ¼º¯Êı
+	// è°ƒç”¨æ‚¨ç°æœ‰çš„ç™»å½•å‡½æ•°
 	LoginStatus status = login(username, password);
 	result.loginStatus = status;
 
 	if (status == LOGIN_SUCCESS_USER || status == LOGIN_SUCCESS_ADMIN) {
 		strcpy(result.username, username);
-		result.userRole = (UserRole)g_currentUserRole; // Ê¹ÓÃÈ«¾Ö±äÁ¿ÖĞµÄ½ÇÉ«
+		result.userRole = (UserRole)g_currentUserRole; // ä½¿ç”¨å…¨å±€å˜é‡ä¸­çš„è§’è‰²
 	}
 
 	return result;

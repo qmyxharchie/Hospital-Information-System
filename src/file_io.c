@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -13,7 +13,7 @@
 #include "ui.h"
 
 //-----------------
-//	¶ÁÈ¡ÎÄ¼ş
+//	è¯»å–æ–‡ä»¶
 void buildPatientChain(Patient** head, Patient** tail) {
 	FILE* fp = fopen(PATIENT_FILE, "r");
 	if (fp == NULL) {
@@ -30,14 +30,14 @@ void buildPatientChain(Patient** head, Patient** tail) {
 	*tail = NULL;
 	Patient* pre = NULL;
 
-	int opt;					//Ñ­»·¶ÁÈ¡ÎÄ¼ş
+	int opt;					//å¾ªç¯è¯»å–æ–‡ä»¶
 	while (1) {
 		fscanf(fp, "%d", &opt);
 
 		if (opt == -1) 
 			break;
 
-		if (opt == 1) {			//´´½¨½Úµã
+		if (opt == 1) {			//åˆ›å»ºèŠ‚ç‚¹
 			Patient* node = (Patient*)malloc(sizeof(Patient));
 			node->next = NULL;
 			node->pre = NULL;
@@ -402,13 +402,13 @@ void buildUserChain(User** head, User** tail) {
 //-----------------
 
 //-----------------
-//	Ğ´ÈëÎÄ¼ş
+//	å†™å…¥æ–‡ä»¶
 void rebuildPatientFile(Patient* head) {
 	FILE* fp = fopen(PATIENT_FILE, "w");
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	Patient* p = head;
@@ -437,7 +437,7 @@ void rebuildDoctorFile(Doctor* head) {
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	Doctor* p = head;
@@ -465,7 +465,7 @@ void rebuildMedicineFile(Medicine* head) {
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	Medicine* p = head;
@@ -494,7 +494,7 @@ void rebuildPurchaseFile(Purchase* head) {
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	Purchase* p = head;
@@ -522,7 +522,7 @@ void rebuildHospitalizationFile(Hospitalization* head) {
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	Hospitalization* p = head;
@@ -551,7 +551,7 @@ void rebuildBedFile(Bed* head) {
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	Bed* p = head;
@@ -578,7 +578,7 @@ void rebuildRegistrationFile(Registration* head) {
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	Registration* p = head;
@@ -608,7 +608,7 @@ void rebuildUserFile(User* head) {
 
 	if (fp == NULL)
 	{
-		printf("ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n");
+		printf("æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n");
 		return;
 	}
 	User* p = head;
@@ -630,7 +630,7 @@ void rebuildUserFile(User* head) {
 //-----------------
 
 //-----------------
-//	ÊÍ·ÅÄÚ´æ
+//	é‡Šæ”¾å†…å­˜
 
 void freePatientChain(Patient** head) {
 	if (!head || !*head) return;
@@ -802,42 +802,42 @@ void freeBedResultChain(Bed** head) {
 //-----------------
 
 //-----------------
-//	¸´ÖÆµ¥¸öÎÄ¼ş
+//	å¤åˆ¶å•ä¸ªæ–‡ä»¶
 int copyFile(char* source, char* dest) {
 	FILE* src, * dst;
-	char buffer[1024];		 // »º³åÇø
+	char buffer[1024];		 // ç¼“å†²åŒº
 	size_t bytesRead;
 
 	src = fopen(source, "r");
 	if (src == NULL) {
-		printf("ÎŞ·¨´ò¿ªÔ´ÎÄ¼ş: %s\n", source);
+		printf("æ— æ³•æ‰“å¼€æºæ–‡ä»¶: %s\n", source);
 		return 0;
 	}
 
 	dst = fopen(dest, "w");
 	if (dst == NULL) {
-		printf("ÎŞ·¨´´½¨Ä¿±êÎÄ¼ş: %s\n", dest);
+		printf("æ— æ³•åˆ›å»ºç›®æ ‡æ–‡ä»¶: %s\n", dest);
 		fclose(src);
 		return 0;
 	}
 
-	while ((bytesRead = fread(buffer, 1, sizeof(buffer), src)) > 0) {	//¶Áµ½¼ÌĞøÑ­»·
+	while ((bytesRead = fread(buffer, 1, sizeof(buffer), src)) > 0) {	//è¯»åˆ°ç»§ç»­å¾ªç¯
 		fwrite(buffer, 1, bytesRead, dst);
 	}
 
-	fclose(src);			//¹Ø±ÕÎÄ¼ş
+	fclose(src);			//å…³é—­æ–‡ä»¶
 	fclose(dst);
 	return 1;
 }
 //-----------------
 
 //-----------------
-//	±¸·İËùÓĞÊı¾İÎÄ¼ş
+//	å¤‡ä»½æ‰€æœ‰æ•°æ®æ–‡ä»¶
 int backupAllData() {
 	int year, month, day;
 	getCurrentTime(&year, &month, &day);
 
-	char* files[] = {			//´æ·ÅĞèÒª±¸·İµÄÎÄ¼ş
+	char* files[] = {			//å­˜æ”¾éœ€è¦å¤‡ä»½çš„æ–‡ä»¶
 		PATIENT_FILE,
 		DOCTOR_FILE,
 		MEDICINE_FILE,
@@ -849,14 +849,14 @@ int backupAllData() {
 	};
 	int fileCount = 8;
 
-	char destPath[1024];			// Ä¿±êÂ·¾¶
+	char destPath[1024];			// ç›®æ ‡è·¯å¾„
 	int successCount = 0;
 
-	//Ñ­»·±ØĞë°ü×¡ copyFile
-	for (int i = 0; i < fileCount; i++) {		//Ñ­»·±¸·İ
+	//å¾ªç¯å¿…é¡»åŒ…ä½ copyFile
+	for (int i = 0; i < fileCount; i++) {		//å¾ªç¯å¤‡ä»½
 
-		const char* fileName = strrchr(files[i], '/');		//´ÓÓÒÍù×óÕÒ×îºóÒ»´Î³öÏÖµÄÄ³¸ö×Ö·û
-		if (fileName) fileName++;				//±ä³É´¿ÎÄ¼şÃû
+		const char* fileName = strrchr(files[i], '/');		//ä»å³å¾€å·¦æ‰¾æœ€åä¸€æ¬¡å‡ºç°çš„æŸä¸ªå­—ç¬¦
+		if (fileName) fileName++;				//å˜æˆçº¯æ–‡ä»¶å
 		else fileName = files[i];
 
 		sprintf(destPath, "backup/%s_%04d%02d%02d.txt",
@@ -864,14 +864,14 @@ int backupAllData() {
 
 
 		if (copyFile(files[i], destPath)) {
-			printf("±¸·İ³É¹¦: %s -> %s\n", files[i], destPath);
+			printf("å¤‡ä»½æˆåŠŸ: %s -> %s\n", files[i], destPath);
 			successCount++;
 		}
 		else {
-			printf("±¸·İÊ§°Ü: %s\n", files[i]);
+			printf("å¤‡ä»½å¤±è´¥: %s\n", files[i]);
 		}
 	}
 
-	printf("×Ü¹²³É¹¦±¸·İ %d/%d ¸öÎÄ¼ş\n", successCount, fileCount);
+	printf("æ€»å…±æˆåŠŸå¤‡ä»½ %d/%d ä¸ªæ–‡ä»¶\n", successCount, fileCount);
 	return 1;
 }

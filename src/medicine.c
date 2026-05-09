@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "medicine.h"
@@ -6,53 +6,53 @@
 #include "utils.h"
 #include "ui.h"
 //-------------------------
-//ÒÔÏÂÎª¿â´æ¼ì²éÔ¤¾¯º¯Êı
-// ¹¦ÄÜ£º¼ì²éÒ©Æ·¿â´æÊÇ·ñµÍÓÚ×îµÍ¿â´æ²¢·¢³öÔ¤¾¯
-// ²ÎÊı£ºhead - Ò©Æ·Á´±íÍ·Ö¸Õë
+//ä»¥ä¸‹ä¸ºåº“å­˜æ£€æŸ¥é¢„è­¦å‡½æ•°
+// åŠŸèƒ½ï¼šæ£€æŸ¥è¯å“åº“å­˜æ˜¯å¦ä½äºæœ€ä½åº“å­˜å¹¶å‘å‡ºé¢„è­¦
+// å‚æ•°ï¼šhead - è¯å“é“¾è¡¨å¤´æŒ‡é’ˆ
 void checkLowStock(Medicine* head)
 {
 	Medicine* cur = head;
 	int n = 0;
-	while (cur != NULL)//±éÀúÁ´±í
+	while (cur != NULL)//éå†é“¾è¡¨
 	{
-		if (cur->data.stock <= cur->data.minStock)//ÅĞ¶Ï¿â´æĞ¡ÓÚÊÇ·ñĞ¡ÓÚ×îµÍ¿â´æ
+		if (cur->data.stock <= cur->data.minStock)//åˆ¤æ–­åº“å­˜å°äºæ˜¯å¦å°äºæœ€ä½åº“å­˜
 		{
 			n++;
-			printf("Ò©Æ·Ãû£º%s   µ±Ç°¿â´æ£º%d   ×îµÍ¿â´æ£º%d\n", cur->data.medNo, cur->data.stock, cur->data.minStock);//Êä³öÏà¹ØĞÅÏ¢	
+			printf("è¯å“åï¼š%s   å½“å‰åº“å­˜ï¼š%d   æœ€ä½åº“å­˜ï¼š%d\n", cur->data.medNo, cur->data.stock, cur->data.minStock);//è¾“å‡ºç›¸å…³ä¿¡æ¯	
 		}
 		cur = cur->next;
 	}
-	printf("Ô¤¾¯Ò©Æ·ÊıÁ¿  ¹² %d ÖÖ\n", n);//Êä³öÔ¤¾¯Ò©Æ·×ÜÊıÁ¿
+	printf("é¢„è­¦è¯å“æ•°é‡  å…± %d ç§\n", n);//è¾“å‡ºé¢„è­¦è¯å“æ€»æ•°é‡
 }
 //-------------------------
 
 //-------------------------
-//ÒÔÏÂÎª¹ºÒ©£¨¿Û¼õ¿â´æ£©º¯Êı
-// ¹¦ÄÜ£º¹ºÂòÒ©Æ·²¢¿Û¼õÏàÓ¦¿â´æ
-// ²ÎÊı£ºhead - Ò©Æ·Á´±íÍ·Ö¸Õë£¬medNo - Ò©Æ·±àºÅ£¬quantity - ¹ºÂòÊıÁ¿
+//ä»¥ä¸‹ä¸ºè´­è¯ï¼ˆæ‰£å‡åº“å­˜ï¼‰å‡½æ•°
+// åŠŸèƒ½ï¼šè´­ä¹°è¯å“å¹¶æ‰£å‡ç›¸åº”åº“å­˜
+// å‚æ•°ï¼šhead - è¯å“é“¾è¡¨å¤´æŒ‡é’ˆï¼ŒmedNo - è¯å“ç¼–å·ï¼Œquantity - è´­ä¹°æ•°é‡
 void purchaseMedicine(Medicine* head, char* medNo, int quantity)
 {
-	Medicine* cur = findMedicineByNo(head, medNo);//´´½¨Ò»¸öÖ¸Õë»ñµÃÒ©Æ·ĞÅÏ¢
-	if (cur == NULL)//ÅĞ¶ÏÊÇ·ñÄÜ¹»²éÑ¯µ½Ò©Æ·ĞÅÏ¢
+	Medicine* cur = findMedicineByNo(head, medNo);//åˆ›å»ºä¸€ä¸ªæŒ‡é’ˆè·å¾—è¯å“ä¿¡æ¯
+	if (cur == NULL)//åˆ¤æ–­æ˜¯å¦èƒ½å¤ŸæŸ¥è¯¢åˆ°è¯å“ä¿¡æ¯
 	{
-		printf("Ã»ÓĞ²éÑ¯µ½Ò©Æ·ĞÅÏ¢\n");
+		printf("æ²¡æœ‰æŸ¥è¯¢åˆ°è¯å“ä¿¡æ¯\n");
 		return;
 	}
-	else {//ÄÜ¹»²éÑ¯µ½Ò©Æ·ĞÅÏ¢
-		if (cur->data.stock < quantity)//ÅĞ¶ÏÒ©Æ·¿â´æÊÇ·ñ×ã¹»½øĞĞ¿Û¼õ
+	else {//èƒ½å¤ŸæŸ¥è¯¢åˆ°è¯å“ä¿¡æ¯
+		if (cur->data.stock < quantity)//åˆ¤æ–­è¯å“åº“å­˜æ˜¯å¦è¶³å¤Ÿè¿›è¡Œæ‰£å‡
 		{
-			printf("¸ÃÒ©Æ·¿â´æ²»×ã\n");
+			printf("è¯¥è¯å“åº“å­˜ä¸è¶³\n");
 			return;
 		}
-		else {//Ò©Æ·¿â´æ×ã¹»½øĞĞ¿Û¼õ
-			cur->data.stock -= quantity;//¿Û¼õ¿â´æ
-			printf("¹ºÒ©³É¹¦\n");
-			printf("µ±Ç°¿â´æ£º%d\n", cur->data.stock);
+		else {//è¯å“åº“å­˜è¶³å¤Ÿè¿›è¡Œæ‰£å‡
+			cur->data.stock -= quantity;//æ‰£å‡åº“å­˜
+			printf("è´­è¯æˆåŠŸ\n");
+			printf("å½“å‰åº“å­˜ï¼š%d\n", cur->data.stock);
 			if (cur->data.stock <= cur->data.minStock)
-			{//Èç¹û¿Û¼õ¿â´æÖ®ºó¿â´æµÍÓÚ×îµÍ¿â´æ£¬½øĞĞÔ¤¾¯
+			{//å¦‚æœæ‰£å‡åº“å­˜ä¹‹ååº“å­˜ä½äºæœ€ä½åº“å­˜ï¼Œè¿›è¡Œé¢„è­¦
 				checkLowStock(head);
 			}
-			rebuildMedicineFile(head);//±£´æ¹ºÒ©¼ÇÂ¼
+			rebuildMedicineFile(head);//ä¿å­˜è´­è¯è®°å½•
 		}
 	}
 	return;
@@ -60,60 +60,60 @@ void purchaseMedicine(Medicine* head, char* medNo, int quantity)
 //-------------------------
 
 //-------------------------
-//ÒÔÏÂÎª²éÑ¯Ò©Æ·º¯Êı
+//ä»¥ä¸‹ä¸ºæŸ¥è¯¢è¯å“å‡½æ•°
 
-//°´ÕÕ±àºÅ²éÑ¯Ò©Æ·
-// ¹¦ÄÜ£º¸ù¾İÒ©Æ·±àºÅ²éÕÒÒ©Æ·ĞÅÏ¢
-// ²ÎÊı£ºhead - Ò©Æ·Á´±íÍ·Ö¸Õë£¬medNo - Òª²éÕÒµÄÒ©Æ·±àºÅ
-// ·µ»ØÖµ£ºÕÒµ½µÄÒ©Æ·½ÚµãÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+//æŒ‰ç…§ç¼–å·æŸ¥è¯¢è¯å“
+// åŠŸèƒ½ï¼šæ ¹æ®è¯å“ç¼–å·æŸ¥æ‰¾è¯å“ä¿¡æ¯
+// å‚æ•°ï¼šhead - è¯å“é“¾è¡¨å¤´æŒ‡é’ˆï¼ŒmedNo - è¦æŸ¥æ‰¾çš„è¯å“ç¼–å·
+// è¿”å›å€¼ï¼šæ‰¾åˆ°çš„è¯å“èŠ‚ç‚¹æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›NULL
 Medicine* findMedicineByNo(Medicine* head, char* medNo)
 {
-	Medicine* cur = head;//´´½¨Ö¸Õë½øĞĞ±éÀú
-	while (cur != NULL)//±éÀúÁ´±í
+	Medicine* cur = head;//åˆ›å»ºæŒ‡é’ˆè¿›è¡Œéå†
+	while (cur != NULL)//éå†é“¾è¡¨
 	{
 		if (strcmp(cur->data.medNo, medNo) == 0)
-		{//±È¶ÔÊäÈëµÄÒ©Æ·±àºÅÊÇ·ñÓëÒ©Æ·¿âÖĞµÄÒ©Æ·±àºÅÏàÍ¬
+		{//æ¯”å¯¹è¾“å…¥çš„è¯å“ç¼–å·æ˜¯å¦ä¸è¯å“åº“ä¸­çš„è¯å“ç¼–å·ç›¸åŒ
 			return cur;
 		}
 		cur = cur->next;
 	}
-	return NULL;//Ã»ÓĞ²éÑ¯µ½Ò©Æ·ĞÅÏ¢£¬·µ»ØNULL
+	return NULL;//æ²¡æœ‰æŸ¥è¯¢åˆ°è¯å“ä¿¡æ¯ï¼Œè¿”å›NULL
 }
 
-//°´ÕÕÒ©Æ·Ãû²éÑ¯Ò©Æ·
-// ¹¦ÄÜ£º¸ù¾İÒ©Æ·Ãû³Æ£¨Í¨ÓÃÃû»òÉÌÆ·Ãû£©²éÕÒÒ©Æ·ĞÅÏ¢
-// ²ÎÊı£ºhead - Ò©Æ·Á´±íÍ·Ö¸Õë£¬name - Òª²éÕÒµÄÒ©Æ·Ãû³Æ
-// ·µ»ØÖµ£ºÕÒµ½µÄÒ©Æ·½ÚµãÖ¸Õë£¬Î´ÕÒµ½·µ»ØNULL
+//æŒ‰ç…§è¯å“åæŸ¥è¯¢è¯å“
+// åŠŸèƒ½ï¼šæ ¹æ®è¯å“åç§°ï¼ˆé€šç”¨åæˆ–å•†å“åï¼‰æŸ¥æ‰¾è¯å“ä¿¡æ¯
+// å‚æ•°ï¼šhead - è¯å“é“¾è¡¨å¤´æŒ‡é’ˆï¼Œname - è¦æŸ¥æ‰¾çš„è¯å“åç§°
+// è¿”å›å€¼ï¼šæ‰¾åˆ°çš„è¯å“èŠ‚ç‚¹æŒ‡é’ˆï¼Œæœªæ‰¾åˆ°è¿”å›NULL
 Medicine* findMedicineByName(Medicine* head, char* name)
 {
-	Medicine* cur = head;//´´½¨Ö¸Õë½øĞĞ±éÀú
-	while (cur!= NULL)//±éÀúÁ´±í
+	Medicine* cur = head;//åˆ›å»ºæŒ‡é’ˆè¿›è¡Œéå†
+	while (cur!= NULL)//éå†é“¾è¡¨
 	{
 		if (strcmp(cur->data.genericName, name) == 0 || strcmp(cur->data.brandName, *name) == 0)
-		{//±È¶ÔÊäÈëµÄÒ©Æ·ÃûÊÇ·ñÓëÍ¨ÓÃÃû»òÉÌÆ·ÃûÏàÍ¬
+		{//æ¯”å¯¹è¾“å…¥çš„è¯å“åæ˜¯å¦ä¸é€šç”¨åæˆ–å•†å“åç›¸åŒ
 			return cur;
 		}
 		cur = cur->next;
 	}
-	return NULL;//Èç¹ûÃ»ÓĞ²éÑ¯µ½Ò©Æ·ĞÅÏ¢£¬·µ»ØNULL
+	return NULL;//å¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°è¯å“ä¿¡æ¯ï¼Œè¿”å›NULL
 }
 //-------------------------
 
 //-------------------------
-//ÒÔÏÂÎª²¹³ä¿â´æº¯Êı
-// ¹¦ÄÜ£ºÎªÖ¸¶¨Ò©Æ·²¹³ä¿â´æ
-// ²ÎÊı£ºhead - Ò©Æ·Á´±íÍ·Ö¸Õë£¬medNo - Ò©Æ·±àºÅ£¬quantity - ²¹³äÊıÁ¿
+//ä»¥ä¸‹ä¸ºè¡¥å……åº“å­˜å‡½æ•°
+// åŠŸèƒ½ï¼šä¸ºæŒ‡å®šè¯å“è¡¥å……åº“å­˜
+// å‚æ•°ï¼šhead - è¯å“é“¾è¡¨å¤´æŒ‡é’ˆï¼ŒmedNo - è¯å“ç¼–å·ï¼Œquantity - è¡¥å……æ•°é‡
 void replenishStock(Medicine* head, char* medNo, int quantity)
 {
-	Medicine* cur = findMedicineByNo(head, medNo);//´´½¨Ö¸Õë»ñÈ¡Ò©Æ·ĞÅÏ¢
-	if (cur == NULL)//ÅĞ¶ÏÊÇ·ñ²éÑ¯µ½ÁËÒ©Æ·
+	Medicine* cur = findMedicineByNo(head, medNo);//åˆ›å»ºæŒ‡é’ˆè·å–è¯å“ä¿¡æ¯
+	if (cur == NULL)//åˆ¤æ–­æ˜¯å¦æŸ¥è¯¢åˆ°äº†è¯å“
 	{
-		printf("Ã»ÓĞ²éÑ¯µ½Ò©Æ·ĞÅÏ¢\n");
+		printf("æ²¡æœ‰æŸ¥è¯¢åˆ°è¯å“ä¿¡æ¯\n");
 		return;
 	}
-	else {//²¹³ä¿â´æ
+	else {//è¡¥å……åº“å­˜
 		cur->data.stock += quantity;
-		printf("²¹³äÒ©Æ·¿â´æ³É¹¦\n");
+		printf("è¡¥å……è¯å“åº“å­˜æˆåŠŸ\n");
 		rebuildMedicineFile(head);
 	}
 	return;
@@ -121,24 +121,24 @@ void replenishStock(Medicine* head, char* medNo, int quantity)
 //-------------------------
 
 //-------------------------
-//ÒÔÏÂÎª¹ºÒ©¼ÇÂ¼´´½¨º¯Êı
-// ¹¦ÄÜ£º´´½¨¹ºÒ©¼ÇÂ¼²¢±£´æµ½Á´±í
-// ²ÎÊı£ºhead - Ö¸Ïò¹ºÒ©¼ÇÂ¼Á´±íÍ·Ö¸ÕëµÄÖ¸Õë£¬tail - Ö¸Ïò¹ºÒ©¼ÇÂ¼Á´±íÎ²Ö¸ÕëµÄÖ¸Õë
-//      patientCardNo - ²¡ÈË¿¨ºÅ£¬medNo - Ò©Æ·±àºÅ£¬quantity - ¹ºÂòÊıÁ¿
-//      totalCost - ×Ü·ÑÓÃ£¬date - ¹ºÒ©ÈÕÆÚ
+//ä»¥ä¸‹ä¸ºè´­è¯è®°å½•åˆ›å»ºå‡½æ•°
+// åŠŸèƒ½ï¼šåˆ›å»ºè´­è¯è®°å½•å¹¶ä¿å­˜åˆ°é“¾è¡¨
+// å‚æ•°ï¼šhead - æŒ‡å‘è´­è¯è®°å½•é“¾è¡¨å¤´æŒ‡é’ˆçš„æŒ‡é’ˆï¼Œtail - æŒ‡å‘è´­è¯è®°å½•é“¾è¡¨å°¾æŒ‡é’ˆçš„æŒ‡é’ˆ
+//      patientCardNo - ç—…äººå¡å·ï¼ŒmedNo - è¯å“ç¼–å·ï¼Œquantity - è´­ä¹°æ•°é‡
+//      totalCost - æ€»è´¹ç”¨ï¼Œdate - è´­è¯æ—¥æœŸ
 void addPurchaseRecord(Purchase** head, Purchase** tail,char patientCardNo[20],
 	char medNo[20],int quantity,double totalCost,char date[20])
 {
-	Purchase* pur = (Purchase*)malloc(sizeof(Purchase));//´´½¨ĞÂ½Úµã²¢·ÖÅäÄÚ´æ
+	Purchase* pur = (Purchase*)malloc(sizeof(Purchase));//åˆ›å»ºæ–°èŠ‚ç‚¹å¹¶åˆ†é…å†…å­˜
 	if (!pur)
 	{
-		printf("ÄÚ´æ·ÖÅäÊ§°Ü\n");
+		printf("å†…å­˜åˆ†é…å¤±è´¥\n");
 		return;
 	}
 	pur->next = pur->pre = NULL;
 	char id[20];
-	generateUniqueId("PUR", id);//Éú³ÉÎ¨Ò»ID
-	//Ïò½ÚµãÖĞÊäÈëÏà¹ØÊı¾İ
+	generateUniqueId("PUR", id);//ç”Ÿæˆå”¯ä¸€ID
+	//å‘èŠ‚ç‚¹ä¸­è¾“å…¥ç›¸å…³æ•°æ®
 	strcpy(pur->data.purNo, id);
 	strcpy(pur->data.patientCardNo, patientCardNo);
 	strcpy(pur->data.medNo,medNo );
@@ -146,7 +146,7 @@ void addPurchaseRecord(Purchase** head, Purchase** tail,char patientCardNo[20],
 	pur->data.totalCost = totalCost;
 	strcpy(pur->data.date, date);
 
-	if (*tail == NULL)//ÀûÓÃÎ²²å·¨Ìí¼Ó½Úµã
+	if (*tail == NULL)//åˆ©ç”¨å°¾æ’æ³•æ·»åŠ èŠ‚ç‚¹
 	{
 		*head = pur;
 		*tail = pur;  
@@ -156,26 +156,26 @@ void addPurchaseRecord(Purchase** head, Purchase** tail,char patientCardNo[20],
 		pur->pre = *tail;
 		*tail = pur;
 	}
-	purchaseMedicine(*head, medNo, quantity);//¹ºÒ©Ê±ÀûÓÃ¹ºÒ©º¯Êı¿Û¼õ¿â´æ
-	rebuildPurchaseFile(*head);//±£´æ¹ºÒ©¼ÇÂ¼
+	purchaseMedicine(*head, medNo, quantity);//è´­è¯æ—¶åˆ©ç”¨è´­è¯å‡½æ•°æ‰£å‡åº“å­˜
+	rebuildPurchaseFile(*head);//ä¿å­˜è´­è¯è®°å½•
 	return;
 }
 //-------------------------
 
 //-------------------------
-//ÒÔÏÂÎªÒ©Æ·ÁĞ±íº¯Êı
-// ¹¦ÄÜ£ºÁĞ³öËùÓĞÒ©Æ·ĞÅÏ¢
-// ²ÎÊı£ºhead - Ò©Æ·Á´±íÍ·Ö¸Õë
+//ä»¥ä¸‹ä¸ºè¯å“åˆ—è¡¨å‡½æ•°
+// åŠŸèƒ½ï¼šåˆ—å‡ºæ‰€æœ‰è¯å“ä¿¡æ¯
+// å‚æ•°ï¼šhead - è¯å“é“¾è¡¨å¤´æŒ‡é’ˆ
 void listAllMedicines(Medicine* head)
 {
 	if (head == NULL) {
-		printf("ÔİÎŞÒ©Æ·ĞÅÏ¢\n");
+		printf("æš‚æ— è¯å“ä¿¡æ¯\n");
 		return;
 	}
 	Medicine* cur = head;
-	printf("=== Ò©Æ·ÁĞ±í ===\n");
+	printf("=== è¯å“åˆ—è¡¨ ===\n");
 	printf("%-20s  %-50s %-50s %-50s %-15s %-15s %-15s\n",
-		"Ò©Æ·±àºÅ", "Í¨ÓÃÃû", "ÉÌÆ·Ãû", "¹æ¸ñ", "µ¥¼Û£¨Ôª£©", "µ±Ç°¿â´æ", "¿â´æÔ¤¾¯Öµ");
+		"è¯å“ç¼–å·", "é€šç”¨å", "å•†å“å", "è§„æ ¼", "å•ä»·ï¼ˆå…ƒï¼‰", "å½“å‰åº“å­˜", "åº“å­˜é¢„è­¦å€¼");
 	while (cur != NULL) {
 		printf("%-20s %-50s %-50s %-50s %-15.2f %-15d %-15d\n",
 			cur->data.medNo,
@@ -191,144 +191,144 @@ void listAllMedicines(Medicine* head)
 //-------------------------
 
 //-------------------------
-// ÒÔÏÂÎªÌí¼ÓÒ©Æ·º¯Êı
-// ¹¦ÄÜ£ºÏòÒ©Æ·Á´±íÖĞÌí¼ÓÒ»¸öĞÂÒ©Æ·½Úµã
-// ²ÎÊı£ºhead - Ö¸ÏòÁ´±íÍ·Ö¸ÕëµÄÖ¸Õë£¬tail - Ö¸ÏòÁ´±íÎ²Ö¸ÕëµÄÖ¸Õë
-//      genericName - Í¨ÓÃÃû£¬brandName - ÉÌÆ·Ãû£¬spec - ¹æ¸ñ
-//      price - µ¥¼Û£¬stock - ³õÊ¼¿â´æ£¬minStock - ×îµÍ¿â´æÔ¤¾¯Öµ
+// ä»¥ä¸‹ä¸ºæ·»åŠ è¯å“å‡½æ•°
+// åŠŸèƒ½ï¼šå‘è¯å“é“¾è¡¨ä¸­æ·»åŠ ä¸€ä¸ªæ–°è¯å“èŠ‚ç‚¹
+// å‚æ•°ï¼šhead - æŒ‡å‘é“¾è¡¨å¤´æŒ‡é’ˆçš„æŒ‡é’ˆï¼Œtail - æŒ‡å‘é“¾è¡¨å°¾æŒ‡é’ˆçš„æŒ‡é’ˆ
+//      genericName - é€šç”¨åï¼ŒbrandName - å•†å“åï¼Œspec - è§„æ ¼
+//      price - å•ä»·ï¼Œstock - åˆå§‹åº“å­˜ï¼ŒminStock - æœ€ä½åº“å­˜é¢„è­¦å€¼
 //-------------------------
 void addMedicine(Medicine** head, Medicine** tail,
 	char genericName[], char brandName[], char spec[],
 	double price, int stock, int minStock)
 {
-	// 1. ÎªĞÂ½Úµã·ÖÅäÄÚ´æ¿Õ¼ä
+	// 1. ä¸ºæ–°èŠ‚ç‚¹åˆ†é…å†…å­˜ç©ºé—´
 	Medicine* newNode = (Medicine*)malloc(sizeof(Medicine));
 
-	// 2. ³õÊ¼»¯ĞÂ½ÚµãµÄÖ¸ÕëÓò£¬·ÀÖ¹Ò°Ö¸Õë
+	// 2. åˆå§‹åŒ–æ–°èŠ‚ç‚¹çš„æŒ‡é’ˆåŸŸï¼Œé˜²æ­¢é‡æŒ‡é’ˆ
 	newNode->next = newNode->pre = NULL;
 
-	// 3. Éú³ÉÎ¨Ò»µÄÒ©Æ·±àºÅ
+	// 3. ç”Ÿæˆå”¯ä¸€çš„è¯å“ç¼–å·
 	char id[20];
-	generateUniqueId("MED", id);                        // Éú³ÉÒÔ"MED"¿ªÍ·µÄÎ¨Ò»ID
+	generateUniqueId("MED", id);                        // ç”Ÿæˆä»¥"MED"å¼€å¤´çš„å”¯ä¸€ID
 
-	// 4. ±£´æÒ©Æ·¾ßÌåĞÅÏ¢µ½ĞÂ½ÚµãµÄÊı¾İÓò
-	strcpy(newNode->data.medNo, id);                    // Ò©Æ·±àºÅ£¨×Ô¶¯Éú³É£©
-	strcpy(newNode->data.genericName, genericName);       // Í¨ÓÃÃû
-	strcpy(newNode->data.brandName, brandName);           // ÉÌÆ·Ãû
-	strcpy(newNode->data.spec, spec);                     // ¹æ¸ñ
-	newNode->data.price = price;                          // µ¥¼Û
-	newNode->data.stock = stock;                          // µ±Ç°¿â´æ
-	newNode->data.minStock = minStock;                    // ×îµÍ¿â´æÔ¤¾¯Öµ
+	// 4. ä¿å­˜è¯å“å…·ä½“ä¿¡æ¯åˆ°æ–°èŠ‚ç‚¹çš„æ•°æ®åŸŸ
+	strcpy(newNode->data.medNo, id);                    // è¯å“ç¼–å·ï¼ˆè‡ªåŠ¨ç”Ÿæˆï¼‰
+	strcpy(newNode->data.genericName, genericName);       // é€šç”¨å
+	strcpy(newNode->data.brandName, brandName);           // å•†å“å
+	strcpy(newNode->data.spec, spec);                     // è§„æ ¼
+	newNode->data.price = price;                          // å•ä»·
+	newNode->data.stock = stock;                          // å½“å‰åº“å­˜
+	newNode->data.minStock = minStock;                    // æœ€ä½åº“å­˜é¢„è­¦å€¼
 
-	// 5. ½«ĞÂ½Úµã²åÈëµ½Á´±íÎ²²¿
+	// 5. å°†æ–°èŠ‚ç‚¹æ’å…¥åˆ°é“¾è¡¨å°¾éƒ¨
 	if (*tail == NULL) {
-		// Èç¹ûÁ´±íÎª¿Õ£¬ÔòĞÂ½Úµã¼ÈÊÇÍ·½ÚµãÒ²ÊÇÎ²½Úµã
+		// å¦‚æœé“¾è¡¨ä¸ºç©ºï¼Œåˆ™æ–°èŠ‚ç‚¹æ—¢æ˜¯å¤´èŠ‚ç‚¹ä¹Ÿæ˜¯å°¾èŠ‚ç‚¹
 		*head = newNode;
 		*tail = newNode;
 	}
 	else {
-		// Èç¹ûÁ´±í²»Îª¿Õ£¬Ôò½«ĞÂ½ÚµãÁ¬½Óµ½Î²½ÚµãÖ®ºó
+		// å¦‚æœé“¾è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†æ–°èŠ‚ç‚¹è¿æ¥åˆ°å°¾èŠ‚ç‚¹ä¹‹å
 		(*tail)->next = newNode;
 		newNode->pre = *tail;
 		*tail = newNode;
 	}
 
-	// 6. ½«¸üĞÂºóµÄÁ´±íÊı¾İ±£´æµ½ÎÄ¼ş
+	// 6. å°†æ›´æ–°åçš„é“¾è¡¨æ•°æ®ä¿å­˜åˆ°æ–‡ä»¶
 	rebuildMedicineFile(*head);
 
-	// 7. Êä³öÌí¼Ó³É¹¦µÄÌáÊ¾ĞÅÏ¢
-	printf("[OK] Ò©Æ·Ìí¼Ó³É¹¦£¬±àºÅÎª %s¡£\n", id);
+	// 7. è¾“å‡ºæ·»åŠ æˆåŠŸçš„æç¤ºä¿¡æ¯
+	printf("[OK] è¯å“æ·»åŠ æˆåŠŸï¼Œç¼–å·ä¸º %sã€‚\n", id);
 }
 
 //-------------------------
-// ÒÔÏÂÎªÉ¾³ıÒ©Æ·º¯Êı
-// ¹¦ÄÜ£º´ÓÒ©Æ·Á´±íÖĞÉ¾³ıÖ¸¶¨±àºÅµÄÒ©Æ·½Úµã
-// ²ÎÊı£ºhead - Ö¸ÏòÁ´±íÍ·Ö¸ÕëµÄÖ¸Õë£¬tail - Ö¸ÏòÁ´±íÎ²Ö¸ÕëµÄÖ¸Õë
-//      medNo - ÒªÉ¾³ıµÄÒ©Æ·±àºÅ
+// ä»¥ä¸‹ä¸ºåˆ é™¤è¯å“å‡½æ•°
+// åŠŸèƒ½ï¼šä»è¯å“é“¾è¡¨ä¸­åˆ é™¤æŒ‡å®šç¼–å·çš„è¯å“èŠ‚ç‚¹
+// å‚æ•°ï¼šhead - æŒ‡å‘é“¾è¡¨å¤´æŒ‡é’ˆçš„æŒ‡é’ˆï¼Œtail - æŒ‡å‘é“¾è¡¨å°¾æŒ‡é’ˆçš„æŒ‡é’ˆ
+//      medNo - è¦åˆ é™¤çš„è¯å“ç¼–å·
 //-------------------------
 void delMedicine(Medicine** head, Medicine** tail, char* medNo)
 {
-	// 1. ¼ì²éÁ´±íÊÇ·ñÎª¿Õ
+	// 1. æ£€æŸ¥é“¾è¡¨æ˜¯å¦ä¸ºç©º
 	if (*head == NULL) {
-		printf("ÔİÎŞÒ©Æ·Êı¾İ¡£\n");
+		printf("æš‚æ— è¯å“æ•°æ®ã€‚\n");
 		return;
 	}
 
-	// 2. ±éÀúÁ´±íÑ°ÕÒÒªÉ¾³ıµÄ½Úµã
+	// 2. éå†é“¾è¡¨å¯»æ‰¾è¦åˆ é™¤çš„èŠ‚ç‚¹
 	Medicine* cur = *head;
 	Medicine* pre = NULL;
 	while (cur != NULL) {
-		if (strcmp(cur->data.medNo, medNo) == 0) {      // µ±Ò©Æ·±àºÅÆ¥ÅäÊ±
-			break;                                      // Ìø³öÑ­»·
+		if (strcmp(cur->data.medNo, medNo) == 0) {      // å½“è¯å“ç¼–å·åŒ¹é…æ—¶
+			break;                                      // è·³å‡ºå¾ªç¯
 		}
-		pre = cur;                                      // ¼ÇÂ¼Ç°Ò»¸ö½Úµã
-		cur = cur->next;                                // ÒÆ¶¯µ½ÏÂÒ»¸ö½Úµã
+		pre = cur;                                      // è®°å½•å‰ä¸€ä¸ªèŠ‚ç‚¹
+		cur = cur->next;                                // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
 	}
 
-	// 3. ¼ì²éÊÇ·ñÕÒµ½ÒªÉ¾³ıµÄ½Úµã
+	// 3. æ£€æŸ¥æ˜¯å¦æ‰¾åˆ°è¦åˆ é™¤çš„èŠ‚ç‚¹
 	if (cur == NULL) {
-		printf("Î´ÕÒµ½±àºÅÎª %s µÄÒ©Æ·£¬ÎŞ·¨É¾³ı¡£\n", medNo);
+		printf("æœªæ‰¾åˆ°ç¼–å·ä¸º %s çš„è¯å“ï¼Œæ— æ³•åˆ é™¤ã€‚\n", medNo);
 		return;
 	}
 
-	// 4. ¸ù¾İÒªÉ¾³ı½ÚµãµÄÎ»ÖÃÖ´ĞĞ²»Í¬µÄÉ¾³ı²Ù×÷
+	// 4. æ ¹æ®è¦åˆ é™¤èŠ‚ç‚¹çš„ä½ç½®æ‰§è¡Œä¸åŒçš„åˆ é™¤æ“ä½œ
 	if (cur == *head && cur == *tail) {
-		*head = NULL;                                   // 1. Á´±íÖ»ÓĞÒ»¸ö½Úµã
+		*head = NULL;                                   // 1. é“¾è¡¨åªæœ‰ä¸€ä¸ªèŠ‚ç‚¹
 		*tail = NULL;
 	}
 	else if (cur == *head) {
-		*head = cur->next;                              // 2. É¾³ıÍ·½Úµã
+		*head = cur->next;                              // 2. åˆ é™¤å¤´èŠ‚ç‚¹
 		(*head)->pre = NULL;
 	}
 	else if (cur == *tail) {
-		*tail = cur->pre;                               // 3. É¾³ıÎ²½Úµã
+		*tail = cur->pre;                               // 3. åˆ é™¤å°¾èŠ‚ç‚¹
 		(*tail)->next = NULL;
 	}
 	else {
-		pre->next = cur->next;                          // 4. É¾³ıÖĞ¼ä½Úµã
+		pre->next = cur->next;                          // 4. åˆ é™¤ä¸­é—´èŠ‚ç‚¹
 		cur->next->pre = pre;
 	}
 
-	// 5. ÊÍ·Å±»É¾³ı½ÚµãµÄÄÚ´æ
+	// 5. é‡Šæ”¾è¢«åˆ é™¤èŠ‚ç‚¹çš„å†…å­˜
 	free(cur);
 
-	// 6. Êä³öÉ¾³ı³É¹¦µÄÌáÊ¾ĞÅÏ¢
-	printf("[OK] Ò©Æ· %s ÒÑÉ¾³ı¡£\n", medNo);
+	// 6. è¾“å‡ºåˆ é™¤æˆåŠŸçš„æç¤ºä¿¡æ¯
+	printf("[OK] è¯å“ %s å·²åˆ é™¤ã€‚\n", medNo);
 
-	// 7. ½«¸üĞÂºóµÄÁ´±íÊı¾İ±£´æµ½ÎÄ¼ş
+	// 7. å°†æ›´æ–°åçš„é“¾è¡¨æ•°æ®ä¿å­˜åˆ°æ–‡ä»¶
 	rebuildMedicineFile(*head);
 }
 
 //-------------------------
-// ÒÔÏÂÎªĞŞ¸ÄÒ©Æ·ĞÅÏ¢º¯Êı
-// ¹¦ÄÜ£ºĞŞ¸ÄÖ¸¶¨Ò©Æ·±àºÅµÄĞÅÏ¢
-// ²ÎÊı£ºhead - Á´±íÍ·Ö¸Õë£¬medNo - ÒªĞŞ¸ÄµÄÒ©Æ·±àºÅ£¬newData - ĞÂµÄÒ©Æ·Êı¾İ
-// ·µ»ØÖµ£º1 - ĞŞ¸Ä³É¹¦£¬0 - ĞŞ¸ÄÊ§°Ü£¨Î´ÕÒµ½£©
+// ä»¥ä¸‹ä¸ºä¿®æ”¹è¯å“ä¿¡æ¯å‡½æ•°
+// åŠŸèƒ½ï¼šä¿®æ”¹æŒ‡å®šè¯å“ç¼–å·çš„ä¿¡æ¯
+// å‚æ•°ï¼šhead - é“¾è¡¨å¤´æŒ‡é’ˆï¼ŒmedNo - è¦ä¿®æ”¹çš„è¯å“ç¼–å·ï¼ŒnewData - æ–°çš„è¯å“æ•°æ®
+// è¿”å›å€¼ï¼š1 - ä¿®æ”¹æˆåŠŸï¼Œ0 - ä¿®æ”¹å¤±è´¥ï¼ˆæœªæ‰¾åˆ°ï¼‰
 //-------------------------
 int modifyMedicine(Medicine* head, char* medNo, MedicineData newData)
 {
 	Medicine* target = NULL;
 
-	// 1. ¸ù¾İÒ©Æ·±àºÅ²éÕÒÒªĞŞ¸ÄµÄ½Úµã
+	// 1. æ ¹æ®è¯å“ç¼–å·æŸ¥æ‰¾è¦ä¿®æ”¹çš„èŠ‚ç‚¹
 	target = findMedicineByNo(head, medNo);
 
-	// 2. ¼ì²éÊÇ·ñÕÒµ½ÒªĞŞ¸ÄµÄÒ©Æ·
+	// 2. æ£€æŸ¥æ˜¯å¦æ‰¾åˆ°è¦ä¿®æ”¹çš„è¯å“
 	if (target == NULL) {
-		printf("Î´ÕÒµ½±àºÅÎª %s µÄÒ©Æ·¡£\n", medNo);
-		return 0;                                       // ·µ»Ø 0 ±íÊ¾ĞŞ¸ÄÊ§°Ü
+		printf("æœªæ‰¾åˆ°ç¼–å·ä¸º %s çš„è¯å“ã€‚\n", medNo);
+		return 0;                                       // è¿”å› 0 è¡¨ç¤ºä¿®æ”¹å¤±è´¥
 	}
 
-	// 3. ÏÔÊ¾µ±Ç°Ò©Æ·ĞÅÏ¢
-	printf("µ±Ç°Ò©Æ·ĞÅÏ¢Îª£º\n");
-	printf("Ò©Æ·±àºÅ£º%s\n", target->data.medNo);
-	printf("Í¨ÓÃÃû£º%s\n", target->data.genericName);
-	printf("ÉÌÆ·Ãû£º%s\n", target->data.brandName);
-	printf("¹æ¸ñ£º%s\n", target->data.spec);
-	printf("µ¥¼Û£º%.2f\n", target->data.price);
-	printf("µ±Ç°¿â´æ£º%d\n", target->data.stock);
-	printf("×îµÍ¿â´æ£º%d\n", target->data.minStock);
+	// 3. æ˜¾ç¤ºå½“å‰è¯å“ä¿¡æ¯
+	printf("å½“å‰è¯å“ä¿¡æ¯ä¸ºï¼š\n");
+	printf("è¯å“ç¼–å·ï¼š%s\n", target->data.medNo);
+	printf("é€šç”¨åï¼š%s\n", target->data.genericName);
+	printf("å•†å“åï¼š%s\n", target->data.brandName);
+	printf("è§„æ ¼ï¼š%s\n", target->data.spec);
+	printf("å•ä»·ï¼š%.2f\n", target->data.price);
+	printf("å½“å‰åº“å­˜ï¼š%d\n", target->data.stock);
+	printf("æœ€ä½åº“å­˜ï¼š%d\n", target->data.minStock);
 
-	// 4. ¸üĞÂÒ©Æ·ĞÅÏ¢£¨±àºÅ medNo ±£³Ö²»±ä£©
+	// 4. æ›´æ–°è¯å“ä¿¡æ¯ï¼ˆç¼–å· medNo ä¿æŒä¸å˜ï¼‰
 	safeStringCopy(target->data.genericName, newData.genericName, 50);
 	safeStringCopy(target->data.brandName, newData.brandName, 50);
 	safeStringCopy(target->data.spec, newData.spec, 50);
@@ -336,11 +336,11 @@ int modifyMedicine(Medicine* head, char* medNo, MedicineData newData)
 	target->data.stock = newData.stock;
 	target->data.minStock = newData.minStock;
 
-	// 5. ½«¸üĞÂºóµÄÁ´±íÊı¾İ±£´æµ½ÎÄ¼ş
+	// 5. å°†æ›´æ–°åçš„é“¾è¡¨æ•°æ®ä¿å­˜åˆ°æ–‡ä»¶
 	rebuildMedicineFile(head);
 
-	// 6. Êä³öĞŞ¸Ä³É¹¦µÄÌáÊ¾ĞÅÏ¢
-	printf("[OK] Ò©Æ· %s ĞÅÏ¢ĞŞ¸Ä³É¹¦£¡\n", medNo);
+	// 6. è¾“å‡ºä¿®æ”¹æˆåŠŸçš„æç¤ºä¿¡æ¯
+	printf("[OK] è¯å“ %s ä¿¡æ¯ä¿®æ”¹æˆåŠŸï¼\n", medNo);
 
-	return 1;                                           // ·µ»Ø 1 ±íÊ¾ĞŞ¸Ä³É¹¦
+	return 1;                                           // è¿”å› 1 è¡¨ç¤ºä¿®æ”¹æˆåŠŸ
 }

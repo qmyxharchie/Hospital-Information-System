@@ -1,13 +1,13 @@
-//-----------------
-// Ò½ÉúĞÅÏ¢¹ÜÀíÄ£¿é
+ï»¿//-----------------
+// åŒ»ç”Ÿä¿¡æ¯ç®¡ç†æ¨¡å—
 //-----------------
 
-/*Ò½ÉúÄ£¿é¸ºÔğ¹ÜÀíÒ½ÉúµÄ»ù±¾ĞÅÏ¢£¬°üÀ¨£º
-- Ìí¼ÓĞÂÒ½Éú£¨×Ô¶¯Éú³É¹¤ºÅ£©
-- É¾³ıÒ½Éú
-- ĞŞ¸Ä³öÕïĞÅÏ¢
-- ²éÑ¯Ò½Éú
-- Ò½Éú½ÓÕïÊıÁ¿ÏŞÖÆ*/
+/*åŒ»ç”Ÿæ¨¡å—è´Ÿè´£ç®¡ç†åŒ»ç”Ÿçš„åŸºæœ¬ä¿¡æ¯ï¼ŒåŒ…æ‹¬ï¼š
+- æ·»åŠ æ–°åŒ»ç”Ÿï¼ˆè‡ªåŠ¨ç”Ÿæˆå·¥å·ï¼‰
+- åˆ é™¤åŒ»ç”Ÿ
+- ä¿®æ”¹å‡ºè¯Šä¿¡æ¯
+- æŸ¥è¯¢åŒ»ç”Ÿ
+- åŒ»ç”Ÿæ¥è¯Šæ•°é‡é™åˆ¶*/
 
 #ifndef _DOCTOR_H_
 #define _DOCTOR_H_
@@ -15,12 +15,12 @@
 #include "registration.h"
 
 typedef struct DoctorData {
-    char empNo[20];              // ¹¤ºÅ
-    char name[50];               // ĞÕÃû
-    char dept[50];               // ¿ÆÊÒ
-    char schedule[100];          // ³öÕïÊ±¼ä
-    int maxPatients;             // Ã¿ÈÕ×î´ó½ÓÕïÊı
-    int currentPatients;         // ½ñÈÕÒÑ½ÓÕïÊı
+    char empNo[20];              // å·¥å·
+    char name[50];               // å§“å
+    char dept[50];               // ç§‘å®¤
+    char schedule[100];          // å‡ºè¯Šæ—¶é—´
+    int maxPatients;             // æ¯æ—¥æœ€å¤§æ¥è¯Šæ•°
+    int currentPatients;         // ä»Šæ—¥å·²æ¥è¯Šæ•°
 } DoctorData;
 typedef struct Doctor {
     DoctorData data;
@@ -28,29 +28,29 @@ typedef struct Doctor {
     struct Doctor* pre;
 } Doctor;
 
-Doctor* getDoctorHead(void);                                            // Getter º¯ÊıÊµÏÖ
+Doctor* getDoctorHead(void);                                            // Getter å‡½æ•°å®ç°
 Doctor* getDoctorTail(void);
 
 void addDoctor(Doctor** head, Doctor** tail,
-    char name[], char dept[], char schedule[], int maxPatients);        //Ìí¼ÓÒ½Éú
-void delDoctor(Doctor** head, Doctor** tail, DoctorData d);             //É¾³ıÒ½Éú
-int modifyDoctor(Doctor* head, char* empNo, DoctorData newData);        //ĞŞ¸ÄÒ½ÉúĞÅÏ¢
+    char name[], char dept[], char schedule[], int maxPatients);        //æ·»åŠ åŒ»ç”Ÿ
+void delDoctor(Doctor** head, Doctor** tail, DoctorData d);             //åˆ é™¤åŒ»ç”Ÿ
+int modifyDoctor(Doctor* head, char* empNo, DoctorData newData);        //ä¿®æ”¹åŒ»ç”Ÿä¿¡æ¯
 
-//²éÑ¯Ò½Éú
-Doctor* findDoctorByEmpNo(Doctor* head, char* empNo);                   //°´¹¤ºÅ¾«È·²éÕÒ
-Doctor* findDoctorsByName(Doctor* head, char* name);                    //°´ĞÕÃû²éÕÒ
-Doctor* findDoctorsByDept(Doctor* head, char* dept);                    //°´¿ÆÊÒ²éÕÒ£¨·µ»ØµÚÒ»¸öÆ¥Åä£©
+//æŸ¥è¯¢åŒ»ç”Ÿ
+Doctor* findDoctorByEmpNo(Doctor* head, char* empNo);                   //æŒ‰å·¥å·ç²¾ç¡®æŸ¥æ‰¾
+Doctor* findDoctorsByName(Doctor* head, char* name);                    //æŒ‰å§“åæŸ¥æ‰¾
+Doctor* findDoctorsByDept(Doctor* head, char* dept);                    //æŒ‰ç§‘å®¤æŸ¥æ‰¾ï¼ˆè¿”å›ç¬¬ä¸€ä¸ªåŒ¹é…ï¼‰
 
-//¹ÒºÅ
-void doctorViewWaitingList(Registration* regHead, char* doctorEmpNo);   //Ò½Éú²é¿´ºòÕïÁĞ±í
+//æŒ‚å·
+void doctorViewWaitingList(Registration* regHead, char* doctorEmpNo);   //åŒ»ç”ŸæŸ¥çœ‹å€™è¯Šåˆ—è¡¨
 void doctorCallNextPatient(Registration** regHead, Registration** regTail,
-    char* doctorEmpNo);                                                 //Ò½Éú½ĞºÅÈë¿Ú
+    char* doctorEmpNo);                                                 //åŒ»ç”Ÿå«å·å…¥å£
 
-//Ò½Éú½ÓÕï¼ì²é
-int canAcceptPatient(Doctor* d);                                        //Ò½ÉúÊÇ·ñ»¹ÄÜ½ÓÕï£¨1=ÄÜ, 0=²»ÄÜ£©
-void incrementPatientCount(Doctor* d);                                  //¹ÒºÅ³É¹¦ºó½ÓÕïÊı+1
-void resetDailyPatients(Doctor* head);                                  //ÖØÖÃÃ¿ÈÕ½ÓÕïÊı
-void getDeptStats(Doctor * head, char* dept, char* date, int* count);   //¿ÆÊÒÍ³¼Æ
-void listAllDoctors(Doctor* head);                                      //ÁĞ±íÏÔÊ¾
+//åŒ»ç”Ÿæ¥è¯Šæ£€æŸ¥
+int canAcceptPatient(Doctor* d);                                        //åŒ»ç”Ÿæ˜¯å¦è¿˜èƒ½æ¥è¯Šï¼ˆ1=èƒ½, 0=ä¸èƒ½ï¼‰
+void incrementPatientCount(Doctor* d);                                  //æŒ‚å·æˆåŠŸåæ¥è¯Šæ•°+1
+void resetDailyPatients(Doctor* head);                                  //é‡ç½®æ¯æ—¥æ¥è¯Šæ•°
+void getDeptStats(Doctor * head, char* dept, char* date, int* count);   //ç§‘å®¤ç»Ÿè®¡
+void listAllDoctors(Doctor* head);                                      //åˆ—è¡¨æ˜¾ç¤º
 
 #endif 
