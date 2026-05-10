@@ -40,6 +40,7 @@ void md5Hash(const char* input, char* output) {
 // 参数：username - 用户名，password - 密码
 // 返回值：LoginStatus类型的登录状态
 LoginStatus login(char username[], char password[]) {
+	freeUserChain(&g_userHead);						//释放旧链表，防止内存泄漏
 	buildUserChain(&g_userHead, &g_userTail);		//加载用户链表
 
 	char pwdHash[100];
@@ -84,6 +85,7 @@ LoginStatus login(char username[], char password[]) {
 // 返回值：1-注册成功，0-注册失败
 
 int registerUser(char username[], char password[], int role) {
+	freeUserChain(&g_userHead);						//释放旧链表，防止内存泄漏
 	buildUserChain(&g_userHead, &g_userTail);		//加载用户链表
 
 	User* cur = g_userHead;							//检查用户是否存在
@@ -99,6 +101,7 @@ int registerUser(char username[], char password[], int role) {
 		printf("内存分配失败！\n");
 		return 0;
 	}
+	memset(&newUser->data, 0, sizeof(UserData));	//清零所有字段，避免未初始化字节写入文件
 	strcpy(newUser->data.username, username);		//填充数据
 
 	char hashed[100];								
@@ -150,6 +153,7 @@ User* findUserByName(User* head, char* username) {
 // 参数：username - 要查询的用户名
 // 返回值：UserRole类型的用户角色，未找到则返回PATIENT
 UserRole getUserRoleByUsername(const char* username) {
+	freeUserChain(&g_userHead);					   //释放旧链表，防止内存泄漏
 	buildUserChain(&g_userHead, &g_userTail); //加载用户链表
 	User* user = findUserByName(g_userHead, (char*)username);
 	if (user != NULL) {

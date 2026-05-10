@@ -37,7 +37,8 @@ typedef enum {
     LOGIN_FAILED = 0,
     LOGIN_SUCCESS_USER = 1,
     LOGIN_SUCCESS_ADMIN = 2,
-    LOGIN_EXIT = 3
+    LOGIN_EXIT = 3,
+    LOGIN_REGISTERED = 4
 } LoginStatus;                    // 登录状态
 
 typedef struct {

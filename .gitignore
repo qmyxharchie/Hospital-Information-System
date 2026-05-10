@@ -5,3 +5,12 @@ build/
 CMakeCache.txt
 *.db
 *.ipch
+.claude
+
+# build outputs (exe 现在输出到项目根)
+HospitalSys.exe
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.obj

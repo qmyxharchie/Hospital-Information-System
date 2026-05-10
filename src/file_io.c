@@ -32,10 +32,8 @@ void buildPatientChain(Patient** head, Patient** tail) {
 	Patient* pre = NULL;
 
 	int opt;					//循环读取文件
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
-		if (opt == -1) 
+	while (fscanf(fp, "%d", &opt) == 1) {
+		if (opt == -1)
 			break;
 
 		if (opt == 1) {			//创建节点
@@ -83,9 +81,7 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 	Doctor* pre = NULL;
 
 	int opt;					
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
+	while (fscanf(fp, "%d", &opt) == 1) {
 		if (opt == -1)
 			break;
 
@@ -137,9 +133,7 @@ void buildMedicineChain(Medicine** head, Medicine** tail) {
 	Medicine* pre = NULL;
 
 	int opt;					
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
+	while (fscanf(fp, "%d", &opt) == 1) {
 		if (opt == -1)
 			break;
 
@@ -188,9 +182,7 @@ void buildPurchaseChain(Purchase** head, Purchase** tail) {
 	Purchase* pre = NULL;
 
 	int opt;
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
+	while (fscanf(fp, "%d", &opt) == 1) {
 		if (opt == -1)
 			break;
 
@@ -238,9 +230,7 @@ void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail) {
 	Hospitalization* pre = NULL;
 
 	int opt;
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
+	while (fscanf(fp, "%d", &opt) == 1) {
 		if (opt == -1)
 			break;
 
@@ -289,9 +279,7 @@ void buildBedChain(Bed** head, Bed** tail) {
 	Bed* pre = NULL;
 
 	int opt;
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
+	while (fscanf(fp, "%d", &opt) == 1) {
 		if (opt == -1)
 			break;
 
@@ -338,9 +326,7 @@ void buildRegistrationChain(Registration** head, Registration** tail) {
 	Registration* pre = NULL;
 
 	int opt;
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
+	while (fscanf(fp, "%d", &opt) == 1) {
 		if (opt == -1)
 			break;
 
@@ -390,9 +376,7 @@ void buildUserChain(User** head, User** tail) {
 	User* pre = NULL;
 
 	int opt;
-	while (1) {
-		fscanf(fp, "%d", &opt);
-
+	while (fscanf(fp, "%d", &opt) == 1) {
 		if (opt == -1)
 			break;
 

@@ -33,6 +33,13 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # ============ 生成可执行文件 ============
 add_executable(HospitalSys ${SOURCES})
 
+# ============ 可执行文件输出到项目根 ============
+set_target_properties(HospitalSys PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}"
+)
+
 # ============ Windows 配置 ============
 if(WIN32)
     target_compile_options(HospitalSys PRIVATE /W3)
@@ -45,10 +52,3 @@ endif()
 
 # ============ VS 文件夹分组 ============
 source_group(TREE ${CMAKE_SOURCE_DIR}/src PREFIX "Source Files" FILES ${SOURCES})
-
-# ============ 数据文件自动复制 ============
-add_custom_command(TARGET HospitalSys POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/data $<TARGET_FILE_DIR:HospitalSys>/data
-    COMMENT "复制数据文件到输出目录"
-)

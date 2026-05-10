@@ -129,12 +129,12 @@ int showLoginPage(void) {
     char password[50] = { 0 };
 
     printf("\n╔═══════════════════════════════════════════════════╗\n");
-    printf("║       医院综合信息管理系统 - 登录界面           ║\n");
+    printf("║       医院综合信息管理系统 - 登录界面             ║\n");
     printf("╠═══════════════════════════════════════════════════╣\n");
-    printf("║  1. 用户登录                                     ║\n");
-    printf("║  2. 管理员登录                                   ║\n");
-    printf("║  3. 用户注册                                     ║\n");
-    printf("║  0. 退出系统                                     ║\n");
+    printf("║  1. 用户登录                                      ║\n");
+    printf("║  2. 管理员登录                                    ║\n");
+    printf("║  3. 用户注册                                      ║\n");
+    printf("║  0. 退出系统                                      ║\n");
     printf("╚═══════════════════════════════════════════════════╝\n");
 
   
@@ -152,7 +152,9 @@ int showLoginPage(void) {
     case 3:
         printf("\n请输入要注册的用户名: "); scanf("%49s", username);
         printf("请输入密码: ");             scanf("%49s", password);
-        registerUser(username, password, 0);
+        if (registerUser(username, password, 0)) {
+            return LOGIN_REGISTERED;
+        }
         return LOGIN_FAILED;
     case 0:
         return LOGIN_EXIT;
@@ -171,7 +173,8 @@ int showMainMenuByRole(int userRole, char* username) {
     printf("║ 当前用户: %-15s 角色: ", username);
     switch (userRole) {
     case 0: printf("患者"); break;
-    case 1: printf("护士"); break;
+    case 1: printf("护士"
+    ); break;
     case 2: printf("医生"); break;
     case 3: printf("管理员"); break;
     default: printf("未知"); break;
@@ -1521,6 +1524,10 @@ int main(void) {
         }
         if (status == LOGIN_FAILED) {
             printf("登录失败，请重试。\n");
+            continue;
+        }
+        if (status == LOGIN_REGISTERED) {
+            printf("注册成功，请登录。\n");
             continue;
         }
 
