@@ -3,8 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "ui.h"
-#include "utils.h"          
+#include "utils.h"
+#include "file_io.h"          
+
 
 
 // ============================================================
@@ -488,7 +493,7 @@ void showMedicineManagement(void) {
             printf("\n请输入购药日期(YYYY-MM-DD): "); scanf("%19s", date);
             m = findMedicineByNo(g_medHead, medNo);
             if (m && m->data.stock >= quantity) {
-                addPurchaseRecord(&g_purHead, &g_purTail,
+                addPurchaseRecord(&g_purHead, &g_purTail, g_medHead,
                                   patientCardNo, medNo, quantity, totalCost, date);
                 printf("[OK] 购药登记成功！\n");
             } else {
@@ -584,7 +589,7 @@ void showHospitalizationManagement(void) {
             h = findCurrentHospitalizations(g_hosHead);
             if (h) {
                 listAllHospitalizations(h);
-                freeHospitalizationChain(h);
+                freeHospitalizationChain(&h);
             } else {
                 printf("当前无在院病人。\n");
             }
@@ -803,7 +808,11 @@ void showRegistrationManagement(void) {
             }
             int sel = safeReadInt("请选择医生序号: ", 1, docCount);
             doc = g_doctorHead;
-            for (int i = 1; i < sel; i++) doc = doc->next;
+            for (int i = 1; i < sel && doc != NULL; i++) doc = doc->next;
+            if (doc == NULL) {
+                printf("[ERROR] 医生序号无效\n");
+                break;
+            }
             strcpy(doctorEmpNo, doc->data.empNo);
             strcpy(doctorName, doc->data.name);
             strcpy(dept, doc->data.dept);
@@ -838,13 +847,24 @@ void showRegistrationManagement(void) {
             Registration** pendingArr = NULL;
             int pCount = 0, arrCap = 10;
             pendingArr = (Registration**)malloc(arrCap * sizeof(Registration*));
+            if (pendingArr == NULL) {
+                printf("[ERROR] 内存分配失败\n");
+                break;
+            }
 
             while (cur != NULL) {
                 if (strcmp(cur->data.patientCardNo, patientCardNo) == 0 &&
                     cur->data.status == PENDING) {
                     if (pCount >= arrCap) {
                         arrCap *= 2;
-                        pendingArr = (Registration**)malloc(arrCap * sizeof(Registration*));
+                        Registration** tmp = (Registration**)realloc(pendingArr, arrCap * sizeof(Registration*));
+                        if (tmp == NULL) {
+                            printf("[ERROR] 内存扩容失败\n");
+                            free(pendingArr);
+                            pendingArr = NULL;
+                            break;
+                        }
+                        pendingArr = tmp;
                     }
                     pendingArr[pCount] = cur;
                     char* mStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
@@ -898,7 +918,11 @@ void showRegistrationManagement(void) {
             }
             int sel = safeReadInt("请选择医生序号: ", 1, docCount);
             doc = g_doctorHead;
-            for (int i = 1; i < sel; i++) doc = doc->next;
+            for (int i = 1; i < sel && doc != NULL; i++) doc = doc->next;
+            if (doc == NULL) {
+                printf("[ERROR] 医生序号无效\n");
+                break;
+            }
             strcpy(doctorEmpNo, doc->data.empNo);
             strcpy(doctorName, doc->data.name);
             strcpy(dept, doc->data.dept);
@@ -1240,7 +1264,7 @@ void showStatisticsMenu(void) {
 
 void showQueryMenu(void) {
     int choice;
-    char cardNo[20], name[50], date[20], dept[50];
+    char cardNo[20], date[20], dept[50];
     int found;
 
     while (1) {
@@ -1484,6 +1508,10 @@ void showQueryMenu(void) {
 //主函数
 //--------------------
 int main(void) {
+#ifdef _WIN32
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
+#endif
     initUI();
     while (1) {
         int status = showLoginPage();

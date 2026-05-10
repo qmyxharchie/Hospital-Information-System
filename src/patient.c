@@ -25,7 +25,11 @@ void addPatient(Patient** head, Patient** tail,
     char name[], int age, char gender[], char idCard[], char phone[]) {
     // 1. 为新节点分配内存空间
     Patient* newNode = (Patient*)malloc(sizeof(Patient));
-    
+    if (newNode == NULL) {
+        printf("内存分配失败\n");
+        return;
+    }
+
     // 2. 初始化新节点的指针域，防止野指针
     newNode->next = newNode->pre = NULL;                // 申请新节点第一件事就是指针初始化！非常重要
     
@@ -261,6 +265,7 @@ Patient* findPatientsByName(Patient* head, char* name) {
     while (p != NULL) {
         if (strstr(p->data.name, name) != NULL) {
             Patient* newNode = (Patient*)malloc(sizeof(Patient));
+            if (newNode == NULL) break;
             newNode->data = p->data;
             newNode->next = NULL;
             newNode->pre = NULL;

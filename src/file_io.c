@@ -40,6 +40,7 @@ void buildPatientChain(Patient** head, Patient** tail) {
 
 		if (opt == 1) {			//创建节点
 			Patient* node = (Patient*)malloc(sizeof(Patient));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.cardNo);
@@ -88,8 +89,9 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 		if (opt == -1)
 			break;
 
-		if (opt == 1) {			
+		if (opt == 1) {
 			Doctor* node = (Doctor*)malloc(sizeof(Doctor));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.empNo);
@@ -141,8 +143,9 @@ void buildMedicineChain(Medicine** head, Medicine** tail) {
 		if (opt == -1)
 			break;
 
-		if (opt == 1) {			
+		if (opt == 1) {
 			Medicine* node = (Medicine*)malloc(sizeof(Medicine));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.medNo);
@@ -193,6 +196,7 @@ void buildPurchaseChain(Purchase** head, Purchase** tail) {
 
 		if (opt == 1) {
 			Purchase* node = (Purchase*)malloc(sizeof(Purchase));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.purNo);
@@ -242,6 +246,7 @@ void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail) {
 
 		if (opt == 1) {
 			Hospitalization* node = (Hospitalization*)malloc(sizeof(Hospitalization));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.recordNo);
@@ -292,6 +297,7 @@ void buildBedChain(Bed** head, Bed** tail) {
 
 		if (opt == 1) {
 			Bed* node = (Bed*)malloc(sizeof(Bed));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.ward);
@@ -340,6 +346,7 @@ void buildRegistrationChain(Registration** head, Registration** tail) {
 
 		if (opt == 1) {
 			Registration* node = (Registration*)malloc(sizeof(Registration));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.regNo);
@@ -349,7 +356,7 @@ void buildRegistrationChain(Registration** head, Registration** tail) {
 			fscanf(fp, "%s", node->data.doctorName);
 			fscanf(fp, "%s", node->data.dept);
 			fscanf(fp, "%s", node->data.date);
-			fscanf(fp, "%s", node->data.status);
+			fscanf(fp, "%d", (int*)&node->data.status);
 
 			if (*head == NULL) {
 				*head = node;
@@ -391,12 +398,13 @@ void buildUserChain(User** head, User** tail) {
 
 		if (opt == 1) {
 			User* node = (User*)malloc(sizeof(User));
+			if (node == NULL) break;
 			node->next = NULL;
 			node->pre = NULL;
 			fscanf(fp, "%s", node->data.username);
 			fscanf(fp, "%s", node->data.password);
-			fscanf(fp, "%s", node->data.role);
-			fscanf(fp, "%d", &node->data.lastLogin);
+			fscanf(fp, "%d", (int*)&node->data.role);
+			fscanf(fp, "%s", node->data.lastLogin);
 
 			if (*head == NULL) {
 				*head = node;
@@ -740,85 +748,6 @@ void freeUserChain(User** head) {
 	}
 	*head = NULL;
 }
-
-
-void freeRegistrationResultChain(Registration** head) {
-	if (!head || !*head) return;
-	Registration* p = *head;
-
-	while (p != NULL) {
-		Registration* temp = p->next;
-		free(p);
-		p = temp;
-	}
-	*head = NULL;
-}
-
-
-void freeDoctorsResultChain(Doctor** head) {
-	if (!head || !*head) return;
-	Doctor* p = *head;
-
-	while (p != NULL) {
-		Doctor* temp = p->next;
-		free(p);
-		p = temp;
-	}
-	*head = NULL;
-}
-
-
-void freePatientsResultChain(Patient** head) {
-	if (!head || !*head) return;
-	Patient* p = *head;
-
-	while (p != NULL) {
-		Patient* temp = p->next;
-		free(p);
-		p = temp;
-	}
-	*head = NULL;
-}
-
-
-void freeMedicineResultChain(Medicine** head) {
-	if (!head || !*head) return;
-	Medicine* p = *head;
-
-	while (p != NULL) {
-		Medicine* temp = p->next;
-		free(p);
-		p = temp;
-	}
-	*head = NULL;
-}
-
-
-void freeHospitalizationResultChain(Hospitalization** head){
-	if (!head || !*head) return;
-		Medicine* p = *head;
-
-	while (p != NULL) {
-		Medicine* temp = p->next;
-		free(p);
-		p = temp;
-	}
-	*head = NULL;
-	}
-
-
-void freeBedResultChain(Bed** head) {
-	if (!head || !*head) return;
-	Bed* p = *head;
-
-	while (p != NULL) {
-		Bed* temp = p->next;
-		free(p);
-		p = temp;
-	}
-	*head = NULL;
-}
-
 //-----------------
 
 //-----------------

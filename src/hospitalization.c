@@ -253,6 +253,7 @@ Hospitalization* findCurrentHospitalizations(Hospitalization* head)
 		{
 			// 创建新节点
 			Hospitalization* newNode = (Hospitalization*)malloc(sizeof(Hospitalization));
+			if (newNode == NULL) break;
 			*newNode = *h;
 			newNode->next = NULL;
 			newNode->pre = NULL;

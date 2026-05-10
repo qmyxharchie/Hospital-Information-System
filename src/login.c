@@ -21,7 +21,7 @@ User* getCurrentUser(void) {
 void md5Hash(const char* input, char* output) {
 	// 这里只是一个模拟实现，实际应用中需要使用真正的MD5算法
 	unsigned int hash = 0;
-	unsigned int len = strlen(input);
+	size_t len = strlen(input);
 
 	for (unsigned int i = 0; i < len; i++) {
 		hash = hash * 37 + input[i];

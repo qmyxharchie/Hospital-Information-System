@@ -161,6 +161,7 @@ bool isValidPhone(const char* phone) {
 			return false;
 		}
 	}
+	return true;
 }
 //-----------------
 

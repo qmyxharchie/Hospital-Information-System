@@ -54,7 +54,7 @@ typedef struct Purchase {
 void checkLowStock(Medicine* head);                                          //库存检查
 void purchaseMedicine(Medicine* head, char* medNo, int quantity);            //购药（扣减库存）
 void replenishStock(Medicine* head, char* medNo, int quantity);              //补充库存
-void addPurchaseRecord(Purchase** head, Purchase** tail, char patientCardNo[20],
+void addPurchaseRecord(Purchase** head, Purchase** tail, Medicine* medHead, char patientCardNo[20],
     char medNo[20], int quantity, double totalCost, char date[20]);   //购药记录（扣减药品库存）
 //查询药品
 Medicine* findMedicineByNo(Medicine* head, char* medNo);       // 按药品编号查找
