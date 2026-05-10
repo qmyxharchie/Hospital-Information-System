@@ -172,41 +172,40 @@ int showMainMenuByRole(int userRole, char* username) {
     printf("║ 医院综合信息管理系统 - 主菜单           ║\n");
     printf("║ 当前用户: %-15s 角色: ", username);
     switch (userRole) {
-    case 0: printf("患者"); break;
-    case 1: printf("护士"
+    case 0: printf("患者    "); break;
+    case 1: printf("护士    "
     ); break;
-    case 2: printf("医生"); break;
-    case 3: printf("管理员"); break;
-    default: printf("未知"); break;
+    case 2: printf("医生    "); break;
+    case 3: printf("管理员     "); break;
+    default: printf("未知    "); break;
     }
-    printf("    ║\n");
+    printf("║\n");
     printf("╠═════════════════════════════════════════╣\n");
 
     if (userRole >= 0) {
-        printf("║ 1. 个人信息管理                         ║\n");
-        printf("║ 2. 挂号预约                             ║\n");
+        printf("║ 1. 挂号管理                             ║\n");
     }
     if (userRole >= 1) {
-        printf("║ 3. 患者信息管理                         ║\n");
-        printf("║ 4. 床位管理                             ║\n");
+        printf("║ 2. 患者信息管理                         ║\n");
+        printf("║ 3. 床位管理                             ║\n");
     }
     if (userRole >= 2) {
-        printf("║ 5. 医生信息管理                         ║\n");
-        printf("║ 6. 药品管理                             ║\n");
-        printf("║ 7. 住院管理                             ║\n");
+        printf("║ 4. 医生信息管理                         ║\n");
+        printf("║ 5. 药品管理                             ║\n");
+        printf("║ 6. 住院管理                             ║\n");
     }
     if (userRole >= 3) {
-        printf("║ 8. 统计报表                             ║\n");
-        printf("║ 9. 系统管理                             ║\n");
+        printf("║ 7. 统计报表                             ║\n");
+        printf("║ 8. 综合查询                             ║\n");
     }
     printf("║ 0. 退出系统                             ║\n");
     printf("╚═════════════════════════════════════════╝\n");
 
     int maxOption = 0;
-    if (userRole >= 3) maxOption = 9;
-    else if (userRole >= 2) maxOption = 7;
-    else if (userRole >= 1) maxOption = 4;
-    else maxOption = 2;
+    if (userRole >= 3) maxOption = 8;
+    else if (userRole >= 2) maxOption = 6;
+    else if (userRole >= 1) maxOption = 3;
+    else maxOption = 1;
     return safeReadInt("请选择功能模块: ", 0, maxOption);
 }
 
@@ -220,7 +219,7 @@ void showPatientManagement(void) {
     int age;
     Patient* p;
     while (1) {
-        printf("\n-------- 病人信息管理 --------\n");
+        printf("\n-------- 患者信息管理 --------\n");
         printf("1. 添加病人   4. 查找病人\n");
         printf("2. 删除病人   5. 显示所有病人\n");
         printf("3. 修改病人信息\n");
@@ -721,7 +720,7 @@ void showRegistrationManagement(void) {
     int role = g_currentUserRole;  /*获取当前角色 */
 
     while (1) {
-        printf("\n========== 挂号管理系统 ==========\n");
+        printf("\n========== 挂号管理 ==========\n");
 
         /*根据角色显示不同菜单 */
         if (role == PATIENT) {
@@ -1537,13 +1536,13 @@ int main(void) {
             int module = showMainMenuByRole(g_currentUserRole, g_currentUsername);
 
             switch (module) {
-            case 1: showPatientManagement();         break;
-            case 2: showRegistrationManagement();    break;
-            case 3: showDoctorManagement();          break;
-            case 4: showBedManagement();             break;
-            case 5: showMedicineManagement();         break;
+            case 1: showRegistrationManagement();    break;
+            case 2: showPatientManagement();         break;
+            case 3: showBedManagement();             break;
+            case 4: showDoctorManagement();          break;
+            case 5: showMedicineManagement();        break;
             case 6: showHospitalizationManagement(); break;
-            case 7: showStatisticsMenu();           break;
+            case 7: showStatisticsMenu();            break;
             case 8: showQueryMenu();                 break;
             case 0:
                 printf("正在退出到登录界面...\n");
