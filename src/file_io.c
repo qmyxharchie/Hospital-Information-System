@@ -242,6 +242,7 @@ void buildHospitalizationChain(Hospitalization** head, Hospitalization** tail) {
 			fscanf(fp, "%s", node->data.patientCardNo);
 			fscanf(fp, "%s", node->data.patientName);
 			fscanf(fp, "%s", node->data.bedNo);
+			fscanf(fp, "%lf", &node->data.prepay);
 			fscanf(fp, "%lf", &node->data.totalCost);
 			fscanf(fp, "%s", node->data.admissionDate);
 			fscanf(fp, "%s", node->data.status);
@@ -341,7 +342,13 @@ void buildRegistrationChain(Registration** head, Registration** tail) {
 			fscanf(fp, "%s", node->data.doctorName);
 			fscanf(fp, "%s", node->data.dept);
 			fscanf(fp, "%s", node->data.date);
+			fscanf(fp, "%s", node->data.time);
+			fscanf(fp, "%s", node->data.appointmentDate);
+			fscanf(fp, "%s", node->data.appointmentTime);
 			fscanf(fp, "%d", (int*)&node->data.status);
+			fscanf(fp, "%d", (int*)&node->data.createdBy);
+			fscanf(fp, "%f", &node->data.consultationFee);
+			fscanf(fp, "%s", node->data.remarks);
 
 			if (*head == NULL) {
 				*head = node;
@@ -535,6 +542,7 @@ void rebuildHospitalizationFile(Hospitalization* head) {
 		fprintf(fp, "%s\n", p->data.recordNo);
 		fprintf(fp, "%s\n", p->data.patientCardNo);
 		fprintf(fp, "%s\n", p->data.patientName);
+		fprintf(fp, "%s\n", p->data.bedNo);
 		fprintf(fp, "%lf\n", p->data.prepay);
 		fprintf(fp, "%lf\n", p->data.totalCost);
 		fprintf(fp, "%s\n", p->data.admissionDate);

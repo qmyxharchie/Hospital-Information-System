@@ -330,8 +330,6 @@ void showPatientManagement(void) {
         default:
             printf("[ERROR] 无效选择！\n");
         }
-        system("pause");
-        system("cls");
     }
 }
 
