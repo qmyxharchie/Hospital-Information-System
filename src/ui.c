@@ -647,8 +647,7 @@ void showBedManagement(void) {
         case 1:
             printf("\n请输入床位信息:\n");
             safeReadString("病区: ", ward, 30);
-            safeReadString("床位号: ", bedNo, 20);
-            addBed(&g_bedHead, &g_bedTail, ward, bedNo);
+            addBed(&g_bedHead, &g_bedTail, ward);
             printf("[OK] 床位添加成功！\n");
             break;
         case 2:
