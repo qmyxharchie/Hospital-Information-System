@@ -18,7 +18,6 @@ typedef struct DoctorData {
     char empNo[20];              // 工号
     char name[50];               // 姓名
     char dept[50];               // 科室
-    char schedule[100];          // 出诊时间
     int maxPatients;             // 每日最大接诊数
     int currentPatients;         // 今日已接诊数
 } DoctorData;
@@ -32,7 +31,7 @@ Doctor* getDoctorHead(void);                                            // Gette
 Doctor* getDoctorTail(void);
 
 void addDoctor(Doctor** head, Doctor** tail,
-    char name[], char dept[], char schedule[], int maxPatients);        //添加医生
+    char name[], char dept[], int maxPatients);        //添加医生
 void delDoctor(Doctor** head, Doctor** tail, DoctorData d);             //删除医生
 int modifyDoctor(Doctor* head, char* empNo, DoctorData newData);        //修改医生信息
 

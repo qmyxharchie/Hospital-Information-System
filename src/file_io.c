@@ -93,7 +93,6 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 			fscanf(fp, "%s", node->data.empNo);
 			fscanf(fp, "%s", node->data.name);
 			fscanf(fp, "%s", node->data.dept);
-			fscanf(fp, "%s", node->data.schedule);
 			fscanf(fp, "%d", &node->data.maxPatients);
 
 
@@ -452,7 +451,6 @@ void rebuildDoctorFile(Doctor* head) {
 		fprintf(fp, "%s\n", p->data.empNo);
 		fprintf(fp, "%s\n", p->data.name);
 		fprintf(fp, "%s\n", p->data.dept);
-		fprintf(fp, "%s\n", p->data.schedule);
 		fprintf(fp, "%d\n", p->data.maxPatients);
 		fprintf(fp, "%d\n", p->data.currentPatients);
 

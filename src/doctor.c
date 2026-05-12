@@ -22,9 +22,9 @@ Doctor* getDoctorTail(void) {
 //--------------------
 // 以下为添加医生函数// 功能：向医生链表中添加一个新的医生节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
-//      name - 姓名，dept - 科室，schedule - 出诊时间，maxPatients - 每日最大接诊数
+//      name - 姓名，dept - 科室，maxPatients - 每日最大接诊数
 void addDoctor(Doctor** head, Doctor** tail,
-    char name[], char dept[], char schedule[], int maxPatients) {
+    char name[], char dept[], int maxPatients) {
     // 1. 为新节点分配内存空间
     Doctor* newNode = (Doctor*)malloc(sizeof(Doctor));
 
@@ -39,7 +39,6 @@ void addDoctor(Doctor** head, Doctor** tail,
     strcpy(newNode->data.empNo, id);                    // 工号
     strcpy(newNode->data.name, name);                   // 姓名
     strcpy(newNode->data.dept, dept);                   // 科室
-    strcpy(newNode->data.schedule, schedule);           // 出诊时间
     newNode->data.maxPatients = maxPatients;            // 每日最大接诊次数
     newNode->data.currentPatients = 0;                  // 设置今日接诊数为0
 
@@ -140,14 +139,12 @@ int modifyDoctor(Doctor* head, char* empNo, DoctorData newData) {
     printf("工号：%s\n", target->data.empNo);
     printf("姓名：%s\n", target->data.name);
     printf("科室：%s\n", target->data.dept);
-    printf("出诊时间：%s\n", target->data.schedule);
     printf("每日最大接诊次数：%d\n", target->data.maxPatients);
     printf("今日已接诊数：%d\n", target->data.currentPatients);
 
     // 4. 更新医生信息
     safeStringCopy(target->data.name, newData.name, 50);          // 安全复制姓名
     safeStringCopy(target->data.dept, newData.dept, 50);          // 安全复制工号
-    safeStringCopy(target->data.schedule, newData.schedule, 100); // 安全复制出诊时间
     target->data.maxPatients = newData.maxPatients;               // 更新每日最大接诊数
     target->data.currentPatients = newData.currentPatients;       // 今日已接诊数
 
@@ -374,18 +371,17 @@ void listAllDoctors(Doctor* head) {
 
     // 2. 输出表头信息
     printf("=== 医生列表 ===\n");
-    printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
-        "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
+    printf("%-20s %-50s %-50s %-10s %-10s\n",
+        "工号", "姓名", "科室", "每日最大接诊数", "今日已接诊数");
 
     // 3. 遍历链表并输出每个医生的信息
     Doctor* current = head;
     while (current != NULL) {
         // 格式化输出当前医生的各项信息
-        printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+        printf("%-20s %-50s %-50s %-10d %-10d\n",
             current->data.empNo,                         // 工号
             current->data.name,                          // 姓名
             current->data.dept,                          // 科室
-            current->data.schedule,                      // 出诊时间
             current->data.maxPatients,                   // 每日最大接诊数
             current->data.currentPatients);              // 今日已接诊数
         current = current->next;                         // 移动到下一个节点

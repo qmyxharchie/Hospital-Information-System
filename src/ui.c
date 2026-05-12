@@ -173,10 +173,9 @@ int showMainMenuByRole(int userRole, char* username) {
     printf("║ 当前用户: %-15s 角色: ", username);
     switch (userRole) {
     case 0: printf("患者    "); break;
-    case 1: printf("护士    "
-    ); break;
+    case 1: printf("护士    "); break;
     case 2: printf("医生    "); break;
-    case 3: printf("管理员  "); break;
+    case 3: printf("管理员     "); break;
     default: printf("未知    "); break;
     }
     printf("║\n");
@@ -318,7 +317,7 @@ void showPatientManagement(void) {
 //--------------------
 void showDoctorManagement(void) {
     int choice;
-    char name[50], dept[50], schedule[100], empNo[20];
+    char name[50], dept[50], empNo[20];
     int maxPatients;
     Doctor* d;
     while (1) {
@@ -334,10 +333,9 @@ void showDoctorManagement(void) {
             printf("\n请输入医生信息:");
             printf("\n姓名: ");      scanf("%49s", name);
             printf("\n科室: ");      scanf("%49s", dept);
-            printf("\n出诊时间: ");  scanf("%99s", schedule);
             maxPatients = safeReadInt("\n每日最大接诊数: ", 1, 999);
             addDoctor(&g_doctorHead, &g_doctorTail,
-                      name, dept, schedule, maxPatients);
+                      name, dept, maxPatients);
             printf("[OK] 医生添加成功！\n");
             break;
         case 2:
@@ -356,7 +354,6 @@ void showDoctorManagement(void) {
             printf("\n请输入医生信息:");
             printf("\n姓名: ");      scanf("%49s", newData.name);
             printf("\n科室: ");      scanf("%49s", newData.dept);
-            printf("\n出诊时间: ");  scanf("%99s", newData.schedule);
             newData.maxPatients = safeReadInt("\n每日最大接诊数: ", 1, 999);
             modifyDoctor(g_doctorHead, empNo, newData);
             break;
@@ -375,11 +372,11 @@ void showDoctorManagement(void) {
                     printf("[ERROR] 未找到医生信息\n");
                 } else {
                     printf("[OK] 医生信息如下\n");
-                    printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
-                           "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
-                    printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+                    printf("%-20s %-50s %-50s %-10s %-10s\n",
+                           "工号", "姓名", "科室", "每日最大接诊数", "今日已接诊数");
+                    printf("%-20s %-50s %-50s %-10d %-10d\n",
                            d->data.empNo, d->data.name, d->data.dept,
-                           d->data.schedule, d->data.maxPatients,
+                           d->data.maxPatients,
                            d->data.currentPatients);
                 }
                 break;
@@ -401,11 +398,11 @@ void showDoctorManagement(void) {
                 safeReadString("请输入要查找医生的科室: ", dept, 50);
                 d = findDoctorsByDept(g_doctorHead, dept);
                 if (d) {
-                    printf("%-20s %-50s %-50s %-100s %-10s %-10s\n",
-                           "工号", "姓名", "科室", "出诊时间", "每日最大接诊数", "今日已接诊数");
-                    printf("%-20s %-50s %-50s %-100s %-10d %-10d\n",
+                    printf("%-20s %-50s %-50s %-10s %-10s\n",
+                           "工号", "姓名", "科室", "每日最大接诊数", "今日已接诊数");
+                    printf("%-20s %-50s %-50s %-10d %-10d\n",
                            d->data.empNo, d->data.name, d->data.dept,
-                           d->data.schedule, d->data.maxPatients,
+                           d->data.maxPatients,
                            d->data.currentPatients);
                 } else {
                     printf("[ERROR] 未找到该科室的医生！\n");
@@ -794,14 +791,14 @@ void showRegistrationManagement(void) {
 
             /*列出所有医生供选择，不再要求输入工号 */
             printf("\n可选医生列表：\n");
-            printf("%-4s %-12s %-10s %-10s %-20s\n",
-                   "序号", "工号", "姓名", "科室", "出诊时间");
+            printf("%-4s %-12s %-10s %-10s\n",
+                   "序号", "工号", "姓名", "科室");
             Doctor* doc = g_doctorHead;
             int docCount = 0;
             while (doc != NULL) {
-                printf("%-4d %-12s %-10s %-10s %-20s\n",
+                printf("%-4d %-12s %-10s %-10s\n",
                        ++docCount, doc->data.empNo, doc->data.name,
-                       doc->data.dept, doc->data.schedule);
+                       doc->data.dept);
                 doc = doc->next;
             }
             if (docCount == 0) {
@@ -1531,6 +1528,14 @@ int main(void) {
         }
 
         /* 登录成功后根据角色进入主循环 */
+        buildPatientChain(&g_patientHead, &g_patientTail);
+        buildDoctorChain(&g_doctorHead, &g_doctorTail);
+        buildRegistrationChain(&g_regHead, &g_regTail);
+        buildMedicineChain(&g_medHead, &g_medTail);
+        buildPurchaseChain(&g_purHead, &g_purTail);
+        buildHospitalizationChain(&g_hosHead, &g_hosTail);
+        buildBedChain(&g_bedHead, &g_bedTail);
+
         while (1) {
             /* showMainMenuByRole 返回用户选择的模块号 */
             int module = showMainMenuByRole(g_currentUserRole, g_currentUsername);
@@ -1546,6 +1551,13 @@ int main(void) {
             case 8: showQueryMenu();                 break;
             case 0:
                 printf("正在退出到登录界面...\n");
+                freePatientChain(&g_patientHead);
+                freeDoctorChain(&g_doctorHead);
+                freeRegistrationChain(&g_regHead);
+                freeMedicineChain(&g_medHead);
+                freePurchaseChain(&g_purHead);
+                freeHospitalizationChain(&g_hosHead);
+                freeBedChain(&g_bedHead);
                 /* 跳出内层循环，回到登录 */
                 goto logout;
             default:
