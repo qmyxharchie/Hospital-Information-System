@@ -21,8 +21,10 @@ Patient* getPatientTail(void) {
 // 功能：向病人链表中添加一个新的病人节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
 //      name - 姓名，age - 年龄， gender - 性别，idCard - 身份证号，phone - 电话号码
+//      ownerUsername - 档案所属账号（注册时绑定）
 void addPatient(Patient** head, Patient** tail,
-    char name[], int age, char gender[], char idCard[], char phone[]) {
+    char name[], int age, char gender[], char idCard[], char phone[],
+    const char* ownerUsername) {
     // 1. 为新节点分配内存空间
     Patient* newNode = (Patient*)malloc(sizeof(Patient));
     if (newNode == NULL) {
@@ -32,11 +34,11 @@ void addPatient(Patient** head, Patient** tail,
 
     // 2. 初始化新节点的指针域，防止野指针
     newNode->next = newNode->pre = NULL;                // 申请新节点第一件事就是指针初始化！非常重要
-    
+
     // 3. 生成唯一的门诊卡号
     char id[20];
     generateUniqueId("PT", id);                         // 生成以"PT"开头的唯一ID
-    
+
     // 4. 保存病人具体信息到新节点的数据域
     strcpy(newNode->data.cardNo, id);                   // 门诊卡号
     strcpy(newNode->data.name, name);                   // 姓名
@@ -44,6 +46,7 @@ void addPatient(Patient** head, Patient** tail,
     strcpy(newNode->data.gender, gender);               // 性别
     strcpy(newNode->data.idCard, idCard);               // 身份证号
     strcpy(newNode->data.phone, phone);                 // 电话号码
+    strcpy(newNode->data.ownerUsername, ownerUsername); // 档案所属账号
     newNode->data.isActive = 0;                         // 设置初始住院状态为0（未住院）
     
     // 5. 将新节点插入到链表尾部
@@ -289,6 +292,48 @@ Patient* findPatientsByName(Patient* head, char* name) {
         p = p->next;                                      // 移动到下一个节点
     }
     return resultHead;
+}
+//--------------------
+
+//--------------------
+// 按姓名+身份证精确查找
+// 参数：head - 链表头，name - 姓名，idCard - 身份证号
+// 返回值：命中的节点指针；未命中返回 NULL
+Patient* findPatientByNameAndId(Patient* head,
+    const char* name, const char* idCard) {
+    Patient* p = head;
+    while (p != NULL) {
+        if (strcmp(p->data.name, name) == 0 &&
+            strcmp(p->data.idCard, idCard) == 0) {
+            return p;
+        }
+        p = p->next;
+    }
+    return NULL;
+}
+//--------------------
+
+//--------------------
+// 按身份证精确查找（用于唯一性检查）
+Patient* findPatientByIdCard(Patient* head, const char* idCard) {
+    Patient* p = head;
+    while (p != NULL) {
+        if (strcmp(p->data.idCard, idCard) == 0) return p;
+        p = p->next;
+    }
+    return NULL;
+}
+//--------------------
+
+//--------------------
+// 按档案所属账号查找（患者登录后找到自己的档案）
+Patient* findPatientByOwner(Patient* head, const char* ownerUsername) {
+    Patient* p = head;
+    while (p != NULL) {
+        if (strcmp(p->data.ownerUsername, ownerUsername) == 0) return p;
+        p = p->next;
+    }
+    return NULL;
 }
 //--------------------
 

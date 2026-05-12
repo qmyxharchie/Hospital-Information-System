@@ -130,6 +130,18 @@ int registerUser(char username[], char password[], int role) {
 //-----------------
 
 //-----------------
+// 用户名是否已被占用
+// 功能：加载最新用户列表后检查
+// 返回：1=已占用，0=可用
+int isUsernameTaken(const char* username) {
+	freeUserChain(&g_userHead);
+	buildUserChain(&g_userHead, &g_userTail);
+	User* u = findUserByName(g_userHead, (char*)username);
+	return (u != NULL) ? 1 : 0;
+}
+//-----------------
+
+//-----------------
 // 用户查询
 // 功能：根据用户名查找用户信息
 // 参数：head - 用户链表头指针，username - 要查找的用户名

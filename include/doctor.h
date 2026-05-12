@@ -38,7 +38,7 @@ int modifyDoctor(Doctor* head, char* empNo, DoctorData newData);        //修改
 //查询医生
 Doctor* findDoctorByEmpNo(Doctor* head, char* empNo);                   //按工号精确查找
 Doctor* findDoctorsByName(Doctor* head, char* name);                    //按姓名查找
-Doctor* findDoctorsByDept(Doctor* head, char* dept);                    //按科室查找（返回第一个匹配）
+Doctor* findDoctorsByDept(Doctor* head, char* dept);                    //按科室查找（返回所有匹配）
 
 //挂号
 void doctorViewWaitingList(Registration* regHead, char* doctorEmpNo);   //医生查看候诊列表

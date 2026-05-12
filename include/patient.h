@@ -22,6 +22,7 @@ typedef struct PatientData {
     char gender[10];          // 性别
     char idCard[20];          // 身份证号
     char phone[15];           // 联系电话
+    char ownerUsername[50];   // 档案所属账号（注册时绑定）
     int isActive;             // 是否住院（0=否，1=是）
 } PatientData;
 
@@ -34,7 +35,8 @@ typedef struct Patient {
 Patient* getPatientHead(void);                                          // Getter 函数实现
 Patient* getPatientTail(void);
 void addPatient(Patient** head, Patient** tail,
-    char name[], int age, char gender[], char idCard[], char phone[]);  //添加病人
+    char name[], int age, char gender[], char idCard[], char phone[],
+    const char* ownerUsername);                                         //添加病人
 void delPatient(Patient** head, Patient** tail, PatientData p);         //删除病人
 int modifyPatient(Patient* head, char* cardNo, PatientData newData);    //修改病人信息
 
@@ -47,6 +49,10 @@ int patientCancelRegistration(Registration** regHead, Registration** regTail,
 //查找
 Patient* findPatientByCardNo(Patient* head, char* cardNo);              //按卡号精确查找
 Patient* findPatientsByName(Patient* head, char* name);                 //按姓名模糊/精确查找
+Patient* findPatientByNameAndId(Patient* head,
+    const char* name, const char* idCard);                              //按姓名+身份证精确查找
+Patient* findPatientByIdCard(Patient* head, const char* idCard);        //按身份证精确查找（唯一性检查用）
+Patient* findPatientByOwner(Patient* head, const char* ownerUsername);  //按档案所属账号查找
 void listAllPatients(Patient* head);                                    //列表显示
 
 #endif                       
