@@ -39,6 +39,12 @@ bool g_isLoggedIn = false;
 
 void initUI(void) {}
 
+/* 清空 stdin 到行尾（含 EOF 保护，避免死循环） */
+static void flushStdin(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
 /* 安全读取 int，带范围校验和错误清缓冲 */
 int safeReadInt(const char* prompt, int minVal, int maxVal) {
     int choice;
@@ -50,7 +56,7 @@ int safeReadInt(const char* prompt, int minVal, int maxVal) {
             printf("[ERROR] 输入无效，请输入数字！\n");
             continue;
         }
-        getchar();
+        flushStdin();
         if (choice < minVal || choice > maxVal) {
             printf("[ERROR] 请输入 %d~%d 之间的数字\n", minVal, maxVal);
             continue;
@@ -70,7 +76,7 @@ double safeReadDouble(const char* prompt) {
             printf("[ERROR] 输入无效，请输入数字！\n");
             continue;
         }
-        getchar();
+        flushStdin();
         return val;
     }
 }
@@ -84,7 +90,7 @@ void safeReadString(const char* prompt, char* buf, int maxLen) {
             buf[maxLen - 1] = '\0';
         }
     }
-    getchar();
+    flushStdin();
 }
 
 //------------------------
@@ -142,16 +148,16 @@ int showLoginPage(void) {
 
     switch (choice) {
     case 1:
-        printf("\n请输入用户名: "); scanf("%49s", username);
-        printf("请输入密码: ");     scanf("%49s", password);
+        safeReadString("\n请输入用户名: ", username, 50);
+        safeReadString("请输入密码: ", password, 50);
         return login(username, password);
     case 2:
-        printf("\n请输入管理员用户名: "); scanf("%49s", username);
-        printf("请输入密码: ");            scanf("%49s", password);
+        safeReadString("\n请输入管理员用户名: ", username, 50);
+        safeReadString("请输入密码: ", password, 50);
         return login(username, password);
     case 3:
-        printf("\n请输入要注册的用户名: "); scanf("%49s", username);
-        printf("请输入密码: ");             scanf("%49s", password);
+        safeReadString("\n请输入要注册的用户名: ", username, 50);
+        safeReadString("请输入密码: ", password, 50);
         if (registerUser(username, password, 0)) {
             return LOGIN_REGISTERED;
         }
@@ -229,12 +235,12 @@ void showPatientManagement(void) {
         switch (choice) {
         case 1:
             printf("\n请输入病人信息:");
-            printf("\n姓名: ");     scanf("%49s", name);
+            safeReadString("\n姓名: ", name, 50);
 
             age = safeReadInt("\n年龄: ", 0, 150);
-            printf("\n性别: ");     scanf("%9s", gender);
-            printf("\n身份证号: "); scanf("%19s", idCard);
-            printf("\n联系电话: "); scanf("%14s", phone);
+            safeReadString("\n性别: ", gender, 10);
+            safeReadString("\n身份证号: ", idCard, 20);
+            safeReadString("\n联系电话: ", phone, 15);
             addPatient(&g_patientHead, &g_patientTail,
                        name, age, gender, idCard, phone);
             break;
@@ -249,13 +255,13 @@ void showPatientManagement(void) {
             break;
         case 3: {
             PatientData newData;
-            printf("\n请输入要修改的病人卡号："); scanf("%19s", cardNo);
+            safeReadString("\n请输入要修改的病人卡号：", cardNo, 20);
             printf("\n请输入修改后的病人信息:");
-            printf("\n姓名: ");     scanf("%49s", newData.name);
+            safeReadString("\n姓名: ", newData.name, 50);
             newData.age = safeReadInt("\n年龄: ", 0, 150);
-            printf("\n性别: ");     scanf("%9s", newData.gender);
-            printf("\n身份证号: "); scanf("%19s", newData.idCard);
-            printf("\n联系电话: "); scanf("%14s", newData.phone);
+            safeReadString("\n性别: ", newData.gender, 10);
+            safeReadString("\n身份证号: ", newData.idCard, 20);
+            safeReadString("\n联系电话: ", newData.phone, 15);
             modifyPatient(g_patientHead, cardNo, newData);
             break;
         }
@@ -331,8 +337,8 @@ void showDoctorManagement(void) {
         switch (choice) {
         case 1:
             printf("\n请输入医生信息:");
-            printf("\n姓名: ");      scanf("%49s", name);
-            printf("\n科室: ");      scanf("%49s", dept);
+            safeReadString("\n姓名: ", name, 50);
+            safeReadString("\n科室: ", dept, 50);
             maxPatients = safeReadInt("\n每日最大接诊数: ", 1, 999);
             addDoctor(&g_doctorHead, &g_doctorTail,
                       name, dept, maxPatients);
@@ -352,8 +358,8 @@ void showDoctorManagement(void) {
             DoctorData newData;
             safeReadString("\n请输入要修改的医生工号: ", empNo, 20);
             printf("\n请输入医生信息:");
-            printf("\n姓名: ");      scanf("%49s", newData.name);
-            printf("\n科室: ");      scanf("%49s", newData.dept);
+            safeReadString("\n姓名: ", newData.name, 50);
+            safeReadString("\n科室: ", newData.dept, 50);
             newData.maxPatients = safeReadInt("\n每日最大接诊数: ", 1, 999);
             modifyDoctor(g_doctorHead, empNo, newData);
             break;
@@ -484,11 +490,11 @@ void showMedicineManagement(void) {
             break;
         }
         case 4: {
-            printf("\n请输入病人卡号: ");     scanf("%19s", patientCardNo);
-            printf("\n请输入药品编号: ");     scanf("%19s", medNo);
+            safeReadString("\n请输入病人卡号: ", patientCardNo, 20);
+            safeReadString("\n请输入药品编号: ", medNo, 20);
             quantity = safeReadInt("\n请输入购买数量: ", 1, 99999);
-          
-            printf("\n请输入购药日期(YYYY-MM-DD): "); scanf("%19s", date);
+
+            safeReadString("\n请输入购药日期(YYYY-MM-DD): ", date, 20);
             m = findMedicineByNo(g_medHead, medNo);
             if (m && m->data.stock >= quantity) {
                 addPurchaseRecord(&g_purHead, &g_purTail, g_medHead,
@@ -537,8 +543,8 @@ void showHospitalizationManagement(void) {
         switch (choice) {
         case 1:
             printf("\n请输入入院信息:");
-            printf("\n病人卡号: "); scanf("%19s", patientCardNo);
-            printf("\n病人姓名: "); scanf("%49s", patientName);
+            safeReadString("\n病人卡号: ", patientCardNo, 20);
+            safeReadString("\n病人姓名: ", patientName, 50);
             prepay = safeReadDouble("\n预交金额: ");
             addHospitalization(&g_hosHead, &g_hosTail,
                                patientCardNo, patientName, prepay);
@@ -821,7 +827,7 @@ void showRegistrationManagement(void) {
             getCurrentTime(&year, &month, &day);
             printf("请输入预约日期 (YYYY-MM-DD，至少今天 %04d-%02d-%02d): ",
                    year, month, day);
-            scanf("%19s", appointmentDate);
+            safeReadString("", appointmentDate, 20);
             safeReadString("请输入预约时间 (HH:MM): ", appointmentTime, 20);
 
             addRegistration(&g_regHead, &g_regTail,
