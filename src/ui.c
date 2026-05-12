@@ -45,6 +45,30 @@ static void flushStdin(void) {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
+/* 提示用户输入姓名+身份证号，验证通过返回 Patient*，否则返回 NULL
+ * purpose: 用于提示信息（如"病人身份验证"） */
+static Patient* promptFindPatient(const char* purpose) {
+    char name[50], idCard[20];
+    printf("\n-- %s --\n", purpose);
+    safeReadString("姓名: ", name, 50);
+    safeReadString("身份证号: ", idCard, 20);
+    Patient* p = findPatientByNameAndId(g_patientHead, name, idCard);
+    if (p == NULL) {
+        printf("[ERROR] 姓名和身份证号不匹配，请核对后重试\n");
+        return NULL;
+    }
+    return p;
+}
+
+/* 二次确认 y/N，默认 N
+ * 返回 1=确认执行，0=取消 */
+static int confirmYesNo(const char* msg) {
+    char buf[10] = {0};
+    printf("%s [y/N]: ", msg);
+    safeReadString("", buf, 10);
+    return (buf[0] == 'y' || buf[0] == 'Y');
+}
+
 /* 安全读取 int，带范围校验和错误清缓冲 */
 int safeReadInt(const char* prompt, int minVal, int maxVal) {
     int choice;
@@ -153,17 +177,48 @@ int showLoginPage(void) {
         safeReadString("\n请输入用户名: ", username, 50);
         safeReadString("请输入密码: ", password, 50);
         return login(username, password);
-    case 2:
+    case 2: {
         safeReadString("\n请输入管理员用户名: ", username, 50);
         safeReadString("请输入密码: ", password, 50);
-        return login(username, password);
-    case 3:
-        safeReadString("\n请输入要注册的用户名: ", username, 50);
-        safeReadString("请输入密码: ", password, 50);
-        if (registerUser(username, password, 0)) {
-            return LOGIN_REGISTERED;
+        LoginStatus s = login(username, password);
+        if (s == LOGIN_SUCCESS_ADMIN) return s;
+        if (s == LOGIN_SUCCESS_USER) {
+            printf("[ERROR] 此账号不是管理员，请从 1. 用户登录 进入\n");
+            return LOGIN_FAILED;
         }
-        return LOGIN_FAILED;
+        return s;
+    }
+    case 3: {
+        /* 注册流程：先收齐用户名+密码+档案信息，全部校验通过再落地 */
+        char regName[50], regIdCard[20], regGender[10], regPhone[15];
+        int regAge;
+
+        safeReadString("\n请输入要注册的用户名: ", username, 50);
+        if (isUsernameTaken(username)) {
+            printf("[ERROR] 用户名已被占用，请换一个。\n");
+            return LOGIN_FAILED;
+        }
+        safeReadString("请输入密码: ", password, 50);
+
+        printf("\n接下来请录入您的病人档案（不可跳过）:\n");
+        safeReadString("姓名: ", regName, 50);
+        regAge = safeReadInt("年龄: ", 0, 150);
+        safeReadString("性别: ", regGender, 10);
+        safeReadString("身份证号: ", regIdCard, 20);
+        if (findPatientByIdCard(g_patientHead, regIdCard)) {
+            printf("[ERROR] 该身份证已登记档案，注册取消。\n");
+            return LOGIN_FAILED;
+        }
+        safeReadString("联系电话: ", regPhone, 15);
+
+        /* 两步校验均通过：写 User 和 Patient */
+        if (!registerUser(username, password, 0)) {
+            return LOGIN_FAILED;
+        }
+        addPatient(&g_patientHead, &g_patientTail,
+                   regName, regAge, regGender, regIdCard, regPhone, username);
+        return LOGIN_REGISTERED;
+    }
     case 0:
         return LOGIN_EXIT;
     default:
@@ -191,9 +246,9 @@ int showMainMenuByRole(int userRole, char* username) {
 
     if (userRole >= 0) {
         printf("║ 1. 挂号管理                             ║\n");
+        printf("║ 2. 患者信息管理                         ║\n");
     }
     if (userRole >= 1) {
-        printf("║ 2. 患者信息管理                         ║\n");
         printf("║ 3. 床位管理                             ║\n");
     }
     if (userRole >= 2) {
@@ -212,7 +267,7 @@ int showMainMenuByRole(int userRole, char* username) {
     if (userRole >= 3) maxOption = 8;
     else if (userRole >= 2) maxOption = 6;
     else if (userRole >= 1) maxOption = 3;
-    else maxOption = 1;
+    else maxOption = 2;
     return safeReadInt("请选择功能模块: ", 0, maxOption);
 }
 
@@ -225,6 +280,53 @@ void showPatientManagement(void) {
     char name[50], gender[10], idCard[20], phone[15], cardNo[20];
     int age;
     Patient* p;
+
+    /* 患者视角：只能查看/修改自己的档案 */
+    if (g_currentUserRole == PATIENT) {
+        while (1) {
+            printf("\n-------- 患者信息管理（我的档案）--------\n");
+            printf("1. 查看我的档案\n");
+            printf("2. 修改我的档案\n");
+            printf("0. 返回上级菜单\n");
+            int myChoice = safeReadInt("请选择: ", 0, 2);
+            if (myChoice == 0) return;
+
+            Patient* mine = findPatientByOwner(g_patientHead, g_currentUsername);
+            if (mine == NULL) {
+                printf("[ERROR] 系统中找不到您的档案，请联系管理员\n");
+                continue;
+            }
+
+            if (myChoice == 1) {
+                printPadded("卡号", 20); putchar(' ');
+                printPadded("姓名", 10); putchar(' ');
+                printPadded("年龄", 6);  putchar(' ');
+                printPadded("性别", 6);  putchar(' ');
+                printPadded("身份证", 20); putchar(' ');
+                printPadded("电话", 14); putchar(' ');
+                printPadded("住院状态", 10); putchar('\n');
+                printPadded(mine->data.cardNo, 20); putchar(' ');
+                printPadded(mine->data.name, 10);   putchar(' ');
+                printf("%-6d ", mine->data.age);
+                printPadded(mine->data.gender, 6);  putchar(' ');
+                printPadded(mine->data.idCard, 20); putchar(' ');
+                printPadded(mine->data.phone, 14);  putchar(' ');
+                printPadded(mine->data.isActive ? "住院" : "非住院", 10); putchar('\n');
+            }
+            else if (myChoice == 2) {
+                PatientData newData;
+                printf("\n请输入修改后的档案信息:");
+                safeReadString("\n姓名: ", newData.name, 50);
+                newData.age = safeReadInt("\n年龄: ", 0, 150);
+                safeReadString("\n性别: ", newData.gender, 10);
+                safeReadString("\n身份证号: ", newData.idCard, 20);
+                safeReadString("\n联系电话: ", newData.phone, 15);
+                modifyPatient(g_patientHead, mine->data.cardNo, newData);
+            }
+        }
+    }
+
+    /* 护士及以上：原全量菜单 */
     while (1) {
         printf("\n-------- 患者信息管理 --------\n");
         printf("1. 添加病人   4. 查找病人\n");
@@ -242,22 +344,30 @@ void showPatientManagement(void) {
             age = safeReadInt("\n年龄: ", 0, 150);
             safeReadString("\n性别: ", gender, 10);
             safeReadString("\n身份证号: ", idCard, 20);
+            if (findPatientByIdCard(g_patientHead, idCard)) {
+                printf("[ERROR] 该身份证已登记档案，添加取消\n");
+                break;
+            }
             safeReadString("\n联系电话: ", phone, 15);
             addPatient(&g_patientHead, &g_patientTail,
-                       name, age, gender, idCard, phone);
+                       name, age, gender, idCard, phone, "admin");
             break;
         case 2:
-            safeReadString("请输入要删除的病人卡号: ", cardNo, 20);
-            p = findPatientByCardNo(g_patientHead, cardNo);
-            if (p) {
-                delPatient(&g_patientHead, &g_patientTail, p->data);
-            } else {
-                printf("[ERROR] 未找到该病人！\n");
+            p = promptFindPatient("删除病人");
+            if (p == NULL) break;
+            printf("将删除：%s（身份证 %s，卡号 %s）\n",
+                   p->data.name, p->data.idCard, p->data.cardNo);
+            if (!confirmYesNo("确认删除？")) {
+                printf("已取消。\n");
+                break;
             }
+            delPatient(&g_patientHead, &g_patientTail, p->data);
             break;
         case 3: {
             PatientData newData;
-            safeReadString("\n请输入要修改的病人卡号：", cardNo, 20);
+            Patient* target = promptFindPatient("修改病人");
+            if (target == NULL) break;
+            strcpy(cardNo, target->data.cardNo);
             printf("\n请输入修改后的病人信息:");
             safeReadString("\n姓名: ", newData.name, 50);
             newData.age = safeReadInt("\n年龄: ", 0, 150);
@@ -269,15 +379,14 @@ void showPatientManagement(void) {
         }
         case 4: {
             printf("请选择查找方式：\n");
-            printf("1、按照卡号查找\n");
-            printf("2、按照姓名查找\n");
+            printf("1、按姓名+身份证精确查找\n");
+            printf("2、按姓名模糊查找\n");
             int choice1 = safeReadInt("请选择: ", 1, 2);
             switch (choice1) {
             case 1:
-                safeReadString("请输入卡号：", cardNo, 20);
-                p = findPatientByCardNo(g_patientHead, cardNo);
+                p = promptFindPatient("查找病人");
                 if (p == NULL) {
-                    printf("[ERROR] 未找到病人信息\n");
+                    break;
                 } else {
                     printf("[OK] 病人信息如下\n");
                     printPadded("卡号", 20); putchar(' ');
@@ -366,6 +475,12 @@ void showDoctorManagement(void) {
             safeReadString("请输入要删除的医生工号：", empNo, 20);
             d = findDoctorByEmpNo(g_doctorHead, empNo);
             if (d) {
+                printf("将删除：%s  %s  %s科\n",
+                       d->data.empNo, d->data.name, d->data.dept);
+                if (!confirmYesNo("确认删除？")) {
+                    printf("已取消。\n");
+                    break;
+                }
                 delDoctor(&g_doctorHead, &g_doctorTail, d->data);
             } else {
                 printf("[ERROR] 未找到该医生！\n");
@@ -426,20 +541,14 @@ void showDoctorManagement(void) {
             case 3:
                 safeReadString("请输入要查找医生的科室: ", dept, 50);
                 d = findDoctorsByDept(g_doctorHead, dept);
-                if (d) {
-                    printPadded("工号", 20); putchar(' ');
-                    printPadded("姓名", 12); putchar(' ');
-                    printPadded("科室", 10); putchar(' ');
-                    printPadded("每日最大接诊数", 16); putchar(' ');
-                    printPadded("今日已接诊数", 14); putchar('\n');
-                    printPadded(d->data.empNo, 20); putchar(' ');
-                    printPadded(d->data.name, 12); putchar(' ');
-                    printPadded(d->data.dept, 10); putchar(' ');
-                    printf("%-16d %-14d\n",
-                           d->data.maxPatients,
-                           d->data.currentPatients);
-                } else {
+                if (d == NULL) {
                     printf("[ERROR] 未找到该科室的医生！\n");
+                } else {
+                    printf("[OK] %s 医生列表如下\n", dept);
+                    listAllDoctors(d);
+                    /* 注意：findDoctorsByDept 返回新链表，需释放 */
+                    Doctor* cur = d;
+                    while (cur) { Doctor* tmp = cur; cur = cur->next; free(tmp); }
                 }
                 break;
             default:
@@ -534,7 +643,9 @@ void showMedicineManagement(void) {
             break;
         }
         case 4: {
-            safeReadString("\n请输入病人卡号: ", patientCardNo, 20);
+            Patient* pp = promptFindPatient("购药登记");
+            if (pp == NULL) break;
+            strcpy(patientCardNo, pp->data.cardNo);
             safeReadString("\n请输入药品编号: ", medNo, 20);
             quantity = safeReadInt("\n请输入购买数量: ", 1, 99999);
 
@@ -585,10 +696,12 @@ void showHospitalizationManagement(void) {
         choice = safeReadInt("请选择: ", 0, 8);
 
         switch (choice) {
-        case 1:
+        case 1: {
             printf("\n请输入入院信息:");
-            safeReadString("\n病人卡号: ", patientCardNo, 20);
-            safeReadString("\n病人姓名: ", patientName, 50);
+            Patient* pp = promptFindPatient("入院登记");
+            if (pp == NULL) break;
+            strcpy(patientCardNo, pp->data.cardNo);
+            strcpy(patientName, pp->data.name);
             prepay = safeReadDouble("\n预交金额: ");
             addHospitalization(&g_hosHead, &g_hosTail,
                                patientCardNo, patientName, prepay);
@@ -596,6 +709,7 @@ void showHospitalizationManagement(void) {
             printf("床位号为：%20s", g_hosTail->data.bedNo);
 
             break;
+        }
         case 2: {
             safeReadString("请输入住院单号: ", recordNo, 20);
             h = findHospitalizationByNo(g_hosHead, recordNo);
@@ -609,8 +723,10 @@ void showHospitalizationManagement(void) {
             }
             break;
         }
-        case 3:
-            safeReadString("请输入病人卡号: ", patientCardNo, 20);
+        case 3: {
+            Patient* pp = promptFindPatient("查询住院记录");
+            if (pp == NULL) break;
+            strcpy(patientCardNo, pp->data.cardNo);
             h = findHospitalizationByCardNo(g_hosHead, patientCardNo);
             if (h) {
                 printPadded("住院单号", 20); putchar(' ');
@@ -630,6 +746,7 @@ void showHospitalizationManagement(void) {
                 printf("[ERROR] 未找到该病人的住院记录！\n");
             }
             break;
+        }
         case 4:
             safeReadString("请输入住院单号: ", recordNo, 20);
             h = findHospitalizationByNo(g_hosHead, recordNo);
@@ -721,6 +838,12 @@ void showBedManagement(void) {
             safeReadString("请输入要删除的床位号: ", bedNo, 20);
             b = findBedByNo(g_bedHead, bedNo);
             if (b) {
+                printf("将删除：%s床位（病区 %s，状态 %s）\n",
+                       b->data.bedNo, b->data.ward, b->data.status);
+                if (!confirmYesNo("确认删除？")) {
+                    printf("已取消。\n");
+                    break;
+                }
                 delBed(&g_bedHead, &g_bedTail, b);
                 printf("[OK] 床位已删除！\n");
             } else {
@@ -909,7 +1032,9 @@ void showRegistrationManagement(void) {
             if (role == PATIENT || role == DOCTOR) {
                 safeReadString("请输入您的卡号: ", patientCardNo, 20);
             } else {
-                safeReadString("请输入患者卡号: ", patientCardNo, 20);
+                Patient* pp = promptFindPatient("取消挂号");
+                if (pp == NULL) break;
+                strcpy(patientCardNo, pp->data.cardNo);
             }
 
             /* 列出该患者的 PENDING 挂号 */
@@ -973,12 +1098,9 @@ void showRegistrationManagement(void) {
         /* ──────────── 现场挂号（护士/管理员） ──────────── */
         case 3: {
             printf("\n--- 现场挂号 ---\n");
-            safeReadString("请输入患者卡号: ", patientCardNo, 20);
-            Patient* p = findPatientByCardNo(g_patientHead, patientCardNo);
-            if (p == NULL) {
-                printf("[ERROR] 未找到该患者\n");
-                break;
-            }
+            Patient* p = promptFindPatient("现场挂号");
+            if (p == NULL) break;
+            strcpy(patientCardNo, p->data.cardNo);
             strcpy(patientName, p->data.name);
 
             /*同样列出医生供选择 */
@@ -1353,7 +1475,7 @@ void showQueryMenu(void) {
 
     while (1) {
         printf("\n========== 综合查询 ==========\n");
-        printf("1. 按病人卡号查全部关联记录\n");
+        printf("1. 按姓名+身份证查全部关联记录\n");
         printf("2. 按医生查其挂号记录\n");
         printf("3. 按日期查挂号记录\n");
         printf("4. 按日期查住院记录\n");
@@ -1365,15 +1487,11 @@ void showQueryMenu(void) {
 
         switch (choice) {
 
-            /* ──────────── 1. 按病人卡号查全部关联 ──────────── */
+            /* ──────────── 1. 按姓名+身份证查全部关联 ──────────── */
         case 1: {
-            safeReadString("请输入病人卡号: ", cardNo, 20);
-
-            Patient* p = findPatientByCardNo(g_patientHead, cardNo);
-            if (p == NULL) {
-                printf("[ERROR] 未找到该病人\n");
-                break;
-            }
+            Patient* p = promptFindPatient("综合查询");
+            if (p == NULL) break;
+            strcpy(cardNo, p->data.cardNo);
 
             printf("\n========== 病人综合信息 ==========\n");
             printf("【基本信息】\n");

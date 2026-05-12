@@ -207,18 +207,32 @@ Doctor* findDoctorsByName(Doctor* head, char* name) {
 }
 
 // 按科室查找（返回第一个匹配）
-// 功能：根据科室查找医生（返回第一个匹配的医生）
+// 功能：根据科室查找所有医生（返回新链表，调用方需释放）
 // 参数：head - 链表头指针，dept - 要查找的科室
-// 返回值：找到的医生节点指针，未找到返回NULL
+// 返回值：匹配医生组成的新链表头，无匹配返回 NULL
 Doctor* findDoctorsByDept(Doctor* head, char* dept) {
-    Doctor* d = head;                                     // 从头节点开始查找
+    Doctor* d = head;
+    Doctor* resultHead = NULL;
+    Doctor* resultTail = NULL;
     while (d != NULL) {
-        if (strcmp(d->data.dept, dept) == 0) {            // 比较科室是否匹配
-            return d;                                     // 找到则返回该节点指针
+        if (strcmp(d->data.dept, dept) == 0) {
+            Doctor* newNode = (Doctor*)malloc(sizeof(Doctor));
+            if (newNode == NULL) break;
+            newNode->data = d->data;
+            newNode->next = NULL;
+            newNode->pre = NULL;
+            if (resultHead == NULL) {
+                resultHead = newNode;
+                resultTail = newNode;
+            } else {
+                resultTail->next = newNode;
+                newNode->pre = resultTail;
+                resultTail = newNode;
+            }
         }
-        d = d->next;                                      // 移动到下一个节点
+        d = d->next;
     }
-    return NULL;                                          // 未找到返回NULL
+    return resultHead;
 }
 //--------------------
 

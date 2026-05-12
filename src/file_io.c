@@ -47,6 +47,7 @@ void buildPatientChain(Patient** head, Patient** tail) {
 			fscanf(fp, "%s", node->data.gender);
 			fscanf(fp, "%s", node->data.idCard);
 			fscanf(fp, "%s", node->data.phone);
+			fscanf(fp, "%s", node->data.ownerUsername);
 			fscanf(fp, "%d", &node->data.isActive);
 
 			if (*head == NULL) {
@@ -425,6 +426,7 @@ void rebuildPatientFile(Patient* head) {
 		fprintf(fp, "%s\n", p->data.gender);
 		fprintf(fp, "%s\n", p->data.idCard);
 		fprintf(fp, "%s\n", p->data.phone);
+		fprintf(fp, "%s\n", p->data.ownerUsername);
 		fprintf(fp, "%d\n", p->data.isActive);
 
 		fprintf(fp, "\n");

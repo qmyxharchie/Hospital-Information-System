@@ -53,6 +53,7 @@ extern bool g_isLoggedIn;                 // 是否已登录
 
 LoginStatus login(char username[], char password[]);                  // 用户登录
 int registerUser(char username[], char password[], int role);         // 用户注册
+int isUsernameTaken(const char* username);                            // 用户名是否已被占用（1=是，0=否）
 User* findUserByName(User* head, char* username);                     // 用户查询
 User* getCurrentUser(void);                                           // 获取当前登录用户
 UserRole getUserRoleByUsername(const char* username);
