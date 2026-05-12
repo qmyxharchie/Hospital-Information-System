@@ -62,7 +62,7 @@ void freeBed(Bed* b)
 //     ward - 病房号
 //     bedNo - 床位号
 //返回值：无
-void addBed(Bed** head, Bed** tail, char* ward, char* bedNo)
+void addBed(Bed** head, Bed** tail, char* ward)
 {
 	Bed* b = (Bed*)malloc(sizeof(Bed));
 	if (!b)//分配新节点

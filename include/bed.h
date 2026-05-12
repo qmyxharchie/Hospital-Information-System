@@ -30,7 +30,7 @@ typedef struct Bed {
 
 char* allocateBed(Bed* head, char* patientCardNo, char* patientName);    //自动分配床位
 void freeBed(Bed* b);                                                    //释放床位
-void addBed(Bed** head, Bed** tail, char* ward, char* bedNo);    // 添加床位
+void addBed(Bed** head, Bed** tail, char* ward);    // 添加床位
 void delBed(Bed** head, Bed** tail, Bed* b);                                //删除床位
 //查找床位
 Bed* findBedByNo(Bed* head, char* bedNo);              // 按床位号精确查找
