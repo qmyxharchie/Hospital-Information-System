@@ -120,10 +120,12 @@ static void statDoctorByDept(void) {
     }
 
     printf("\n--- 科室分布 ---\n");
-    printf("%-20s %-10s\n", "科室", "医生人数");
+    printPadded("科室", 10);     putchar(' ');
+    printPadded("医生人数", 10); putchar('\n');
     printf("------------------------------\n");
     for (int i = 0; i < deptCount; i++) {
-        printf("%-20s %-10d\n", depts[i], counts[i]);
+        printPadded(depts[i], 10); putchar(' ');
+        printf("%-10d\n", counts[i]);
     }
 }
 
@@ -278,12 +280,20 @@ void showPatientManagement(void) {
                     printf("[ERROR] 未找到病人信息\n");
                 } else {
                     printf("[OK] 病人信息如下\n");
-                    printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-                           "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
-                    printf("%-20s %-50s %-10d %-10s %-20s %-15s %-10s\n",
-                           p->data.cardNo, p->data.name, p->data.age,
-                           p->data.gender, p->data.idCard, p->data.phone,
-                           p->data.isActive ? "住院" : "非住院");
+                    printPadded("卡号", 20); putchar(' ');
+                    printPadded("姓名", 10); putchar(' ');
+                    printPadded("年龄", 6);  putchar(' ');
+                    printPadded("性别", 6);  putchar(' ');
+                    printPadded("身份证", 20); putchar(' ');
+                    printPadded("电话", 14); putchar(' ');
+                    printPadded("住院状态", 10); putchar('\n');
+                    printPadded(p->data.cardNo, 20); putchar(' ');
+                    printPadded(p->data.name, 10);   putchar(' ');
+                    printf("%-6d ", p->data.age);
+                    printPadded(p->data.gender, 6);  putchar(' ');
+                    printPadded(p->data.idCard, 20); putchar(' ');
+                    printPadded(p->data.phone, 14);  putchar(' ');
+                    printPadded(p->data.isActive ? "住院" : "非住院", 10); putchar('\n');
                 }
                 break;
             case 2:
@@ -293,12 +303,20 @@ void showPatientManagement(void) {
                     printf("[ERROR] 未找到病人信息\n");
                 } else {
                     printf("[OK] 病人信息如下\n");
-                    printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-                           "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
-                    printf("%-20s %-50s %-10d %-10s %-20s %-15s %-10s\n",
-                           p->data.cardNo, p->data.name, p->data.age,
-                           p->data.gender, p->data.idCard, p->data.phone,
-                           p->data.isActive ? "住院" : "非住院");
+                    printPadded("卡号", 20); putchar(' ');
+                    printPadded("姓名", 10); putchar(' ');
+                    printPadded("年龄", 6);  putchar(' ');
+                    printPadded("性别", 6);  putchar(' ');
+                    printPadded("身份证", 20); putchar(' ');
+                    printPadded("电话", 14); putchar(' ');
+                    printPadded("住院状态", 10); putchar('\n');
+                    printPadded(p->data.cardNo, 20); putchar(' ');
+                    printPadded(p->data.name, 10);   putchar(' ');
+                    printf("%-6d ", p->data.age);
+                    printPadded(p->data.gender, 6);  putchar(' ');
+                    printPadded(p->data.idCard, 20); putchar(' ');
+                    printPadded(p->data.phone, 14);  putchar(' ');
+                    printPadded(p->data.isActive ? "住院" : "非住院", 10); putchar('\n');
                 }
                 break;
             }
@@ -378,10 +396,15 @@ void showDoctorManagement(void) {
                     printf("[ERROR] 未找到医生信息\n");
                 } else {
                     printf("[OK] 医生信息如下\n");
-                    printf("%-20s %-50s %-50s %-10s %-10s\n",
-                           "工号", "姓名", "科室", "每日最大接诊数", "今日已接诊数");
-                    printf("%-20s %-50s %-50s %-10d %-10d\n",
-                           d->data.empNo, d->data.name, d->data.dept,
+                    printPadded("工号", 20); putchar(' ');
+                    printPadded("姓名", 12); putchar(' ');
+                    printPadded("科室", 10); putchar(' ');
+                    printPadded("每日最大接诊数", 16); putchar(' ');
+                    printPadded("今日已接诊数", 14); putchar('\n');
+                    printPadded(d->data.empNo, 20); putchar(' ');
+                    printPadded(d->data.name, 12); putchar(' ');
+                    printPadded(d->data.dept, 10); putchar(' ');
+                    printf("%-16d %-14d\n",
                            d->data.maxPatients,
                            d->data.currentPatients);
                 }
@@ -404,10 +427,15 @@ void showDoctorManagement(void) {
                 safeReadString("请输入要查找医生的科室: ", dept, 50);
                 d = findDoctorsByDept(g_doctorHead, dept);
                 if (d) {
-                    printf("%-20s %-50s %-50s %-10s %-10s\n",
-                           "工号", "姓名", "科室", "每日最大接诊数", "今日已接诊数");
-                    printf("%-20s %-50s %-50s %-10d %-10d\n",
-                           d->data.empNo, d->data.name, d->data.dept,
+                    printPadded("工号", 20); putchar(' ');
+                    printPadded("姓名", 12); putchar(' ');
+                    printPadded("科室", 10); putchar(' ');
+                    printPadded("每日最大接诊数", 16); putchar(' ');
+                    printPadded("今日已接诊数", 14); putchar('\n');
+                    printPadded(d->data.empNo, 20); putchar(' ');
+                    printPadded(d->data.name, 12); putchar(' ');
+                    printPadded(d->data.dept, 10); putchar(' ');
+                    printf("%-16d %-14d\n",
                            d->data.maxPatients,
                            d->data.currentPatients);
                 } else {
@@ -455,11 +483,19 @@ void showMedicineManagement(void) {
             safeReadString("请输入药品编号: ", medNo, 20);
             m = findMedicineByNo(g_medHead, medNo);
             if (m) {
-                printf("%-10s %-20s %-20s %-15s %-10s %-10s %-10s\n",
-                       "编号", "通用名", "商品名", "规格", "单价", "库存", "最低库存");
-                printf("%-10s %-20s %-20s %-15s %-10.2f %-10d %-10d\n",
-                       m->data.medNo, m->data.genericName, m->data.brandName,
-                       m->data.spec, m->data.price, m->data.stock, m->data.minStock);
+                printPadded("编号", 16);   putchar(' ');
+                printPadded("通用名", 14); putchar(' ');
+                printPadded("商品名", 16); putchar(' ');
+                printPadded("规格", 12);   putchar(' ');
+                printPadded("单价", 10);   putchar(' ');
+                printPadded("库存", 10);   putchar(' ');
+                printPadded("最低库存", 10); putchar('\n');
+                printPadded(m->data.medNo, 16);       putchar(' ');
+                printPadded(m->data.genericName, 14); putchar(' ');
+                printPadded(m->data.brandName, 16);   putchar(' ');
+                printPadded(m->data.spec, 12);        putchar(' ');
+                printf("%-10.2f %-10d %-10d\n",
+                       m->data.price, m->data.stock, m->data.minStock);
             } else {
                 printf("[ERROR] 未找到该药品！\n");
             }
@@ -468,11 +504,19 @@ void showMedicineManagement(void) {
             safeReadString("请输入药品名称: ", name, 50);
             m = findMedicineByName(g_medHead, name);
             if (m) {
-                printf("%-10s %-20s %-20s %-15s %-10s %-10s %-10s\n",
-                       "编号", "通用名", "商品名", "规格", "单价", "库存", "最低库存");
-                printf("%-10s %-20s %-20s %-15s %-10.2f %-10d %-10d\n",
-                       m->data.medNo, m->data.genericName, m->data.brandName,
-                       m->data.spec, m->data.price, m->data.stock, m->data.minStock);
+                printPadded("编号", 16);   putchar(' ');
+                printPadded("通用名", 14); putchar(' ');
+                printPadded("商品名", 16); putchar(' ');
+                printPadded("规格", 12);   putchar(' ');
+                printPadded("单价", 10);   putchar(' ');
+                printPadded("库存", 10);   putchar(' ');
+                printPadded("最低库存", 10); putchar('\n');
+                printPadded(m->data.medNo, 16);       putchar(' ');
+                printPadded(m->data.genericName, 14); putchar(' ');
+                printPadded(m->data.brandName, 16);   putchar(' ');
+                printPadded(m->data.spec, 12);        putchar(' ');
+                printf("%-10.2f %-10d %-10d\n",
+                       m->data.price, m->data.stock, m->data.minStock);
             } else {
                 printf("[ERROR] 未找到该药品！\n");
             }
@@ -569,12 +613,19 @@ void showHospitalizationManagement(void) {
             safeReadString("请输入病人卡号: ", patientCardNo, 20);
             h = findHospitalizationByCardNo(g_hosHead, patientCardNo);
             if (h) {
-                printf("%-12s %-12s %-10s %-10s %-10s %-10s %-10s\n",
-                       "住院单号", "姓名", "床位号", "预交金", "总费用", "入院日期", "状态");
-                printf("%-12s %-12s %-10s %-10.2f %-10.2f %-10s %-10s\n",
-                       h->data.recordNo, h->data.patientName, h->data.bedNo,
-                       h->data.prepay, h->data.totalCost,
-                       h->data.admissionDate, h->data.status);
+                printPadded("住院单号", 20); putchar(' ');
+                printPadded("姓名", 10);     putchar(' ');
+                printPadded("床位号", 10);   putchar(' ');
+                printPadded("预交金", 12);   putchar(' ');
+                printPadded("总费用", 12);   putchar(' ');
+                printPadded("入院日期", 12); putchar(' ');
+                printPadded("状态", 10);     putchar('\n');
+                printPadded(h->data.recordNo, 20);      putchar(' ');
+                printPadded(h->data.patientName, 10);   putchar(' ');
+                printPadded(h->data.bedNo, 10);         putchar(' ');
+                printf("%-12.2f %-12.2f ", h->data.prepay, h->data.totalCost);
+                printPadded(h->data.admissionDate, 12); putchar(' ');
+                printPadded(h->data.status, 10);        putchar('\n');
             } else {
                 printf("[ERROR] 未找到该病人的住院记录！\n");
             }
@@ -583,12 +634,19 @@ void showHospitalizationManagement(void) {
             safeReadString("请输入住院单号: ", recordNo, 20);
             h = findHospitalizationByNo(g_hosHead, recordNo);
             if (h) {
-                printf("%-12s %-12s %-10s %-10s %-10s %-10s %-10s\n",
-                       "住院单号", "姓名", "床位号", "预交金", "总费用", "入院日期", "状态");
-                printf("%-12s %-12s %-10s %-10.2f %-10.2f %-10s %-10s\n",
-                       h->data.recordNo, h->data.patientName, h->data.bedNo,
-                       h->data.prepay, h->data.totalCost,
-                       h->data.admissionDate, h->data.status);
+                printPadded("住院单号", 20); putchar(' ');
+                printPadded("姓名", 10);     putchar(' ');
+                printPadded("床位号", 10);   putchar(' ');
+                printPadded("预交金", 12);   putchar(' ');
+                printPadded("总费用", 12);   putchar(' ');
+                printPadded("入院日期", 12); putchar(' ');
+                printPadded("状态", 10);     putchar('\n');
+                printPadded(h->data.recordNo, 20);      putchar(' ');
+                printPadded(h->data.patientName, 10);   putchar(' ');
+                printPadded(h->data.bedNo, 10);         putchar(' ');
+                printf("%-12.2f %-12.2f ", h->data.prepay, h->data.totalCost);
+                printPadded(h->data.admissionDate, 12); putchar(' ');
+                printPadded(h->data.status, 10);        putchar('\n');
             } else {
                 printf("[ERROR] 未找到该住院记录！\n");
             }
@@ -673,11 +731,16 @@ void showBedManagement(void) {
             safeReadString("请输入床位号: ", bedNo, 20);
             b = findBedByNo(g_bedHead, bedNo);
             if (b) {
-                printf("%-10s %-10s %-12s %-10s %-10s\n",
-                       "病区", "床位号", "病人卡号", "病人姓名", "状态");
-                printf("%-10s %-10s %-12s %-10s %-10s\n",
-                       b->data.ward, b->data.bedNo, b->data.patientCardNo,
-                       b->data.patientName, b->data.status);
+                printPadded("病区", 10);     putchar(' ');
+                printPadded("床位号", 18);   putchar(' ');
+                printPadded("病人卡号", 20); putchar(' ');
+                printPadded("病人姓名", 10); putchar(' ');
+                printPadded("状态", 10);     putchar('\n');
+                printPadded(b->data.ward, 10);          putchar(' ');
+                printPadded(b->data.bedNo, 18);         putchar(' ');
+                printPadded(b->data.patientCardNo, 20); putchar(' ');
+                printPadded(b->data.patientName, 10);   putchar(' ');
+                printPadded(b->data.status, 10);        putchar('\n');
             } else {
                 printf("[ERROR] 未找到该床位！\n");
             }
@@ -799,14 +862,17 @@ void showRegistrationManagement(void) {
 
             /*列出所有医生供选择，不再要求输入工号 */
             printf("\n可选医生列表：\n");
-            printf("%-4s %-12s %-10s %-10s\n",
-                   "序号", "工号", "姓名", "科室");
+            printPadded("序号", 6);  putchar(' ');
+            printPadded("工号", 20); putchar(' ');
+            printPadded("姓名", 10); putchar(' ');
+            printPadded("科室", 10); putchar('\n');
             Doctor* doc = g_doctorHead;
             int docCount = 0;
             while (doc != NULL) {
-                printf("%-4d %-12s %-10s %-10s\n",
-                       ++docCount, doc->data.empNo, doc->data.name,
-                       doc->data.dept);
+                printf("%-6d ", ++docCount);
+                printPadded(doc->data.empNo, 20); putchar(' ');
+                printPadded(doc->data.name, 10);  putchar(' ');
+                printPadded(doc->data.dept, 10);  putchar('\n');
                 doc = doc->next;
             }
             if (docCount == 0) {
@@ -848,8 +914,12 @@ void showRegistrationManagement(void) {
 
             /* 列出该患者的 PENDING 挂号 */
             printf("\n您的待就诊挂号：\n");
-            printf("%-4s %-16s %-10s %-10s %-12s %-10s\n",
-                   "序号", "挂号编号", "医生", "科室", "预约时间", "方式");
+            printPadded("序号", 6);      putchar(' ');
+            printPadded("挂号编号", 20); putchar(' ');
+            printPadded("医生", 10);     putchar(' ');
+            printPadded("科室", 10);     putchar(' ');
+            printPadded("预约时间", 12); putchar(' ');
+            printPadded("方式", 8);      putchar('\n');
             Registration* cur = g_regHead;
             Registration** pendingArr = NULL;
             int pCount = 0, arrCap = 10;
@@ -875,9 +945,12 @@ void showRegistrationManagement(void) {
                     }
                     pendingArr[pCount] = cur;
                     char* mStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
-                    printf("%-4d %-16s %-10s %-10s %-12s %-10s\n",
-                           pCount + 1, cur->data.regNo, cur->data.doctorName,
-                           cur->data.dept, cur->data.appointmentTime, mStr);
+                    printf("%-6d ", pCount + 1);
+                    printPadded(cur->data.regNo, 20);           putchar(' ');
+                    printPadded(cur->data.doctorName, 10);      putchar(' ');
+                    printPadded(cur->data.dept, 10);            putchar(' ');
+                    printPadded(cur->data.appointmentTime, 12); putchar(' ');
+                    printPadded(mStr, 8);                       putchar('\n');
                     pCount++;
                 }
                 cur = cur->next;
@@ -910,13 +983,17 @@ void showRegistrationManagement(void) {
 
             /*同样列出医生供选择 */
             printf("\n可选医生列表：\n");
-            printf("%-4s %-12s %-10s %-10s\n",
-                   "序号", "工号", "姓名", "科室");
+            printPadded("序号", 6);  putchar(' ');
+            printPadded("工号", 20); putchar(' ');
+            printPadded("姓名", 10); putchar(' ');
+            printPadded("科室", 10); putchar('\n');
             Doctor* doc = g_doctorHead;
             int docCount = 0;
             while (doc != NULL) {
-                printf("%-4d %-12s %-10s %-10s\n",
-                       ++docCount, doc->data.empNo, doc->data.name, doc->data.dept);
+                printf("%-6d ", ++docCount);
+                printPadded(doc->data.empNo, 20); putchar(' ');
+                printPadded(doc->data.name, 10);  putchar(' ');
+                printPadded(doc->data.dept, 10);  putchar('\n');
                 doc = doc->next;
             }
             if (docCount == 0) {
@@ -1368,8 +1445,10 @@ void showQueryMenu(void) {
             }
 
             printf("\n【%s（%s）的挂号记录】\n", d->data.name, d->data.dept);
-            printf("%-16s %-10s %-12s %-10s\n",
-                "挂号编号", "患者", "预约时间", "状态");
+            printPadded("挂号编号", 20); putchar(' ');
+            printPadded("患者", 10);     putchar(' ');
+            printPadded("预约时间", 12); putchar(' ');
+            printPadded("状态", 10);     putchar('\n');
             printf("-----------------------------------------------\n");
 
             found = 0;
@@ -1380,9 +1459,10 @@ void showQueryMenu(void) {
                     char* st = (r->data.status == 0) ? "待就诊" :
                         (r->data.status == 1) ? "就诊中" :
                         (r->data.status == 2) ? "已完成" : "已取消";
-                    printf("%-16s %-10s %-12s %-10s\n",
-                        r->data.regNo, r->data.patientName,
-                        r->data.appointmentTime, st);
+                    printPadded(r->data.regNo, 20);           putchar(' ');
+                    printPadded(r->data.patientName, 10);     putchar(' ');
+                    printPadded(r->data.appointmentTime, 12); putchar(' ');
+                    printPadded(st, 10);                      putchar('\n');
                 }
                 r = r->next;
             }
@@ -1396,8 +1476,11 @@ void showQueryMenu(void) {
             safeReadString("请输入日期 (YYYY-MM-DD): ", date, 20);
 
             printf("\n【%s 挂号记录】\n", date);
-            printf("%-16s %-10s %-10s %-12s %-10s\n",
-                "挂号编号", "患者", "医生", "预约时间", "状态");
+            printPadded("挂号编号", 20); putchar(' ');
+            printPadded("患者", 10);     putchar(' ');
+            printPadded("医生", 10);     putchar(' ');
+            printPadded("预约时间", 12); putchar(' ');
+            printPadded("状态", 10);     putchar('\n');
             printf("-----------------------------------------------------\n");
 
             found = 0;
@@ -1408,9 +1491,11 @@ void showQueryMenu(void) {
                     char* st = (r->data.status == 0) ? "待就诊" :
                         (r->data.status == 1) ? "就诊中" :
                         (r->data.status == 2) ? "已完成" : "已取消";
-                    printf("%-16s %-10s %-10s %-12s %-10s\n",
-                        r->data.regNo, r->data.patientName,
-                        r->data.doctorName, r->data.appointmentTime, st);
+                    printPadded(r->data.regNo, 20);           putchar(' ');
+                    printPadded(r->data.patientName, 10);     putchar(' ');
+                    printPadded(r->data.doctorName, 10);      putchar(' ');
+                    printPadded(r->data.appointmentTime, 12); putchar(' ');
+                    printPadded(st, 10);                      putchar('\n');
                 }
                 r = r->next;
             }
@@ -1424,8 +1509,11 @@ void showQueryMenu(void) {
             safeReadString("请输入日期 (YYYY-MM-DD): ", date, 20);
 
             printf("\n【%s 住院记录】\n", date);
-            printf("%-14s %-10s %-10s %-10s %-10s\n",
-                "住院单号", "患者", "床位", "预交金", "状态");
+            printPadded("住院单号", 20); putchar(' ');
+            printPadded("患者", 10);     putchar(' ');
+            printPadded("床位", 10);     putchar(' ');
+            printPadded("预交金", 12);   putchar(' ');
+            printPadded("状态", 10);     putchar('\n');
             printf("------------------------------------------------\n");
 
             found = 0;
@@ -1433,9 +1521,11 @@ void showQueryMenu(void) {
             while (h != NULL) {
                 if (strcmp(h->data.admissionDate, date) == 0) {
                     found++;
-                    printf("%-14s %-10s %-10s %-10.2f %-10s\n",
-                        h->data.recordNo, h->data.patientName,
-                        h->data.bedNo, h->data.prepay, h->data.status);
+                    printPadded(h->data.recordNo, 20);    putchar(' ');
+                    printPadded(h->data.patientName, 10); putchar(' ');
+                    printPadded(h->data.bedNo, 10);       putchar(' ');
+                    printf("%-12.2f ", h->data.prepay);
+                    printPadded(h->data.status, 10);      putchar('\n');
                 }
                 h = h->next;
             }
@@ -1484,17 +1574,22 @@ void showQueryMenu(void) {
               /* ──────────── 6. 药品库存明细 ──────────── */
         case 6: {
             printf("\n========== 药品库存明细 ==========\n");
-            printf("%-10s %-20s %-10s %-10s %-10s %-10s\n",
-                "编号", "通用名", "单价", "库存", "最低库存", "状态");
+            printPadded("编号", 16);     putchar(' ');
+            printPadded("通用名", 14);   putchar(' ');
+            printPadded("单价", 10);     putchar(' ');
+            printPadded("库存", 10);     putchar(' ');
+            printPadded("最低库存", 10); putchar(' ');
+            printPadded("状态", 10);     putchar('\n');
             printf("----------------------------------------------------------------\n");
 
             Medicine* m = g_medHead;
             while (m != NULL) {
                 char* status = (m->data.stock <= m->data.minStock) ? "【预警】" : "正常";
-                printf("%-10s %-20s %-10.2f %-10d %-10d %-10s\n",
-                    m->data.medNo, m->data.genericName,
-                    m->data.price, m->data.stock,
-                    m->data.minStock, status);
+                printPadded(m->data.medNo, 16);       putchar(' ');
+                printPadded(m->data.genericName, 14); putchar(' ');
+                printf("%-10.2f %-10d %-10d ",
+                    m->data.price, m->data.stock, m->data.minStock);
+                printPadded(status, 10);              putchar('\n');
                 m = m->next;
             }
             printf("==================================\n");

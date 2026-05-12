@@ -284,15 +284,20 @@ void listWaitingQueue(Registration* queueHead, char* doctorName)
     }
 
     printf("\n========== %s 医生 候诊队列 ==========\n", doctorName);
-    printf("%-6s %-20s %-15s %-10s\n", "序号", "患者姓名", "预约时间", "挂号方式");
+    printPadded("序号", 6);     putchar(' ');
+    printPadded("患者姓名", 12); putchar(' ');
+    printPadded("预约时间", 12); putchar(' ');
+    printPadded("挂号方式", 10); putchar('\n');
     printf("─────────────────────────────────────────────\n");
 
     Registration* cur = queueHead;
     int seq = 1;
     while (cur != NULL) {
         char* method = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
-        printf("%-6d %-20s %-15s %-10s\n",
-            seq, cur->data.patientName, cur->data.appointmentTime, method);
+        printf("%-6d ", seq);
+        printPadded(cur->data.patientName, 12);     putchar(' ');
+        printPadded(cur->data.appointmentTime, 12); putchar(' ');
+        printPadded(method, 10);                    putchar('\n');
         cur = cur->next;
         seq++;
     }
@@ -541,9 +546,14 @@ void listAllRegistrations(Registration* head) {
     }
 
     printf("\n=== 挂号记录列表 ===\n");
-    printf("%-14s %-10s %-10s %-10s %-12s %-10s %-10s %-8s\n",
-        "挂号编号", "患者姓名", "医生姓名", "科室",
-        "预约时间", "状态", "方式", "日期");
+    printPadded("挂号编号", 20); putchar(' ');
+    printPadded("患者姓名", 10); putchar(' ');
+    printPadded("医生姓名", 10); putchar(' ');
+    printPadded("科室", 10);     putchar(' ');
+    printPadded("预约时间", 12); putchar(' ');
+    printPadded("状态", 10);     putchar(' ');
+    printPadded("方式", 8);      putchar(' ');
+    printPadded("日期", 12);     putchar('\n');
 
     Registration* cur = head;
     int count = 0;
@@ -561,15 +571,14 @@ void listAllRegistrations(Registration* head) {
         // 方式转字符串
         char* methodStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
 
-        printf("%-14s %-10s %-10s %-10s %-12s %-10s %-10s %-8s\n",
-            cur->data.regNo,
-            cur->data.patientName,
-            cur->data.doctorName,
-            cur->data.dept,
-            cur->data.appointmentTime,
-            statusStr,
-            methodStr,
-            cur->data.appointmentDate);
+        printPadded(cur->data.regNo, 20);           putchar(' ');
+        printPadded(cur->data.patientName, 10);     putchar(' ');
+        printPadded(cur->data.doctorName, 10);      putchar(' ');
+        printPadded(cur->data.dept, 10);            putchar(' ');
+        printPadded(cur->data.appointmentTime, 12); putchar(' ');
+        printPadded(statusStr, 10);                 putchar(' ');
+        printPadded(methodStr, 8);                  putchar(' ');
+        printPadded(cur->data.appointmentDate, 12); putchar('\n');
 
         cur = cur->next;
         count++;

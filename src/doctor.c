@@ -146,7 +146,7 @@ int modifyDoctor(Doctor* head, char* empNo, DoctorData newData) {
     safeStringCopy(target->data.name, newData.name, 50);          // 安全复制姓名
     safeStringCopy(target->data.dept, newData.dept, 50);          // 安全复制工号
     target->data.maxPatients = newData.maxPatients;               // 更新每日最大接诊数
-    target->data.currentPatients = newData.currentPatients;       // 今日已接诊数
+    // 注意：currentPatients 是运行时统计量（当日挂号计数），不由修改操作覆盖
 
     // 5. 将更新后的链表数据保存到文件
     rebuildDoctorFile(head);
@@ -371,19 +371,21 @@ void listAllDoctors(Doctor* head) {
 
     // 2. 输出表头信息
     printf("=== 医生列表 ===\n");
-    printf("%-20s %-50s %-50s %-10s %-10s\n",
-        "工号", "姓名", "科室", "每日最大接诊数", "今日已接诊数");
+    printPadded("工号", 20); putchar(' ');
+    printPadded("姓名", 12); putchar(' ');
+    printPadded("科室", 10); putchar(' ');
+    printPadded("每日最大接诊数", 16); putchar(' ');
+    printPadded("今日已接诊数", 14); putchar('\n');
 
     // 3. 遍历链表并输出每个医生的信息
     Doctor* current = head;
     while (current != NULL) {
-        // 格式化输出当前医生的各项信息
-        printf("%-20s %-50s %-50s %-10d %-10d\n",
-            current->data.empNo,                         // 工号
-            current->data.name,                          // 姓名
-            current->data.dept,                          // 科室
-            current->data.maxPatients,                   // 每日最大接诊数
-            current->data.currentPatients);              // 今日已接诊数
+        printPadded(current->data.empNo, 20); putchar(' ');
+        printPadded(current->data.name, 12); putchar(' ');
+        printPadded(current->data.dept, 10); putchar(' ');
+        printf("%-16d %-14d\n",
+            current->data.maxPatients,
+            current->data.currentPatients);
         current = current->next;                         // 移动到下一个节点
     }
 }

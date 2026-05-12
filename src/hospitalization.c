@@ -176,12 +176,16 @@ void dischargePatient(Hospitalization* h, double totalCost)
 		returnCost = 0;
 	}
 	printf("====出院信息====\n");
-	printf("%-20s %-50s %-20s %20s %-20s %-20s\n", 
-		"住院编号", "姓名", "入院日期", "总费用", "预付款", "退款");
-	printf("%-20s %-50s %-20s %20f %-20f %-20f\n",
-		h->data.recordNo,
-		h->data.patientName,
-		h->data.admissionDate,
+	printPadded("住院编号", 20); putchar(' ');
+	printPadded("姓名", 10);     putchar(' ');
+	printPadded("入院日期", 12); putchar(' ');
+	printPadded("总费用", 12);   putchar(' ');
+	printPadded("预付款", 12);   putchar(' ');
+	printPadded("退款", 12);     putchar('\n');
+	printPadded(h->data.recordNo, 20);      putchar(' ');
+	printPadded(h->data.patientName, 10);   putchar(' ');
+	printPadded(h->data.admissionDate, 12); putchar(' ');
+	printf("%-12.2f %-12.2f %-12.2f\n",
 		h->data.totalCost,
 		h->data.prepay,
 		returnCost);
@@ -292,19 +296,23 @@ void listAllHospitalizations(Hospitalization* head)
 	
 	Hospitalization* h = head;//遍历指针用于遍历链表
 	printf("===住院记录列表===\n");
-	printf("%-20s %-20s %-50s %-20s %-15s %-15s %-20s %-20s\n",
-		"住院编号", "患者卡号", "姓名", "床位号", "预付款", "总费用", "入院日期","住院状态");
+	printPadded("住院编号", 20); putchar(' ');
+	printPadded("患者卡号", 20); putchar(' ');
+	printPadded("姓名", 10);     putchar(' ');
+	printPadded("床位号", 10);   putchar(' ');
+	printPadded("预付款", 12);   putchar(' ');
+	printPadded("总费用", 12);   putchar(' ');
+	printPadded("入院日期", 12); putchar(' ');
+	printPadded("住院状态", 10); putchar('\n');
 	while (h != NULL)
 	{
-		printf("%-20s %-20s %-50s %-20s %-15f %-15f %-20s %-20s\n",
-			h->data.recordNo,
-			h->data.patientCardNo,
-			h->data.patientName,
-			h->data.bedNo,
-			h->data.prepay,
-			h->data.totalCost,
-			h->data.admissionDate,
-			h->data.status);
+		printPadded(h->data.recordNo, 20);      putchar(' ');
+		printPadded(h->data.patientCardNo, 20); putchar(' ');
+		printPadded(h->data.patientName, 10);   putchar(' ');
+		printPadded(h->data.bedNo, 10);         putchar(' ');
+		printf("%-12.2f %-12.2f ", h->data.prepay, h->data.totalCost);
+		printPadded(h->data.admissionDate, 12); putchar(' ');
+		printPadded(h->data.status, 10);        putchar('\n');
 		h = h->next;
 	}
 	return;

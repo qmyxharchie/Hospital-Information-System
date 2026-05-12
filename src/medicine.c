@@ -175,14 +175,19 @@ void listAllMedicines(Medicine* head)
 	}
 	Medicine* cur = head;
 	printf("=== 药品列表 ===\n");
-	printf("%-20s  %-50s %-50s %-50s %-15s %-15s %-15s\n",
-		"药品编号", "通用名", "商品名", "规格", "单价（元）", "当前库存", "库存预警值");
+	printPadded("药品编号", 16);   putchar(' ');
+	printPadded("通用名", 14);     putchar(' ');
+	printPadded("商品名", 16);     putchar(' ');
+	printPadded("规格", 12);       putchar(' ');
+	printPadded("单价（元）", 12); putchar(' ');
+	printPadded("当前库存", 10);   putchar(' ');
+	printPadded("库存预警值", 10); putchar('\n');
 	while (cur != NULL) {
-		printf("%-20s %-50s %-50s %-50s %-15.2f %-15d %-15d\n",
-			cur->data.medNo,
-			cur->data.genericName,
-			cur->data.brandName,
-			cur->data.spec,
+		printPadded(cur->data.medNo, 16);        putchar(' ');
+		printPadded(cur->data.genericName, 14);  putchar(' ');
+		printPadded(cur->data.brandName, 16);    putchar(' ');
+		printPadded(cur->data.spec, 12);         putchar(' ');
+		printf("%-12.2f %-10d %-10d\n",
 			cur->data.price,
 			cur->data.stock,
 			cur->data.minStock);

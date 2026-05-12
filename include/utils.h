@@ -36,4 +36,7 @@ bool isValidIdCard(const char* idCard);							//18位身份证号验证
 bool isValidDate(int year, int month, int day);					//日期有效性验证
 void pause(const char* message);								//提示与验证
 
+int strDisplayWidth(const char* s);								//UTF-8 字符串的显示宽度（ASCII=1格，其他=2格）
+void printPadded(const char* s, int targetWidth);				//左对齐打印字符串到指定显示宽度
+
 #endif

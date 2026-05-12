@@ -294,17 +294,19 @@ void listAllBeds(Bed* head)
 	}
 	
 	printf("===床位显示列表===\n");
-	printf("%-30s %-20s %-20s %-50s %-20s\n",
-		"病房", "床位号", "患者卡号", "患者姓名", "床位状态");
-		
+	printPadded("病房", 10);     putchar(' ');
+	printPadded("床位号", 18);   putchar(' ');
+	printPadded("患者卡号", 20); putchar(' ');
+	printPadded("患者姓名", 10); putchar(' ');
+	printPadded("床位状态", 10); putchar('\n');
+
 	while (b != NULL)
 	{
-		printf("%-30s %-20s %-20s %-50s %-20s\n",
-			b->data.ward,
-			b->data.bedNo,
-			b->data.patientCardNo,
-			b->data.patientName,
-			b->data.status);
+		printPadded(b->data.ward, 10);            putchar(' ');
+		printPadded(b->data.bedNo, 18);           putchar(' ');
+		printPadded(b->data.patientCardNo, 20);   putchar(' ');
+		printPadded(b->data.patientName, 10);     putchar(' ');
+		printPadded(b->data.status, 10);          putchar('\n');
 		b = b->next;
 	}
 	return;
@@ -327,21 +329,23 @@ void listBedsByWard(Bed* head, char* ward)
 	}
 	
 	printf("===指定病房床位显示列表===\n");
-	printf("%-30s %-20s %-20s %-50s %-20s\n",
-		"病房", "床位号", "患者卡号", "患者姓名", "床位状态");
-	
+	printPadded("病房", 10);     putchar(' ');
+	printPadded("床位号", 18);   putchar(' ');
+	printPadded("患者卡号", 20); putchar(' ');
+	printPadded("患者姓名", 10); putchar(' ');
+	printPadded("床位状态", 10); putchar('\n');
+
 	Bed* b = head;  // 遍历指针
 	while (b != NULL)
 	{
 		// 检查病房号是否匹配
 		if (strcmp(b->data.ward, ward) == 0)
 		{
-			printf("%-30s %-20s %-20s %-50s %-20s\n",
-				b->data.ward,
-				b->data.bedNo,
-				b->data.patientCardNo,
-				b->data.patientName,
-				b->data.status);
+			printPadded(b->data.ward, 10);            putchar(' ');
+			printPadded(b->data.bedNo, 18);           putchar(' ');
+			printPadded(b->data.patientCardNo, 20);   putchar(' ');
+			printPadded(b->data.patientName, 10);     putchar(' ');
+			printPadded(b->data.status, 10);          putchar('\n');
 		}
 		b = b->next;
 	}

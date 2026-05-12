@@ -178,8 +178,12 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
 void patientViewOwnRegistrations(Registration* regHead, 
     char* patientCardNo){
     printf("\n========== 我的挂号记录 ==========\n");
-    printf("%-14s %-10s %-10s %-12s %-10s %-10s\n",
-        "挂号编号", "医生", "科室", "预约时间", "状态", "方式");
+    printPadded("挂号编号", 20); putchar(' ');
+    printPadded("医生", 10);     putchar(' ');
+    printPadded("科室", 10);     putchar(' ');
+    printPadded("预约时间", 12); putchar(' ');
+    printPadded("状态", 10);     putchar(' ');
+    printPadded("方式", 8);      putchar('\n');
     printf("──────────────────────────────────────────────────────\n");
 
     Registration* cur = regHead;
@@ -196,9 +200,12 @@ void patientViewOwnRegistrations(Registration* regHead,
             }
             char* methodStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
 
-            printf("%-14s %-10s %-10s %-12s %-10s %-10s\n",
-                cur->data.regNo, cur->data.doctorName, cur->data.dept,
-                cur->data.appointmentTime, statusStr, methodStr);
+            printPadded(cur->data.regNo, 20);           putchar(' ');
+            printPadded(cur->data.doctorName, 10);      putchar(' ');
+            printPadded(cur->data.dept, 10);            putchar(' ');
+            printPadded(cur->data.appointmentTime, 12); putchar(' ');
+            printPadded(statusStr, 10);                 putchar(' ');
+            printPadded(methodStr, 8);                  putchar('\n');
             count++;
         }
         cur = cur->next;
@@ -298,21 +305,24 @@ void listAllPatients(Patient* head) {
     
     // 2. 输出表头信息
     printf("=== 病人列表 ===\n");
-    printf("%-20s %-50s %-10s %-10s %-20s %-15s %-10s\n",
-        "卡号", "姓名", "年龄", "性别", "身份证", "电话", "住院状态");
+    printPadded("卡号", 20); putchar(' ');
+    printPadded("姓名", 10); putchar(' ');
+    printPadded("年龄", 6);  putchar(' ');
+    printPadded("性别", 6);  putchar(' ');
+    printPadded("身份证", 20); putchar(' ');
+    printPadded("电话", 14); putchar(' ');
+    printPadded("住院状态", 10); putchar('\n');
 
     // 3. 遍历链表并输出每个病人的信息
     Patient* current = head;                              // 从头节点开始
     while (current != NULL) {
-        // 格式化输出当前病人的各项信息
-        printf("%-20s %-50s %-10d %-10s %-20s %-15s %-10s\n",
-            current->data.cardNo,                         // 门诊卡号
-            current->data.name,                           // 姓名
-            current->data.age,                            // 年龄
-            current->data.gender,                         // 性别
-            current->data.idCard,                         // 身份证号
-            current->data.phone,                          // 电话号码
-            current->data.isActive ? "住院" : "非住院");  // 住院状态（0=非住院，1=住院）
+        printPadded(current->data.cardNo, 20); putchar(' ');
+        printPadded(current->data.name, 10);   putchar(' ');
+        printf("%-6d ", current->data.age);
+        printPadded(current->data.gender, 6);  putchar(' ');
+        printPadded(current->data.idCard, 20); putchar(' ');
+        printPadded(current->data.phone, 14);  putchar(' ');
+        printPadded(current->data.isActive ? "住院" : "非住院", 10); putchar('\n');
         current = current->next;                          // 移动到下一个节点
     }
 }

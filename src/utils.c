@@ -221,3 +221,29 @@ void pause(const char* message) {
 	getchar();
 }
 //-----------------
+
+//-----------------
+//	UTF-8 字符串的显示宽度
+// 功能：统计字符串在终端的显示格数（ASCII 占 1 格，中日韩等统一按 2 格）
+int strDisplayWidth(const char* s) {
+	int w = 0;
+	while (*s) {
+		unsigned char c = (unsigned char)*s;
+		if (c < 0x80)      { w += 1; s += 1; }
+		else if (c < 0xE0) { w += 2; s += 2; }
+		else if (c < 0xF0) { w += 2; s += 3; }
+		else               { w += 2; s += 4; }
+	}
+	return w;
+}
+//-----------------
+
+//-----------------
+//	左对齐打印字符串到指定显示宽度
+// 功能：解决中英文混排时 printf %-Ns 按字节对齐导致错位的问题
+void printPadded(const char* s, int targetWidth) {
+	printf("%s", s);
+	int w = strDisplayWidth(s);
+	for (int i = w; i < targetWidth; i++) putchar(' ');
+}
+//-----------------
