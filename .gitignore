@@ -7,6 +7,12 @@ CMakeCache.txt
 *.ipch
 .claude
 
+# Office 临时锁文件
+~$*
+
+# 运行时数据目录（由 data_seed 自动生成，各电脑独立）
+data/
+
 # build outputs (exe 现在输出到项目根)
 HospitalSys.exe
 *.pdb

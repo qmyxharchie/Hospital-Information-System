@@ -1506,6 +1506,24 @@ void showQueryMenu(void) {
 
 
 //--------------------
+// 首次运行时从 data_seed 复制出 data 目录
+//--------------------
+static void ensureDataDir(void) {
+    FILE* fp = fopen("data/doctor.txt", "r");
+    if (fp != NULL) {
+        fclose(fp);
+        return;
+    }
+    printf("检测到首次运行，正在从 data_seed/ 初始化数据...\n");
+#ifdef _WIN32
+    system("xcopy /E /I /Q /Y data_seed data >nul");
+#else
+    system("cp -r data_seed data");
+#endif
+    printf("数据初始化完成。\n");
+}
+
+//--------------------
 //主函数
 //--------------------
 int main(void) {
@@ -1513,6 +1531,7 @@ int main(void) {
     SetConsoleOutputCP(65001);
     SetConsoleCP(65001);
 #endif
+    ensureDataDir();
     initUI();
     while (1) {
         int status = showLoginPage();
