@@ -172,11 +172,11 @@ int showMainMenuByRole(int userRole, char* username) {
     printf("║ 医院综合信息管理系统 - 主菜单           ║\n");
     printf("║ 当前用户: %-15s 角色: ", username);
     switch (userRole) {
-    case 0: printf("患者    "); break;
-    case 1: printf("护士    "); break;
-    case 2: printf("医生    "); break;
+    case 0: printf("患者       "); break;
+    case 1: printf("护士       "); break;
+    case 2: printf("医生       "); break;
     case 3: printf("管理员     "); break;
-    default: printf("未知    "); break;
+    default: printf("未知       "); break;
     }
     printf("║\n");
     printf("╠═════════════════════════════════════════╣\n");
