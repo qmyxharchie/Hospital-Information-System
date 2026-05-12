@@ -18,7 +18,7 @@ void checkLowStock(Medicine* head)
 		if (cur->data.stock <= cur->data.minStock)//判断库存小于是否小于最低库存
 		{
 			n++;
-			printf("药品名：%s   当前库存：%d   最低库存：%d\n", cur->data.medNo, cur->data.stock, cur->data.minStock);//输出相关信息	
+			printf("药品名：%s   当前库存：%d   最低库存：%d\n", cur->data.genericName, cur->data.stock, cur->data.minStock);//输出相关信息	
 		}
 		cur = cur->next;
 	}
@@ -127,7 +127,7 @@ void replenishStock(Medicine* head, char* medNo, int quantity)
 //      patientCardNo - 病人卡号，medNo - 药品编号，quantity - 购买数量
 //      totalCost - 总费用，date - 购药日期
 void addPurchaseRecord(Purchase** head, Purchase** tail, Medicine* medHead, char patientCardNo[20],
-	char medNo[20],int quantity,double totalCost,char date[20])
+	char medNo[20],int quantity,char date[20])
 {
 	Purchase* pur = (Purchase*)malloc(sizeof(Purchase));//创建新节点并分配内存
 	if (!pur)
@@ -137,13 +137,14 @@ void addPurchaseRecord(Purchase** head, Purchase** tail, Medicine* medHead, char
 	}
 	pur->next = pur->pre = NULL;
 	char id[20];
+	Medicine* m = findMedicineByNo(medHead, medNo);
 	generateUniqueId("PUR", id);//生成唯一ID
 	//向节点中输入相关数据
 	strcpy(pur->data.purNo, id);
 	strcpy(pur->data.patientCardNo, patientCardNo);
 	strcpy(pur->data.medNo,medNo );
 	pur->data.quantity = quantity;
-	pur->data.totalCost = totalCost;
+	pur->data.totalCost = quantity * m->data.price;
 	strcpy(pur->data.date, date);
 
 	if (*tail == NULL)//利用尾插法添加节点

@@ -434,7 +434,6 @@ void showMedicineManagement(void) {
     int choice;
     char medNo[20], name[50], patientCardNo[20], date[20];
     int quantity;
-    double totalCost;
     Medicine* m;
     while (1) {
         printf("\n-------- 药品管理 --------\n");
@@ -488,13 +487,14 @@ void showMedicineManagement(void) {
             printf("\n请输入病人卡号: ");     scanf("%19s", patientCardNo);
             printf("\n请输入药品编号: ");     scanf("%19s", medNo);
             quantity = safeReadInt("\n请输入购买数量: ", 1, 99999);
-            totalCost = safeReadDouble("\n请输入总费用: ");
+          
             printf("\n请输入购药日期(YYYY-MM-DD): "); scanf("%19s", date);
             m = findMedicineByNo(g_medHead, medNo);
             if (m && m->data.stock >= quantity) {
                 addPurchaseRecord(&g_purHead, &g_purTail, g_medHead,
-                                  patientCardNo, medNo, quantity, totalCost, date);
+                                  patientCardNo, medNo, quantity,  date);
                 printf("[OK] 购药登记成功！\n");
+				printf("总花费：%.2f 元\n", m->data.price * quantity);
             } else {
                 printf("[ERROR] 药品不存在或库存不足！\n");
             }
@@ -542,6 +542,9 @@ void showHospitalizationManagement(void) {
             prepay = safeReadDouble("\n预交金额: ");
             addHospitalization(&g_hosHead, &g_hosTail,
                                patientCardNo, patientName, prepay);
+            printf("住院单号为：%20s\n", g_hosTail->data.recordNo);
+            printf("床位号为：%20s", g_hosTail->data.bedNo);
+
             break;
         case 2: {
             safeReadString("请输入住院单号: ", recordNo, 20);
