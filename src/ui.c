@@ -176,7 +176,7 @@ int showMainMenuByRole(int userRole, char* username) {
     case 1: printf("护士    "
     ); break;
     case 2: printf("医生    "); break;
-    case 3: printf("管理员     "); break;
+    case 3: printf("管理员  "); break;
     default: printf("未知    "); break;
     }
     printf("║\n");
