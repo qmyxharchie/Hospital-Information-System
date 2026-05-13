@@ -142,6 +142,83 @@ int isUsernameTaken(const char* username) {
 //-----------------
 
 //-----------------
+// 列出所有用户
+void listAllUsers(void) {
+	freeUserChain(&g_userHead);
+	buildUserChain(&g_userHead, &g_userTail);
+	if (g_userHead == NULL) {
+		printf("暂无用户\n");
+		return;
+	}
+	printf("=== 用户列表 ===\n");
+	printPadded("用户名", 20); putchar(' ');
+	printPadded("角色", 10);   putchar(' ');
+	printPadded("最后登录", 12); putchar('\n');
+	User* cur = g_userHead;
+	while (cur != NULL) {
+		printPadded(cur->data.username, 20); putchar(' ');
+		char* roleStr;
+		switch (cur->data.role) {
+		case PATIENT: roleStr = "患者"; break;
+		case NURSE:   roleStr = "护士"; break;
+		case DOCTOR:  roleStr = "医生"; break;
+		case ADMIN:   roleStr = "管理员"; break;
+		default:      roleStr = "未知"; break;
+		}
+		printPadded(roleStr, 10); putchar(' ');
+		printPadded(cur->data.lastLogin[0] ? cur->data.lastLogin : "从未登录", 12);
+		putchar('\n');
+		cur = cur->next;
+	}
+}
+//-----------------
+
+//-----------------
+// 修改用户角色
+int modifyUserRole(const char* username, UserRole newRole) {
+	freeUserChain(&g_userHead);
+	buildUserChain(&g_userHead, &g_userTail);
+	User* u = findUserByName(g_userHead, (char*)username);
+	if (u == NULL) return 0;
+	u->data.role = newRole;
+	rebuildUserFile(g_userHead);
+	return 1;
+}
+//-----------------
+
+//-----------------
+// 重置密码为 123456
+int resetUserPassword(const char* username) {
+	freeUserChain(&g_userHead);
+	buildUserChain(&g_userHead, &g_userTail);
+	User* u = findUserByName(g_userHead, (char*)username);
+	if (u == NULL) return 0;
+	char hashed[100];
+	md5Hash("123456", hashed);
+	strcpy(u->data.password, hashed);
+	rebuildUserFile(g_userHead);
+	return 1;
+}
+//-----------------
+
+//-----------------
+// 删除用户
+int deleteUser(const char* username) {
+	freeUserChain(&g_userHead);
+	buildUserChain(&g_userHead, &g_userTail);
+	User* u = findUserByName(g_userHead, (char*)username);
+	if (u == NULL) return 0;
+	if (u->pre) u->pre->next = u->next;
+	else g_userHead = u->next;
+	if (u->next) u->next->pre = u->pre;
+	else g_userTail = u->pre;
+	free(u);
+	rebuildUserFile(g_userHead);
+	return 1;
+}
+//-----------------
+
+//-----------------
 // 用户查询
 // 功能：根据用户名查找用户信息
 // 参数：head - 用户链表头指针，username - 要查找的用户名

@@ -65,21 +65,28 @@ void freeBed(Bed* b)
 void addBed(Bed** head, Bed** tail, char* ward)
 {
 	Bed* b = (Bed*)malloc(sizeof(Bed));
-	if (!b)//分配新节点
+	if (!b)
 	{
 		printf("[ERROR] 床位申请失败\n");
 		return;
 	}
-	strcpy(b->data.patientCardNo, "无");  // 初始化患者卡号为"无"
-	strcpy(b->data.patientName, "无");    // 初始化患者姓名为"无"
-	strcpy(b->data.status, "空闲");       // 初始化状态为空闲
-	strcpy(b->data.ward, ward);           // 设置病房号
-	char id[20];
-	generateUniqueId("BED", id);
-	strcpy(b->data.bedNo, id);         // 设置床位号
-	b->next = b->pre = NULL;              // 初始化前后指针为空
-	
-	if (*tail == NULL)//如果尾指针为空则插入节点
+	strcpy(b->data.patientCardNo, "无");
+	strcpy(b->data.patientName, "无");
+	strcpy(b->data.status, "空闲");
+	strcpy(b->data.ward, ward);
+
+	/* 统计该科室已有几张床，生成序号 */
+	int count = 0;
+	Bed* cur = *head;
+	while (cur != NULL) {
+		if (strcmp(cur->data.ward, ward) == 0) count++;
+		cur = cur->next;
+	}
+	sprintf(b->data.bedNo, "%s-%02d", ward, count + 1);
+
+	b->next = b->pre = NULL;
+
+	if (*tail == NULL)
 	{
 		*head = b;
 		*tail = b;
@@ -294,7 +301,7 @@ void listAllBeds(Bed* head)
 	}
 	
 	printf("===床位显示列表===\n");
-	printPadded("病房", 10);     putchar(' ');
+	printPadded("科室", 10);     putchar(' ');
 	printPadded("床位号", 18);   putchar(' ');
 	printPadded("患者卡号", 20); putchar(' ');
 	printPadded("患者姓名", 10); putchar(' ');
@@ -328,8 +335,8 @@ void listBedsByWard(Bed* head, char* ward)
 		return;
 	}
 	
-	printf("===指定病房床位显示列表===\n");
-	printPadded("病房", 10);     putchar(' ');
+	printf("===指定科室床位显示列表===\n");
+	printPadded("科室", 10);     putchar(' ');
 	printPadded("床位号", 18);   putchar(' ');
 	printPadded("患者卡号", 20); putchar(' ');
 	printPadded("患者姓名", 10); putchar(' ');

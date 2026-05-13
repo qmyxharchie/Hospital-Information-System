@@ -53,7 +53,12 @@ extern bool g_isLoggedIn;                 // 是否已登录
 
 LoginStatus login(char username[], char password[]);                  // 用户登录
 int registerUser(char username[], char password[], int role);         // 用户注册
+void md5Hash(const char* input, char* output);                        // 密码哈希
 int isUsernameTaken(const char* username);                            // 用户名是否已被占用（1=是，0=否）
+void listAllUsers(void);                                              // 列出所有用户
+int modifyUserRole(const char* username, UserRole newRole);           // 修改用户角色
+int resetUserPassword(const char* username);                          // 重置密码为 123456
+int deleteUser(const char* username);                                 // 删除用户
 User* findUserByName(User* head, char* username);                     // 用户查询
 User* getCurrentUser(void);                                           // 获取当前登录用户
 UserRole getUserRoleByUsername(const char* username);

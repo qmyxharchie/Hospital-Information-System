@@ -261,12 +261,13 @@ int showMainMenuByRole(int userRole, char* username) {
     if (userRole >= 3) {
         printf("║ 7. 统计报表                             ║\n");
         printf("║ 8. 综合查询                             ║\n");
+        printf("║ 9. 用户管理                             ║\n");
     }
     printf("║ 0. 退出系统                             ║\n");
     printf("╚═════════════════════════════════════════╝\n");
 
     int maxOption = 0;
-    if (userRole >= 3) maxOption = 8;
+    if (userRole >= 3) maxOption = 9;
     else if (userRole >= 2) maxOption = 6;
     else if (userRole >= 1) maxOption = 3;
     else maxOption = 2;
@@ -289,9 +290,34 @@ void showPatientManagement(void) {
             printf("\n-------- 患者信息管理（我的档案）--------\n");
             printf("1. 查看我的档案\n");
             printf("2. 修改我的档案\n");
+            printf("3. 修改密码\n");
             printf("0. 返回上级菜单\n");
-            int myChoice = safeReadInt("请选择: ", 0, 2);
+            int myChoice = safeReadInt("请选择: ", 0, 3);
             if (myChoice == 0) return;
+
+            if (myChoice == 3) {
+                char oldPwd[50], newPwd[50], confirmPwd[50], hashed[100];
+                safeReadString("请输入旧密码: ", oldPwd, 50);
+                md5Hash(oldPwd, hashed);
+                freeUserChain(&g_userHead);
+                buildUserChain(&g_userHead, &g_userTail);
+                User* me = findUserByName(g_userHead, g_currentUsername);
+                if (me == NULL || strcmp(me->data.password, hashed) != 0) {
+                    printf("[ERROR] 旧密码错误\n");
+                    continue;
+                }
+                safeReadString("请输入新密码: ", newPwd, 50);
+                safeReadString("请再次输入新密码: ", confirmPwd, 50);
+                if (strcmp(newPwd, confirmPwd) != 0) {
+                    printf("[ERROR] 两次输入不一致\n");
+                    continue;
+                }
+                md5Hash(newPwd, hashed);
+                strcpy(me->data.password, hashed);
+                rebuildUserFile(g_userHead);
+                printf("[OK] 密码修改成功\n");
+                continue;
+            }
 
             Patient* mine = findPatientByOwner(g_patientHead, g_currentUsername);
             if (mine == NULL) {
@@ -821,16 +847,16 @@ void showBedManagement(void) {
     while (1) {
         printf("\n-------- 床位管理 --------\n");
         printf("1. 添加床位     5. 查找空闲床位\n");
-        printf("2. 删除床位     6. 病区统计\n");
+        printf("2. 删除床位     6. 科室统计\n");
         printf("3. 按床位号查询 7. 显示所有床位\n");
-        printf("4. 按病区查询   0. 返回上级菜单\n");
+        printf("4. 按科室查询   0. 返回上级菜单\n");
 
         choice = safeReadInt("请选择: ", 0, 7);
 
         switch (choice) {
         case 1:
             printf("\n请输入床位信息:\n");
-            safeReadString("病区: ", ward, 30);
+            safeReadString("科室: ", ward, 30);
             addBed(&g_bedHead, &g_bedTail, ward);
             printf("[OK] 床位添加成功！\n");
             break;
@@ -838,7 +864,7 @@ void showBedManagement(void) {
             safeReadString("请输入要删除的床位号: ", bedNo, 20);
             b = findBedByNo(g_bedHead, bedNo);
             if (b) {
-                printf("将删除：%s床位（病区 %s，状态 %s）\n",
+                printf("将删除：%s床位（科室 %s，状态 %s）\n",
                        b->data.bedNo, b->data.ward, b->data.status);
                 if (!confirmYesNo("确认删除？")) {
                     printf("已取消。\n");
@@ -854,7 +880,7 @@ void showBedManagement(void) {
             safeReadString("请输入床位号: ", bedNo, 20);
             b = findBedByNo(g_bedHead, bedNo);
             if (b) {
-                printPadded("病区", 10);     putchar(' ');
+                printPadded("科室", 10);     putchar(' ');
                 printPadded("床位号", 18);   putchar(' ');
                 printPadded("病人卡号", 20); putchar(' ');
                 printPadded("病人姓名", 10); putchar(' ');
@@ -869,21 +895,21 @@ void showBedManagement(void) {
             }
             break;
         case 4:
-            safeReadString("请输入病区: ", ward, 30);
+            safeReadString("请输入科室: ", ward, 30);
             listBedsByWard(g_bedHead, ward);
             break;
         case 5:
             b = findAvailableBeds(g_bedHead);
             if (b) {
-                printf("空闲床位: %s (病区: %s)\n", b->data.bedNo, b->data.ward);
+                printf("空闲床位: %s (科室: %s)\n", b->data.bedNo, b->data.ward);
             } else {
                 printf("当前无空闲床位。\n");
             }
             break;
         case 6:
-            safeReadString("请输入病区: ", ward, 30);
+            safeReadString("请输入科室: ", ward, 30);
             getWardStats(g_bedHead, ward, &total, &occupied);
-            printf("病区 %s：总床位 %d，已占用 %d，空闲 %d\n",
+            printf("科室 %s：总床位 %d，已占用 %d，空闲 %d\n",
                    ward, total, occupied, total - occupied);
             break;
         case 7:
@@ -950,21 +976,35 @@ void showRegistrationManagement(void) {
             choice = safeReadInt("请选择: ", 0, 3);
         }
         else {
-            /* [MOD-10] 管理员显示全部 */
+            /* 管理员显示全部功能（连续编号） */
             printf("--- 患者功能 ---\n");
-            printf("1. 预约挂号        5. 查看我的挂号\n");
-            printf("2. 取消我的挂号\n");
+            printf("1. 预约挂号\n");
+            printf("2. 取消挂号\n");
             printf("--- 护士功能 ---\n");
-            printf("3. 现场挂号        6. 查看科室候诊队列\n");
+            printf("3. 现场挂号\n");
+            printf("--- 查询功能 ---\n");
+            printf("4. 查看我的挂号\n");
+            printf("5. 查看科室候诊队列\n");
             printf("--- 医生功能 ---\n");
-            printf("7. 叫号（下一位）  8. 查看我的候诊列表\n");
-            printf("9. 完成当前就诊\n");
+            printf("6. 叫号（下一位）\n");
+            printf("7. 查看我的候诊列表\n");
+            printf("8. 完成当前就诊\n");
             printf("--- 通用功能 ---\n");
-            printf("10. 显示全部挂号记录\n");
+            printf("9. 显示全部挂号记录\n");
             printf("0. 返回上级菜单\n");
-            choice = safeReadInt("请选择: ", 0, 10);
+            choice = safeReadInt("请选择: ", 0, 9);
             /* 管理员选项号映射为统一内部编号 */
-            if (choice == 10) choice = 99;
+            switch (choice) {
+            case 1: choice = 1; break;
+            case 2: choice = 2; break;
+            case 3: choice = 3; break;
+            case 4: choice = 5; break;
+            case 5: choice = 6; break;
+            case 6: choice = 7; break;
+            case 7: choice = 8; break;
+            case 8: choice = 9; break;
+            case 9: choice = 99; break;
+            }
         }
 
         /* [MOD-10] 角色选项号 → 统一处理编号 */
@@ -1806,6 +1846,68 @@ void showQueryMenu(void) {
 
 
 //--------------------
+// 用户管理（管理员专用）
+//--------------------
+void showUserManagement(void) {
+    int choice;
+    char username[50];
+    while (1) {
+        printf("\n-------- 用户管理 --------\n");
+        printf("1. 查看所有用户\n");
+        printf("2. 修改用户角色\n");
+        printf("3. 重置用户密码\n");
+        printf("4. 删除用户\n");
+        printf("0. 返回上级菜单\n");
+        choice = safeReadInt("请选择: ", 0, 4);
+
+        switch (choice) {
+        case 1:
+            listAllUsers();
+            break;
+        case 2: {
+            safeReadString("请输入要修改的用户名: ", username, 50);
+            printf("选择新角色：\n");
+            printf("  0. 患者\n  1. 护士\n  2. 医生\n  3. 管理员\n");
+            int newRole = safeReadInt("新角色: ", 0, 3);
+            if (modifyUserRole(username, (UserRole)newRole)) {
+                printf("[OK] 角色修改成功\n");
+            } else {
+                printf("[ERROR] 未找到该用户\n");
+            }
+            break;
+        }
+        case 3:
+            safeReadString("请输入要重置密码的用户名: ", username, 50);
+            if (resetUserPassword(username)) {
+                printf("[OK] 密码已重置为 123456\n");
+            } else {
+                printf("[ERROR] 未找到该用户\n");
+            }
+            break;
+        case 4:
+            safeReadString("请输入要删除的用户名: ", username, 50);
+            if (strcmp(username, g_currentUsername) == 0) {
+                printf("[ERROR] 不能删除当前登录的账号\n");
+                break;
+            }
+            printf("将删除用户：%s\n", username);
+            if (!confirmYesNo("确认删除？")) {
+                printf("已取消。\n");
+                break;
+            }
+            if (deleteUser(username)) {
+                printf("[OK] 用户已删除\n");
+            } else {
+                printf("[ERROR] 未找到该用户\n");
+            }
+            break;
+        case 0:
+            return;
+        }
+    }
+}
+
+//--------------------
 // 首次运行时从 data_seed 复制出 data 目录
 //--------------------
 static void ensureDataDir(void) {
@@ -1870,6 +1972,7 @@ int main(void) {
             case 6: showHospitalizationManagement(); break;
             case 7: showStatisticsMenu();            break;
             case 8: showQueryMenu();                 break;
+            case 9: showUserManagement();            break;
             case 0:
                 printf("正在退出到登录界面...\n");
                 freePatientChain(&g_patientHead);

@@ -14,8 +14,8 @@
 
 
 typedef struct BedData {
-    char ward[30];           // 病区
-    char bedNo[20];          // 床位号
+    char ward[30];           // 科室（如"内科"）
+    char bedNo[20];          // 床位号（如"内科-01"）
     char patientCardNo[20];  // 病人卡号（空=无病人）
     char patientName[50];    // 病人姓名
     char status[20];         // 状态（空闲/占用/维修）
