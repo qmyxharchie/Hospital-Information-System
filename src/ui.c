@@ -160,14 +160,14 @@ int showLoginPage(void) {
     char username[50] = { 0 };
     char password[50] = { 0 };
 
-    printf("\n╔═══════════════════════════════════════════════════╗\n");
-    printf("║       医院综合信息管理系统 - 登录界面             ║\n");
-    printf("╠═══════════════════════════════════════════════════╣\n");
-    printf("║  1. 用户登录                                      ║\n");
-    printf("║  2. 管理员登录                                    ║\n");
-    printf("║  3. 用户注册                                      ║\n");
-    printf("║  0. 退出系统                                      ║\n");
-    printf("╚═══════════════════════════════════════════════════╝\n");
+    printf("\n╔═════════════════════════════════════════╗\n");
+    printf("║    医院综合信息管理系统 - 登录界面      ║\n");
+    printf("╠═════════════════════════════════════════╣\n");
+    printf("║  1. 用户登录                            ║\n");
+    printf("║  2. 管理员登录                          ║\n");
+    printf("║  3. 用户注册                            ║\n");
+    printf("║  0. 退出系统                            ║\n");
+    printf("╚═════════════════════════════════════════╝\n");
 
   
     int choice = safeReadInt("请选择: ", 0, 3);
@@ -233,13 +233,15 @@ int showLoginPage(void) {
 int showMainMenuByRole(int userRole, char* username) {
     printf("\n╔═════════════════════════════════════════╗\n");
     printf("║ 医院综合信息管理系统 - 主菜单           ║\n");
-    printf("║ 当前用户: %-15s 角色: ", username);
+	printPadded("║ 当前用户: ", 9);
+    printPadded(username, 15);
+    printPadded("角色:", 5);
     switch (userRole) {
-    case 0: printf("患者       "); break;
-    case 1: printf("护士       "); break;
-    case 2: printf("医生       "); break;
-    case 3: printf("管理员     "); break;
-    default: printf("未知       "); break;
+    case 0: printPadded("患者", 10); break;
+    case 1: printPadded("护士", 10); break;
+    case 2: printPadded("医生", 10); break;
+    case 3: printPadded("管理员", 10); break;
+    default: printPadded("未知", 10); break;
     }
     printf("║\n");
     printf("╠═════════════════════════════════════════╣\n");
@@ -908,6 +910,17 @@ void showRegistrationManagement(void) {
     int year, month, day;
     int role = g_currentUserRole;  /*获取当前角色 */
 
+    /* 患者角色：自动获取自己的卡号，后续不再手动输入 */
+    char myCardNo[20] = "";
+    char myName[50] = "";
+    if (role == PATIENT) {
+        Patient* me = findPatientByOwner(g_patientHead, g_currentUsername);
+        if (me != NULL) {
+            strcpy(myCardNo, me->data.cardNo);
+            strcpy(myName, me->data.name);
+        }
+    }
+
     while (1) {
         printf("\n========== 挂号管理 ==========\n");
 
@@ -973,40 +986,70 @@ void showRegistrationManagement(void) {
         /* ──────────── 预约挂号（患者/管理员） ──────────── */
         case 1: {
             printf("\n--- 预约挂号 ---\n");
-            safeReadString("请输入您的卡号: ", patientCardNo, 20);
-            Patient* p = findPatientByCardNo(g_patientHead, patientCardNo);
-            if (p == NULL) {
-                printf("[ERROR] 未找到该患者，请先注册\n");
+            if (role == PATIENT) {
+                if (myCardNo[0] == '\0') {
+                    printf("[ERROR] 系统中找不到您的档案，请联系管理员\n");
+                    break;
+                }
+                strcpy(patientCardNo, myCardNo);
+                strcpy(patientName, myName);
+            } else {
+                Patient* pp = promptFindPatient("预约挂号");
+                if (pp == NULL) break;
+                strcpy(patientCardNo, pp->data.cardNo);
+                strcpy(patientName, pp->data.name);
+            }
+
+            /* 先选科室 */
+            char deptList[20][50];
+            int deptCount = 0;
+            Doctor* tmp = g_doctorHead;
+            while (tmp != NULL) {
+                int found = 0;
+                for (int i = 0; i < deptCount; i++) {
+                    if (strcmp(deptList[i], tmp->data.dept) == 0) { found = 1; break; }
+                }
+                if (!found && deptCount < 20) {
+                    strcpy(deptList[deptCount], tmp->data.dept);
+                    deptCount++;
+                }
+                tmp = tmp->next;
+            }
+            if (deptCount == 0) {
+                printf("[ERROR] 暂无科室信息\n");
                 break;
             }
-            strcpy(patientName, p->data.name);
+            printf("\n可选科室：\n");
+            for (int i = 0; i < deptCount; i++) {
+                printf("  %d. %s\n", i + 1, deptList[i]);
+            }
+            int deptSel = safeReadInt("请选择科室序号: ", 1, deptCount);
+            char selectedDept[50];
+            strcpy(selectedDept, deptList[deptSel - 1]);
 
-            /*列出所有医生供选择，不再要求输入工号 */
-            printf("\n可选医生列表：\n");
+            /* 再列出该科室的医生 */
+            printf("\n%s 可选医生：\n", selectedDept);
             printPadded("序号", 6);  putchar(' ');
             printPadded("工号", 20); putchar(' ');
-            printPadded("姓名", 10); putchar(' ');
-            printPadded("科室", 10); putchar('\n');
+            printPadded("姓名", 10); putchar('\n');
             Doctor* doc = g_doctorHead;
             int docCount = 0;
+            Doctor* docArr[100] = {0};
             while (doc != NULL) {
-                printf("%-6d ", ++docCount);
-                printPadded(doc->data.empNo, 20); putchar(' ');
-                printPadded(doc->data.name, 10);  putchar(' ');
-                printPadded(doc->data.dept, 10);  putchar('\n');
+                if (strcmp(doc->data.dept, selectedDept) == 0) {
+                    docArr[docCount] = doc;
+                    printf("%-6d ", ++docCount);
+                    printPadded(doc->data.empNo, 20); putchar(' ');
+                    printPadded(doc->data.name, 10);  putchar('\n');
+                }
                 doc = doc->next;
             }
             if (docCount == 0) {
-                printf("[ERROR] 暂无医生信息\n");
+                printf("[ERROR] 该科室暂无医生\n");
                 break;
             }
             int sel = safeReadInt("请选择医生序号: ", 1, docCount);
-            doc = g_doctorHead;
-            for (int i = 1; i < sel && doc != NULL; i++) doc = doc->next;
-            if (doc == NULL) {
-                printf("[ERROR] 医生序号无效\n");
-                break;
-            }
+            doc = docArr[sel - 1];
             strcpy(doctorEmpNo, doc->data.empNo);
             strcpy(doctorName, doc->data.name);
             strcpy(dept, doc->data.dept);
@@ -1026,9 +1069,15 @@ void showRegistrationManagement(void) {
 
         /* ──────────── 取消挂号（患者/护士/管理员） ──────────── */
         case 2: {
-            /* 患者：列出所有 PENDING 挂号供选择序号 */
-            if (role == PATIENT || role == DOCTOR) {
-                safeReadString("请输入您的卡号: ", patientCardNo, 20);
+            /* 患者/医生：自动填卡号；护士/管理员：手动查找 */
+            if (role == PATIENT) {
+                if (myCardNo[0] == '\0') {
+                    printf("[ERROR] 系统中找不到您的档案\n");
+                    break;
+                }
+                strcpy(patientCardNo, myCardNo);
+            } else if (role == DOCTOR) {
+                safeReadString("请输入患者卡号: ", patientCardNo, 20);
             } else {
                 Patient* pp = promptFindPatient("取消挂号");
                 if (pp == NULL) break;
@@ -1101,32 +1150,56 @@ void showRegistrationManagement(void) {
             strcpy(patientCardNo, p->data.cardNo);
             strcpy(patientName, p->data.name);
 
-            /*同样列出医生供选择 */
-            printf("\n可选医生列表：\n");
+            /* 先选科室 */
+            char deptList2[20][50];
+            int deptCount2 = 0;
+            Doctor* tmp2 = g_doctorHead;
+            while (tmp2 != NULL) {
+                int found = 0;
+                for (int i = 0; i < deptCount2; i++) {
+                    if (strcmp(deptList2[i], tmp2->data.dept) == 0) { found = 1; break; }
+                }
+                if (!found && deptCount2 < 20) {
+                    strcpy(deptList2[deptCount2], tmp2->data.dept);
+                    deptCount2++;
+                }
+                tmp2 = tmp2->next;
+            }
+            if (deptCount2 == 0) {
+                printf("[ERROR] 暂无科室信息\n");
+                break;
+            }
+            printf("\n可选科室：\n");
+            for (int i = 0; i < deptCount2; i++) {
+                printf("  %d. %s\n", i + 1, deptList2[i]);
+            }
+            int deptSel2 = safeReadInt("请选择科室序号: ", 1, deptCount2);
+            char selectedDept2[50];
+            strcpy(selectedDept2, deptList2[deptSel2 - 1]);
+
+            /* 再列出该科室的医生 */
+            printf("\n%s 可选医生：\n", selectedDept2);
             printPadded("序号", 6);  putchar(' ');
             printPadded("工号", 20); putchar(' ');
-            printPadded("姓名", 10); putchar(' ');
-            printPadded("科室", 10); putchar('\n');
+            printPadded("姓名", 10); putchar('\n');
             Doctor* doc = g_doctorHead;
             int docCount = 0;
+            Doctor* docArr2[100] = {0};
             while (doc != NULL) {
-                printf("%-6d ", ++docCount);
-                printPadded(doc->data.empNo, 20); putchar(' ');
-                printPadded(doc->data.name, 10);  putchar(' ');
-                printPadded(doc->data.dept, 10);  putchar('\n');
+                if (strcmp(doc->data.dept, selectedDept2) == 0) {
+                    docArr2[docCount] = doc;
+                    printf("%-6d ", ++docCount);
+                    printPadded(doc->data.empNo, 20); putchar(' ');
+                    printPadded(doc->data.name, 10);  putchar('\n');
+                }
                 doc = doc->next;
             }
             if (docCount == 0) {
-                printf("[ERROR] 暂无医生\n");
+                printf("[ERROR] 该科室暂无医生\n");
                 break;
             }
             int sel = safeReadInt("请选择医生序号: ", 1, docCount);
-            doc = g_doctorHead;
-            for (int i = 1; i < sel && doc != NULL; i++) doc = doc->next;
-            if (doc == NULL) {
-                printf("[ERROR] 医生序号无效\n");
-                break;
-            }
+            doc = docArr2[sel - 1];
             strcpy(doctorEmpNo, doc->data.empNo);
             strcpy(doctorName, doc->data.name);
             strcpy(dept, doc->data.dept);
@@ -1146,7 +1219,17 @@ void showRegistrationManagement(void) {
 
         /* ──────────── 查看我的挂号 ──────────── */
         case 5: {
-            safeReadString("请输入您的卡号: ", patientCardNo, 20);
+            if (role == PATIENT) {
+                if (myCardNo[0] == '\0') {
+                    printf("[ERROR] 系统中找不到您的档案\n");
+                    break;
+                }
+                strcpy(patientCardNo, myCardNo);
+            } else {
+                Patient* pp = promptFindPatient("查看挂号记录");
+                if (pp == NULL) break;
+                strcpy(patientCardNo, pp->data.cardNo);
+            }
             patientViewOwnRegistrations(g_regHead, patientCardNo);
             break;
         }
