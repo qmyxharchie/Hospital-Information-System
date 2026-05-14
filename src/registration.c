@@ -360,13 +360,13 @@ int callNextPatient(Registration** head, Registration** tail, char* doctorEmpNo)
     rebuildRegistrationFile(*head);
 
     // 5. 输出叫号信息（模拟诊室广播）
-    printf("\n╔═══════════════════════════════════════════╗\n");
-    printf("║           叫 号 通 知                     ║\n");
-    printf("╠═══════════════════════════════════════════╣\n");
-    printf("║  请患者 %-20s 到 %-10s 诊室 ║\n",
+    printf("\n╔══════════════════════════════════════════════════╗\n");
+    printf("║           叫 号 通 知                            ║\n");
+    printf("╠══════════════════════════════════════════════════╣\n");
+    printf("║  请患者 %-20s 到 %-10s 诊室  ║\n",
         target->data.patientName, target->data.doctorName);
-    printf("║  挂号编号：%-30s     ║\n", target->data.regNo);
-    printf("╚═══════════════════════════════════════════╝\n");
+    printf("║  挂号编号：%-30s        ║\n", target->data.regNo);
+    printf("╚══════════════════════════════════════════════════╝\n");
 
     return 1;
 }
