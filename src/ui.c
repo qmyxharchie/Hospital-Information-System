@@ -506,7 +506,7 @@ void showPatientManagement(void) {
             readGender("\n性别: ", newData.gender, 10);
             readIdCard("\n身份证号: ", newData.idCard, 20);
             readPhone("\n联系电话: ", newData.phone, 15);
-            putchar("\n");
+            printf("\n");
             modifyPatient(g_patientHead, cardNo, newData);
             break;
         }
@@ -950,7 +950,7 @@ void showHospitalizationManagement(void) {
                 }
             }
             else if (choice == 3) {
-                listCurrentInpatients(g_hosHead);
+                listAllHospitalizations(g_hosHead);
             }
             else if (choice == 4) {
                 listAllHospitalizations(g_hosHead);
