@@ -184,7 +184,7 @@ bool isValidIdCard(const char* idCard) {
 	}
 
 	char last = idCard[17];
-	if (!(isdigit((unsigned char)last) && last != 'X' && last != 'x')) {	//第18位
+	if (!isdigit((unsigned char)last) && last != 'X' && last != 'x') {
 		return false;
 	}
 	return true;

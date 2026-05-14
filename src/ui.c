@@ -72,6 +72,34 @@ static void readPhone(const char* prompt, char* buf, int maxLen) {
     }
 }
 
+/* 带校验的时间输入（HH:MM，00:00~23:59） */
+static void readTime(const char* prompt, char* buf, int maxLen) {
+    while (1) {
+        safeReadString(prompt, buf, maxLen);
+        int h = -1, m = -1;
+        if (strlen(buf) == 5 && buf[2] == ':' &&
+            sscanf(buf, "%d:%d", &h, &m) == 2 &&
+            h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+            return;
+        }
+        printf("[ERROR] 时间格式不正确，请输入 HH:MM（如 09:30）\n");
+    }
+}
+
+/* 带校验的日期输入（YYYY-MM-DD） */
+static void readDate(const char* prompt, char* buf, int maxLen) {
+    while (1) {
+        safeReadString(prompt, buf, maxLen);
+        int y = 0, m = 0, d = 0;
+        if (strlen(buf) == 10 && buf[4] == '-' && buf[7] == '-' &&
+            sscanf(buf, "%d-%d-%d", &y, &m, &d) == 3 &&
+            isValidDate(y, m, d)) {
+            return;
+        }
+        printf("[ERROR] 日期格式不正确，请输入 YYYY-MM-DD\n");
+    }
+}
+
 /* 提示用户输入姓名+身份证号，验证通过返回 Patient*，否则返回 NULL
  * purpose: 用于提示信息（如"病人身份验证"） */
 static Patient* promptFindPatient(const char* purpose) {
@@ -216,6 +244,10 @@ int showLoginPage(void) {
     }
     case 3: {
         /* 注册流程：先收齐用户名+密码+档案信息，全部校验通过再落地 */
+        /* 先加载现有病人链表，避免 rebuildPatientFile 覆盖已有数据 */
+        freePatientChain(&g_patientHead);
+        buildPatientChain(&g_patientHead, &g_patientTail);
+
         char regName[50], regIdCard[20], regGender[10], regPhone[15];
         int regAge;
 
@@ -278,13 +310,11 @@ int showMainMenuByRole(int userRole, char* username) {
     }
     if (userRole >= 1) {
         printf("║ 3. 床位管理                             ║\n");
-    }
-    if (userRole >= 2) {
-        printf("║ 4. 医生信息管理                         ║\n");
-        printf("║ 5. 药品管理                             ║\n");
-        printf("║ 6. 住院管理                             ║\n");
+        printf("║ 4. 药品管理                             ║\n");
+        printf("║ 5. 住院管理                             ║\n");
     }
     if (userRole >= 3) {
+        printf("║ 6. 医生信息管理                         ║\n");
         printf("║ 7. 统计报表                             ║\n");
         printf("║ 8. 综合查询                             ║\n");
         printf("║ 9. 用户管理                             ║\n");
@@ -294,8 +324,7 @@ int showMainMenuByRole(int userRole, char* username) {
 
     int maxOption = 0;
     if (userRole >= 3) maxOption = 9;
-    else if (userRole >= 2) maxOption = 6;
-    else if (userRole >= 1) maxOption = 3;
+    else if (userRole >= 1) maxOption = 5;
     else maxOption = 2;
     return safeReadInt("请选择功能模块: ", 0, maxOption);
 }
@@ -380,6 +409,55 @@ void showPatientManagement(void) {
         }
     }
 
+    /* 医生视角：只读查看 */
+    if (g_currentUserRole == DOCTOR) {
+        while (1) {
+            printf("\n-------- 患者信息管理（只读）--------\n");
+            printf("1. 按姓名+身份证查找\n");
+            printf("2. 按姓名模糊查找\n");
+            printf("3. 显示所有病人\n");
+            printf("0. 返回上级菜单\n");
+            int dChoice = safeReadInt("请选择: ", 0, 3);
+            if (dChoice == 0) return;
+
+            if (dChoice == 1) {
+                Patient* p = promptFindPatient("查找病人");
+                if (p == NULL) continue;
+                printf("[OK] 病人信息如下\n");
+                printPadded("卡号", 20); putchar(' ');
+                printPadded("姓名", 10); putchar(' ');
+                printPadded("年龄", 6);  putchar(' ');
+                printPadded("性别", 6);  putchar(' ');
+                printPadded("身份证", 20); putchar(' ');
+                printPadded("电话", 14); putchar(' ');
+                printPadded("住院状态", 10); putchar('\n');
+                printPadded(p->data.cardNo, 20); putchar(' ');
+                printPadded(p->data.name, 10);   putchar(' ');
+                printf("%-6d ", p->data.age);
+                printPadded(p->data.gender, 6);  putchar(' ');
+                printPadded(p->data.idCard, 20); putchar(' ');
+                printPadded(p->data.phone, 14);  putchar(' ');
+                printPadded(p->data.isActive ? "住院" : "非住院", 10); putchar('\n');
+            }
+            else if (dChoice == 2) {
+                char name[50];
+                safeReadString("请输入姓名：", name, 50);
+                Patient* p = findPatientsByName(g_patientHead, name);
+                if (p == NULL) {
+                    printf("[ERROR] 未找到病人信息\n");
+                } else {
+                    printf("[OK] 病人信息如下\n");
+                    listAllPatients(p);
+                    Patient* cur = p;
+                    while (cur) { Patient* tmp = cur; cur = cur->next; free(tmp); }
+                }
+            }
+            else if (dChoice == 3) {
+                listAllPatients(g_patientHead);
+            }
+        }
+    }
+
     /* 护士及以上：原全量菜单 */
     while (1) {
         printf("\n-------- 患者信息管理 --------\n");
@@ -428,6 +506,7 @@ void showPatientManagement(void) {
             readGender("\n性别: ", newData.gender, 10);
             readIdCard("\n身份证号: ", newData.idCard, 20);
             readPhone("\n联系电话: ", newData.phone, 15);
+            putchar("\n");
             modifyPatient(g_patientHead, cardNo, newData);
             break;
         }
@@ -630,6 +709,67 @@ void showMedicineManagement(void) {
     char medNo[20], name[50], patientCardNo[20], date[20];
     int quantity;
     Medicine* m;
+
+    /* 医生视角：只读查询 */
+    if (g_currentUserRole == DOCTOR) {
+        while (1) {
+            printf("\n-------- 药品管理（只读）--------\n");
+            printf("1. 按编号查询\n");
+            printf("2. 按名称查询\n");
+            printf("3. 显示所有药品\n");
+            printf("0. 返回上级菜单\n");
+            choice = safeReadInt("请选择: ", 0, 3);
+            if (choice == 0) return;
+
+            if (choice == 1) {
+                safeReadString("请输入药品编号: ", medNo, 20);
+                m = findMedicineByNo(g_medHead, medNo);
+                if (m) {
+                    printPadded("编号", 16);   putchar(' ');
+                    printPadded("通用名", 14); putchar(' ');
+                    printPadded("商品名", 16); putchar(' ');
+                    printPadded("规格", 12);   putchar(' ');
+                    printPadded("单价", 10);   putchar(' ');
+                    printPadded("库存", 10);   putchar(' ');
+                    printPadded("最低库存", 10); putchar('\n');
+                    printPadded(m->data.medNo, 16);       putchar(' ');
+                    printPadded(m->data.genericName, 14); putchar(' ');
+                    printPadded(m->data.brandName, 16);   putchar(' ');
+                    printPadded(m->data.spec, 12);        putchar(' ');
+                    printf("%-10.2f %-10d %-10d\n",
+                           m->data.price, m->data.stock, m->data.minStock);
+                } else {
+                    printf("[ERROR] 未找到该药品！\n");
+                }
+            }
+            else if (choice == 2) {
+                safeReadString("请输入药品名称: ", name, 50);
+                m = findMedicineByName(g_medHead, name);
+                if (m) {
+                    printPadded("编号", 16);   putchar(' ');
+                    printPadded("通用名", 14); putchar(' ');
+                    printPadded("商品名", 16); putchar(' ');
+                    printPadded("规格", 12);   putchar(' ');
+                    printPadded("单价", 10);   putchar(' ');
+                    printPadded("库存", 10);   putchar(' ');
+                    printPadded("最低库存", 10); putchar('\n');
+                    printPadded(m->data.medNo, 16);       putchar(' ');
+                    printPadded(m->data.genericName, 14); putchar(' ');
+                    printPadded(m->data.brandName, 16);   putchar(' ');
+                    printPadded(m->data.spec, 12);        putchar(' ');
+                    printf("%-10.2f %-10d %-10d\n",
+                           m->data.price, m->data.stock, m->data.minStock);
+                } else {
+                    printf("[ERROR] 未找到该药品！\n");
+                }
+            }
+            else if (choice == 3) {
+                listAllMedicines(g_medHead);
+            }
+        }
+    }
+
+    /* 护士/管理员：全权限 */
     while (1) {
         printf("\n-------- 药品管理 --------\n");
         printf("1. 按编号查询   4. 购药登记\n");
@@ -737,6 +877,73 @@ void showHospitalizationManagement(void) {
     char bedNo[20];
     double prepay, totalCost;
     Hospitalization* h;
+
+    /* 医生视角：只读查看 */
+    if (g_currentUserRole == DOCTOR) {
+        while (1) {
+            printf("\n-------- 住院管理（只读）--------\n");
+            printf("1. 按卡号查询\n");
+            printf("2. 按住院单号查询\n");
+            printf("3. 显示当前在院病人\n");
+            printf("4. 显示所有住院记录\n");
+            printf("0. 返回上级菜单\n");
+            choice = safeReadInt("请选择: ", 0, 4);
+            if (choice == 0) return;
+
+            if (choice == 1) {
+                Patient* pp = promptFindPatient("查询住院记录");
+                if (pp == NULL) continue;
+                strcpy(patientCardNo, pp->data.cardNo);
+                h = findHospitalizationByCardNo(g_hosHead, patientCardNo);
+                if (h) {
+                    printPadded("住院单号", 20); putchar(' ');
+                    printPadded("姓名", 10);     putchar(' ');
+                    printPadded("床位号", 10);   putchar(' ');
+                    printPadded("预交金", 12);   putchar(' ');
+                    printPadded("总费用", 12);   putchar(' ');
+                    printPadded("入院日期", 12); putchar(' ');
+                    printPadded("状态", 10);     putchar('\n');
+                    printPadded(h->data.recordNo, 20);      putchar(' ');
+                    printPadded(h->data.patientName, 10);   putchar(' ');
+                    printPadded(h->data.bedNo, 10);         putchar(' ');
+                    printf("%-12.2f %-12.2f ", h->data.prepay, h->data.totalCost);
+                    printPadded(h->data.admissionDate, 12); putchar(' ');
+                    printPadded(h->data.status, 10);        putchar('\n');
+                } else {
+                    printf("[ERROR] 未找到该病人的住院记录！\n");
+                }
+            }
+            else if (choice == 2) {
+                safeReadString("请输入住院单号: ", recordNo, 20);
+                h = findHospitalizationByNo(g_hosHead, recordNo);
+                if (h) {
+                    printPadded("住院单号", 20); putchar(' ');
+                    printPadded("姓名", 10);     putchar(' ');
+                    printPadded("床位号", 10);   putchar(' ');
+                    printPadded("预交金", 12);   putchar(' ');
+                    printPadded("总费用", 12);   putchar(' ');
+                    printPadded("入院日期", 12); putchar(' ');
+                    printPadded("状态", 10);     putchar('\n');
+                    printPadded(h->data.recordNo, 20);      putchar(' ');
+                    printPadded(h->data.patientName, 10);   putchar(' ');
+                    printPadded(h->data.bedNo, 10);         putchar(' ');
+                    printf("%-12.2f %-12.2f ", h->data.prepay, h->data.totalCost);
+                    printPadded(h->data.admissionDate, 12); putchar(' ');
+                    printPadded(h->data.status, 10);        putchar('\n');
+                } else {
+                    printf("[ERROR] 未找到该住院记录！\n");
+                }
+            }
+            else if (choice == 3) {
+                listCurrentInpatients(g_hosHead);
+            }
+            else if (choice == 4) {
+                listAllHospitalizations(g_hosHead);
+            }
+        }
+    }
+
+    /* 护士/管理员：全权限 */
     while (1) {
         printf("\n-------- 住院管理 --------\n");
         printf("1. 入院登记        5. 显示当前在院病人\n");
@@ -870,6 +1077,65 @@ void showBedManagement(void) {
     char ward[30], bedNo[20];
     int total, occupied;
     Bed* b;
+
+    /* 医生视角：只读查看 */
+    if (g_currentUserRole == DOCTOR) {
+        while (1) {
+            printf("\n-------- 床位管理（只读）--------\n");
+            printf("1. 按床位号查询\n");
+            printf("2. 按科室查询\n");
+            printf("3. 查找空闲床位\n");
+            printf("4. 显示所有床位\n");
+            printf("0. 返回上级菜单\n");
+            choice = safeReadInt("请选择: ", 0, 4);
+            if (choice == 0) return;
+
+            if (choice == 1) {
+                safeReadString("请输入床位号: ", bedNo, 20);
+                b = findBedByNo(g_bedHead, bedNo);
+                if (b) {
+                    printPadded("科室", 10);     putchar(' ');
+                    printPadded("床位号", 18);   putchar(' ');
+                    printPadded("病人卡号", 20); putchar(' ');
+                    printPadded("病人姓名", 10); putchar(' ');
+                    printPadded("状态", 10);     putchar('\n');
+                    printPadded(b->data.ward, 10);          putchar(' ');
+                    printPadded(b->data.bedNo, 18);         putchar(' ');
+                    printPadded(b->data.patientCardNo, 20); putchar(' ');
+                    printPadded(b->data.patientName, 10);   putchar(' ');
+                    printPadded(b->data.status, 10);        putchar('\n');
+                } else {
+                    printf("[ERROR] 未找到该床位！\n");
+                }
+            }
+            else if (choice == 2) {
+                listBedsByWard(g_bedHead, ward);
+            }
+            else if (choice == 3) {
+                Bed* avail = findAvailableBeds(g_bedHead);
+                if (avail == NULL) {
+                    printf("当前无空闲床位。\n");
+                } else {
+                    printf("\n=== 空闲床位列表 ===\n");
+                    printPadded("科室", 10);   putchar(' ');
+                    printPadded("床位号", 18); putchar('\n');
+                    Bed* cur = avail;
+                    while (cur != NULL) {
+                        printPadded(cur->data.ward, 10);  putchar(' ');
+                        printPadded(cur->data.bedNo, 18); putchar('\n');
+                        cur = cur->next;
+                    }
+                    cur = avail;
+                    while (cur) { Bed* tmp = cur; cur = cur->next; free(tmp); }
+                }
+            }
+            else if (choice == 4) {
+                listAllBeds(g_bedHead);
+            }
+        }
+    }
+
+    /* 护士/管理员：全权限 */
     while (1) {
         printf("\n-------- 床位管理 --------\n");
         printf("1. 添加床位     5. 查找空闲床位\n");
@@ -1185,8 +1451,8 @@ void showRegistrationManagement(void) {
             getCurrentTime(&year, &month, &day);
             printf("请输入预约日期 (YYYY-MM-DD，至少今天 %04d-%02d-%02d): ",
                    year, month, day);
-            safeReadString("", appointmentDate, 20);
-            safeReadString("请输入预约时间 (HH:MM): ", appointmentTime, 20);
+            readDate("", appointmentDate, 20);
+            readTime("请输入预约时间 (HH:MM): ", appointmentTime, 20);
 
             addRegistration(&g_regHead, &g_regTail,
                             patientCardNo, patientName,
@@ -2055,9 +2321,9 @@ int main(void) {
             case 1: showRegistrationManagement();    break;
             case 2: showPatientManagement();         break;
             case 3: showBedManagement();             break;
-            case 4: showDoctorManagement();          break;
-            case 5: showMedicineManagement();        break;
-            case 6: showHospitalizationManagement(); break;
+            case 4: showMedicineManagement();        break;
+            case 5: showHospitalizationManagement(); break;
+            case 6: showDoctorManagement();          break;
             case 7: showStatisticsMenu();            break;
             case 8: showQueryMenu();                 break;
             case 9: showUserManagement();            break;

@@ -144,8 +144,16 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
         printf("[ERROR] 未找到门诊卡号为%s的病人。\n", cardNo);
         return 0;                                       // 返回0表示修改失败
     }
+        
+    // 3. 更新病人信息
+    safeStringCopy(target->data.name, newData.name, 50);        // 安全复制姓名
+    target->data.age = newData.age;                             // 复制年龄
+    safeStringCopy(target->data.gender, newData.gender, 10);    // 安全复制性别
+    safeStringCopy(target->data.idCard, newData.idCard, 20);    // 安全复制身份证号
+    safeStringCopy(target->data.phone, newData.phone, 15);      // 安全复制电话号码
+    target->data.isActive = newData.isActive;                   // 更新住院状态
     
-    // 3. 显示当前病人信息
+    // 4. 显示更新后的病人信息
     printf("当前患者信息为：\n");
     printf("门诊卡号：%s\n", target->data.cardNo);
     printf("姓名：%s\n", target->data.name);
@@ -154,15 +162,6 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     printf("身份证号：%s\n", target->data.idCard);
     printf("联系电话：%s\n", target->data.phone);
     printf("是否住院：%s\n", target->data.isActive ? "住院" : "非住院");
-    
-    // 4. 更新病人信息
-    safeStringCopy(target->data.name, newData.name, 50);        // 安全复制姓名
-    target->data.age = newData.age;                             // 复制年龄
-    safeStringCopy(target->data.gender, newData.gender, 10);    // 安全复制性别
-    safeStringCopy(target->data.idCard, newData.idCard, 20);    // 安全复制身份证号
-    safeStringCopy(target->data.phone, newData.phone, 15);      // 安全复制电话号码
-    target->data.isActive = newData.isActive;                   // 更新住院状态
-    
     // 5. 将更新后的链表数据保存到文件
     rebuildPatientFile(head);
     
