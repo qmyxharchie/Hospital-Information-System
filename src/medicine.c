@@ -132,7 +132,7 @@ void addPurchaseRecord(Purchase** head, Purchase** tail, Medicine* medHead, char
 	Purchase* pur = (Purchase*)malloc(sizeof(Purchase));//创建新节点并分配内存
 	if (!pur)
 	{
-		printf("内存分配失败\n");
+		printf("[ERROR] 内存分配失败\n");
 		return;
 	}
 	pur->next = pur->pre = NULL;
@@ -210,7 +210,7 @@ void addMedicine(Medicine** head, Medicine** tail,
 	// 1. 为新节点分配内存空间
 	Medicine* newNode = (Medicine*)malloc(sizeof(Medicine));
 	if (newNode == NULL) {
-		printf("内存分配失败\n");
+		printf("[ERROR] 内存分配失败\n");
 		return;
 	}
 
@@ -277,7 +277,7 @@ void delMedicine(Medicine** head, Medicine** tail, char* medNo)
 
 	// 3. 检查是否找到要删除的节点
 	if (cur == NULL) {
-		printf("未找到编号为 %s 的药品，无法删除。\n", medNo);
+		printf("[ERROR] 未找到编号为 %s 的药品，无法删除。\n", medNo);
 		return;
 	}
 
@@ -324,7 +324,7 @@ int modifyMedicine(Medicine* head, char* medNo, MedicineData newData)
 
 	// 2. 检查是否找到要修改的药品
 	if (target == NULL) {
-		printf("未找到编号为 %s 的药品。\n", medNo);
+		printf("[ERROR] 未找到编号为 %s 的药品。\n", medNo);
 		return 0;                                       // 返回 0 表示修改失败
 	}
 

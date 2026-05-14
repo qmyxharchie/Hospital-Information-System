@@ -45,6 +45,33 @@ static void flushStdin(void) {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
+/* 带校验的性别输入（只接受 男/女） */
+static void readGender(const char* prompt, char* buf, int maxLen) {
+    while (1) {
+        safeReadString(prompt, buf, maxLen);
+        if (strcmp(buf, "男") == 0 || strcmp(buf, "女") == 0) return;
+        printf("[ERROR] 请输入 男 或 女\n");
+    }
+}
+
+/* 带校验的身份证输入（18 位） */
+static void readIdCard(const char* prompt, char* buf, int maxLen) {
+    while (1) {
+        safeReadString(prompt, buf, maxLen);
+        if (isValidIdCard(buf)) return;
+        printf("[ERROR] 身份证号格式不正确（18位数字，末位可为X）\n");
+    }
+}
+
+/* 带校验的电话输入（11 位数字） */
+static void readPhone(const char* prompt, char* buf, int maxLen) {
+    while (1) {
+        safeReadString(prompt, buf, maxLen);
+        if (isValidPhone(buf)) return;
+        printf("[ERROR] 电话号码格式不正确（11位数字）\n");
+    }
+}
+
 /* 提示用户输入姓名+身份证号，验证通过返回 Patient*，否则返回 NULL
  * purpose: 用于提示信息（如"病人身份验证"） */
 static Patient* promptFindPatient(const char* purpose) {
@@ -107,12 +134,11 @@ double safeReadDouble(const char* prompt) {
 
 /* 安全读取字符串 */
 void safeReadString(const char* prompt, char* buf, int maxLen) {
+    char fmt[16];
+    sprintf(fmt, "%%%ds", maxLen - 1);
     printf("%s", prompt);
-    if (scanf("%99s", buf) == 1) {
-        if ((int)strlen(buf) >= maxLen) {
-            printf("[WARNING] 输入过长，已截断至 %d 字符\n", maxLen - 1);
-            buf[maxLen - 1] = '\0';
-        }
+    if (scanf(fmt, buf) != 1) {
+        buf[0] = '\0';
     }
     flushStdin();
 }
@@ -203,13 +229,13 @@ int showLoginPage(void) {
         printf("\n接下来请录入您的病人档案（不可跳过）:\n");
         safeReadString("姓名: ", regName, 50);
         regAge = safeReadInt("年龄: ", 0, 150);
-        safeReadString("性别: ", regGender, 10);
-        safeReadString("身份证号: ", regIdCard, 20);
+        readGender("性别: ", regGender, 10);
+        readIdCard("身份证号: ", regIdCard, 20);
         if (findPatientByIdCard(g_patientHead, regIdCard)) {
             printf("[ERROR] 该身份证已登记档案，注册取消。\n");
             return LOGIN_FAILED;
         }
-        safeReadString("联系电话: ", regPhone, 15);
+        readPhone("联系电话: ", regPhone, 15);
 
         /* 两步校验均通过：写 User 和 Patient */
         if (!registerUser(username, password, 0)) {
@@ -346,9 +372,9 @@ void showPatientManagement(void) {
                 printf("\n请输入修改后的档案信息:");
                 safeReadString("\n姓名: ", newData.name, 50);
                 newData.age = safeReadInt("\n年龄: ", 0, 150);
-                safeReadString("\n性别: ", newData.gender, 10);
-                safeReadString("\n身份证号: ", newData.idCard, 20);
-                safeReadString("\n联系电话: ", newData.phone, 15);
+                readGender("\n性别: ", newData.gender, 10);
+                readIdCard("\n身份证号: ", newData.idCard, 20);
+                readPhone("\n联系电话: ", newData.phone, 15);
                 modifyPatient(g_patientHead, mine->data.cardNo, newData);
             }
         }
@@ -370,13 +396,13 @@ void showPatientManagement(void) {
             safeReadString("\n姓名: ", name, 50);
 
             age = safeReadInt("\n年龄: ", 0, 150);
-            safeReadString("\n性别: ", gender, 10);
-            safeReadString("\n身份证号: ", idCard, 20);
+            readGender("\n性别: ", gender, 10);
+            readIdCard("\n身份证号: ", idCard, 20);
             if (findPatientByIdCard(g_patientHead, idCard)) {
                 printf("[ERROR] 该身份证已登记档案，添加取消\n");
                 break;
             }
-            safeReadString("\n联系电话: ", phone, 15);
+            readPhone("\n联系电话: ", phone, 15);
             addPatient(&g_patientHead, &g_patientTail,
                        name, age, gender, idCard, phone, "admin");
             break;
@@ -399,9 +425,9 @@ void showPatientManagement(void) {
             printf("\n请输入修改后的病人信息:");
             safeReadString("\n姓名: ", newData.name, 50);
             newData.age = safeReadInt("\n年龄: ", 0, 150);
-            safeReadString("\n性别: ", newData.gender, 10);
-            safeReadString("\n身份证号: ", newData.idCard, 20);
-            safeReadString("\n联系电话: ", newData.phone, 15);
+            readGender("\n性别: ", newData.gender, 10);
+            readIdCard("\n身份证号: ", newData.idCard, 20);
+            readPhone("\n联系电话: ", newData.phone, 15);
             modifyPatient(g_patientHead, cardNo, newData);
             break;
         }
@@ -894,24 +920,86 @@ void showBedManagement(void) {
                 printf("[ERROR] 未找到该床位！\n");
             }
             break;
-        case 4:
-            safeReadString("请输入科室: ", ward, 30);
+        case 4: {
+            /* 收集当前有哪些科室 */
+            char wardList[20][30];
+            int wardCount = 0;
+            Bed* tmp = g_bedHead;
+            while (tmp != NULL) {
+                int found = 0;
+                for (int i = 0; i < wardCount; i++) {
+                    if (strcmp(wardList[i], tmp->data.ward) == 0) { found = 1; break; }
+                }
+                if (!found && wardCount < 20) {
+                    strcpy(wardList[wardCount], tmp->data.ward);
+                    wardCount++;
+                }
+                tmp = tmp->next;
+            }
+            if (wardCount == 0) {
+                printf("[ERROR] 暂无床位信息\n");
+                break;
+            }
+            printf("\n当前科室列表：\n");
+            for (int i = 0; i < wardCount; i++) {
+                printf("  %d. %s\n", i + 1, wardList[i]);
+            }
+            int wSel = safeReadInt("请选择科室序号: ", 1, wardCount);
+            strcpy(ward, wardList[wSel - 1]);
             listBedsByWard(g_bedHead, ward);
             break;
-        case 5:
-            b = findAvailableBeds(g_bedHead);
-            if (b) {
-                printf("空闲床位: %s (科室: %s)\n", b->data.bedNo, b->data.ward);
-            } else {
+        }
+        case 5: {
+            Bed* avail = findAvailableBeds(g_bedHead);
+            if (avail == NULL) {
                 printf("当前无空闲床位。\n");
+            } else {
+                printf("\n=== 空闲床位列表 ===\n");
+                printPadded("科室", 10);   putchar(' ');
+                printPadded("床位号", 18); putchar('\n');
+                Bed* cur = avail;
+                while (cur != NULL) {
+                    printPadded(cur->data.ward, 10);  putchar(' ');
+                    printPadded(cur->data.bedNo, 18); putchar('\n');
+                    cur = cur->next;
+                }
+                /* 释放结果链表 */
+                cur = avail;
+                while (cur) { Bed* tmp = cur; cur = cur->next; free(tmp); }
             }
             break;
-        case 6:
-            safeReadString("请输入科室: ", ward, 30);
+        }
+        case 6: {
+            /* 收集当前有哪些科室 */
+            char wardList2[20][30];
+            int wardCount2 = 0;
+            Bed* tmp2 = g_bedHead;
+            while (tmp2 != NULL) {
+                int found = 0;
+                for (int i = 0; i < wardCount2; i++) {
+                    if (strcmp(wardList2[i], tmp2->data.ward) == 0) { found = 1; break; }
+                }
+                if (!found && wardCount2 < 20) {
+                    strcpy(wardList2[wardCount2], tmp2->data.ward);
+                    wardCount2++;
+                }
+                tmp2 = tmp2->next;
+            }
+            if (wardCount2 == 0) {
+                printf("[ERROR] 暂无床位信息\n");
+                break;
+            }
+            printf("\n当前科室列表：\n");
+            for (int i = 0; i < wardCount2; i++) {
+                printf("  %d. %s\n", i + 1, wardList2[i]);
+            }
+            int wSel2 = safeReadInt("请选择科室序号: ", 1, wardCount2);
+            strcpy(ward, wardList2[wSel2 - 1]);
             getWardStats(g_bedHead, ward, &total, &occupied);
             printf("科室 %s：总床位 %d，已占用 %d，空闲 %d\n",
                    ward, total, occupied, total - occupied);
             break;
+        }
         case 7:
             listAllBeds(g_bedHead);
             break;
@@ -1942,7 +2030,7 @@ int main(void) {
             break;
         }
         if (status == LOGIN_FAILED) {
-            printf("登录失败，请重试。\n");
+            printf("[ERROR] 登录失败，请重试。\n");
             continue;
         }
         if (status == LOGIN_REGISTERED) {

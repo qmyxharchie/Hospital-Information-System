@@ -28,7 +28,7 @@ void addPatient(Patient** head, Patient** tail,
     // 1. 为新节点分配内存空间
     Patient* newNode = (Patient*)malloc(sizeof(Patient));
     if (newNode == NULL) {
-        printf("内存分配失败\n");
+        printf("[ERROR] 内存分配失败\n");
         return;
     }
 

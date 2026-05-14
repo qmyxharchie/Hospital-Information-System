@@ -194,7 +194,7 @@ int cancelRegistration(Registration** head, Registration** tail,
 //返回值：成功返回1，失败返回0
 int completeRegistration(Registration* r) {
     if (r == NULL) {
-        printf("挂号信息不能为空\n");
+        printf("[ERROR] 挂号信息不能为空\n");
         return 0;
     }
 

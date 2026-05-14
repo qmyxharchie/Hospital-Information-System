@@ -98,7 +98,7 @@ int registerUser(char username[], char password[], int role) {
 	}
 	User* newUser = (User*)malloc(sizeof(User));	//创建新节点
 	if (newUser == NULL) {							//检查是否创建成功
-		printf("内存分配失败！\n");
+		printf("[ERROR] 内存分配失败！\n");
 		return 0;
 	}
 	memset(&newUser->data, 0, sizeof(UserData));	//清零所有字段，避免未初始化字节写入文件

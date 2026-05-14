@@ -419,7 +419,7 @@ void rebuildPatientFile(Patient* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	Patient* p = head;
@@ -449,7 +449,7 @@ void rebuildDoctorFile(Doctor* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	Doctor* p = head;
@@ -476,7 +476,7 @@ void rebuildMedicineFile(Medicine* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	Medicine* p = head;
@@ -505,7 +505,7 @@ void rebuildPurchaseFile(Purchase* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	Purchase* p = head;
@@ -533,7 +533,7 @@ void rebuildHospitalizationFile(Hospitalization* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	Hospitalization* p = head;
@@ -563,7 +563,7 @@ void rebuildBedFile(Bed* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	Bed* p = head;
@@ -590,7 +590,7 @@ void rebuildRegistrationFile(Registration* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	Registration* p = head;
@@ -620,7 +620,7 @@ void rebuildUserFile(User* head) {
 
 	if (fp == NULL)
 	{
-		printf("文件打开失败！\n");
+		printf("[ERROR] 文件打开失败！\n");
 		return;
 	}
 	User* p = head;
@@ -809,7 +809,7 @@ int backupAllData() {
 			successCount++;
 		}
 		else {
-			printf("备份失败: %s\n", files[i]);
+			printf("[ERROR] 备份失败: %s\n", files[i]);
 		}
 	}
 

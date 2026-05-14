@@ -344,7 +344,7 @@ void resetDailyPatients(Doctor* head) {
 // 参数：head - 链表头指针，dept - 科室名称，count - 指向统计结果的指针
 void getDeptStats(Doctor* head, char* dept, char* date, int* count) {
     if (head == NULL || dept == NULL || count == NULL) {
-        printf("参数错误：头指针、科室名称或计数指针为空\n");
+        printf("[ERROR] 参数错误：头指针、科室名称或计数指针为空\n");
         return;
     }
     char currentDate[20] = { 0 };
