@@ -593,15 +593,18 @@ void showDoctorManagement(void) {
         choice = safeReadInt("请选择: ", 0, 5);
 
         switch (choice) {
-        case 1:
+        case 1: {
             printf("\n请输入医生信息:");
             safeReadString("\n姓名: ", name, 50);
             safeReadString("\n科室: ", dept, 50);
             maxPatients = safeReadInt("\n每日最大接诊数: ", 1, 999);
+            char bindUser[50];
+            safeReadString("绑定用户名（暂不绑定输 无）: ", bindUser, 50);
             addDoctor(&g_doctorHead, &g_doctorTail,
-                      name, dept, maxPatients);
+                      name, dept, maxPatients, bindUser);
             printf("[OK] 医生添加成功！\n");
             break;
+        }
         case 2:
             safeReadString("请输入要删除的医生工号：", empNo, 20);
             d = findDoctorByEmpNo(g_doctorHead, empNo);
@@ -621,10 +624,22 @@ void showDoctorManagement(void) {
         case 3: {
             DoctorData newData;
             safeReadString("\n请输入要修改的医生工号: ", empNo, 20);
+            Doctor* target = findDoctorByEmpNo(g_doctorHead, empNo);
+            if (target == NULL) {
+                printf("[ERROR] 未找到该医生\n");
+                break;
+            }
+            printf("当前绑定用户名：%s\n", target->data.ownerUsername);
             printf("\n请输入医生信息:");
             safeReadString("\n姓名: ", newData.name, 50);
             safeReadString("\n科室: ", newData.dept, 50);
             newData.maxPatients = safeReadInt("\n每日最大接诊数: ", 1, 999);
+            safeReadString("绑定用户名（不改输 无，清除绑定输 清除）: ", newData.ownerUsername, 50);
+            if (strcmp(newData.ownerUsername, "清除") == 0) {
+                strcpy(newData.ownerUsername, "无");
+            } else if (strcmp(newData.ownerUsername, "无") == 0) {
+                strcpy(newData.ownerUsername, target->data.ownerUsername);
+            }
             modifyDoctor(g_doctorHead, empNo, newData);
             break;
         }
@@ -1660,14 +1675,32 @@ void showRegistrationManagement(void) {
 
         /* ──────────── 叫号 ──────────── */
         case 7: {
-            safeReadString("请输入您的工号: ", doctorEmpNo, 20);
+            if (role == DOCTOR) {
+                Doctor* me = findDoctorByOwner(g_doctorHead, g_currentUsername);
+                if (me == NULL) {
+                    printf("[ERROR] 您的账号未绑定医生工号，请联系管理员\n");
+                    break;
+                }
+                strcpy(doctorEmpNo, me->data.empNo);
+            } else {
+                safeReadString("请输入医生工号: ", doctorEmpNo, 20);
+            }
             doctorCallNextPatient(&g_regHead, &g_regTail, doctorEmpNo);
             break;
         }
 
         /* ──────────── 查看候诊列表 ──────────── */
         case 8: {
-            safeReadString("请输入您的工号: ", doctorEmpNo, 20);
+            if (role == DOCTOR) {
+                Doctor* me = findDoctorByOwner(g_doctorHead, g_currentUsername);
+                if (me == NULL) {
+                    printf("[ERROR] 您的账号未绑定医生工号，请联系管理员\n");
+                    break;
+                }
+                strcpy(doctorEmpNo, me->data.empNo);
+            } else {
+                safeReadString("请输入医生工号: ", doctorEmpNo, 20);
+            }
             doctorViewWaitingList(g_regHead, doctorEmpNo);
             break;
         }

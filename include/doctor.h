@@ -20,6 +20,7 @@ typedef struct DoctorData {
     char dept[50];               // 科室
     int maxPatients;             // 每日最大接诊数
     int currentPatients;         // 今日已接诊数
+    char ownerUsername[50];      // 绑定的用户账号（"无"=未绑定）
 } DoctorData;
 typedef struct Doctor {
     DoctorData data;
@@ -31,7 +32,8 @@ Doctor* getDoctorHead(void);                                            // Gette
 Doctor* getDoctorTail(void);
 
 void addDoctor(Doctor** head, Doctor** tail,
-    char name[], char dept[], int maxPatients);        //添加医生
+    char name[], char dept[], int maxPatients,
+    const char* ownerUsername);                                         //添加医生
 void delDoctor(Doctor** head, Doctor** tail, DoctorData d);             //删除医生
 int modifyDoctor(Doctor* head, char* empNo, DoctorData newData);        //修改医生信息
 
@@ -39,6 +41,7 @@ int modifyDoctor(Doctor* head, char* empNo, DoctorData newData);        //修改
 Doctor* findDoctorByEmpNo(Doctor* head, char* empNo);                   //按工号精确查找
 Doctor* findDoctorsByName(Doctor* head, char* name);                    //按姓名查找
 Doctor* findDoctorsByDept(Doctor* head, char* dept);                    //按科室查找（返回所有匹配）
+Doctor* findDoctorByOwner(Doctor* head, const char* ownerUsername);     //按绑定账号查找
 
 //挂号
 void doctorViewWaitingList(Registration* regHead, char* doctorEmpNo);   //医生查看候诊列表

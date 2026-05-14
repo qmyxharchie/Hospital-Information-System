@@ -95,11 +95,8 @@ void buildDoctorChain(Doctor** head, Doctor** tail) {
 			fscanf(fp, "%s", node->data.name);
 			fscanf(fp, "%s", node->data.dept);
 			fscanf(fp, "%d", &node->data.maxPatients);
-
-
-
-
 			fscanf(fp, "%d", &node->data.currentPatients);
+			fscanf(fp, "%s", node->data.ownerUsername);
 
 			if (*head == NULL) {
 				*head = node;
@@ -462,6 +459,7 @@ void rebuildDoctorFile(Doctor* head) {
 		fprintf(fp, "%s\n", p->data.dept);
 		fprintf(fp, "%d\n", p->data.maxPatients);
 		fprintf(fp, "%d\n", p->data.currentPatients);
+		fprintf(fp, "%s\n", p->data.ownerUsername);
 
 		fprintf(fp, "\n");
 		p = p->next;
@@ -605,7 +603,13 @@ void rebuildRegistrationFile(Registration* head) {
 		fprintf(fp, "%s\n", p->data.doctorName);
 		fprintf(fp, "%s\n", p->data.dept);
 		fprintf(fp, "%s\n", p->data.date);
+		fprintf(fp, "%s\n", p->data.time);
+		fprintf(fp, "%s\n", p->data.appointmentDate);
+		fprintf(fp, "%s\n", p->data.appointmentTime);
 		fprintf(fp, "%d\n", p->data.status);
+		fprintf(fp, "%d\n", p->data.createdBy);
+		fprintf(fp, "%.2f\n", p->data.consultationFee);
+		fprintf(fp, "%s\n", p->data.remarks[0] ? p->data.remarks : "无");
 
 		fprintf(fp, "\n");
 		p = p->next;

@@ -23,24 +23,27 @@ Doctor* getDoctorTail(void) {
 // 以下为添加医生函数// 功能：向医生链表中添加一个新的医生节点
 // 参数：head - 指向链表头指针的指针，tail - 指向链表尾指针的指针
 //      name - 姓名，dept - 科室，maxPatients - 每日最大接诊数
+//      ownerUsername - 绑定的用户账号（"无"=暂不绑定）
 void addDoctor(Doctor** head, Doctor** tail,
-    char name[], char dept[], int maxPatients) {
+    char name[], char dept[], int maxPatients,
+    const char* ownerUsername) {
     // 1. 为新节点分配内存空间
     Doctor* newNode = (Doctor*)malloc(sizeof(Doctor));
 
     // 2. 初始化新节点的指针域，防止野指针
-    newNode->next = newNode->pre = NULL;                // 申请新节点第一件事就是指针初始化！非常重要
+    newNode->next = newNode->pre = NULL;
 
     // 3. 生成唯一的工号
     char id[20];
-    generateUniqueId("DOC", id);                        // 生成以"DOC"开头的唯一ID
+    generateUniqueId("DOC", id);
 
-    // 4. 保存病人具体信息到新节点的数据域
-    strcpy(newNode->data.empNo, id);                    // 工号
-    strcpy(newNode->data.name, name);                   // 姓名
-    strcpy(newNode->data.dept, dept);                   // 科室
-    newNode->data.maxPatients = maxPatients;            // 每日最大接诊次数
-    newNode->data.currentPatients = 0;                  // 设置今日接诊数为0
+    // 4. 保存信息到新节点的数据域
+    strcpy(newNode->data.empNo, id);
+    strcpy(newNode->data.name, name);
+    strcpy(newNode->data.dept, dept);
+    newNode->data.maxPatients = maxPatients;
+    newNode->data.currentPatients = 0;
+    strcpy(newNode->data.ownerUsername, ownerUsername);
 
     // 5. 将新节点插入到链表尾部
     if (*tail == NULL) {
@@ -143,10 +146,10 @@ int modifyDoctor(Doctor* head, char* empNo, DoctorData newData) {
     printf("今日已接诊数：%d\n", target->data.currentPatients);
 
     // 4. 更新医生信息
-    safeStringCopy(target->data.name, newData.name, 50);          // 安全复制姓名
-    safeStringCopy(target->data.dept, newData.dept, 50);          // 安全复制工号
-    target->data.maxPatients = newData.maxPatients;               // 更新每日最大接诊数
-    // 注意：currentPatients 是运行时统计量（当日挂号计数），不由修改操作覆盖
+    safeStringCopy(target->data.name, newData.name, 50);
+    safeStringCopy(target->data.dept, newData.dept, 50);
+    target->data.maxPatients = newData.maxPatients;
+    safeStringCopy(target->data.ownerUsername, newData.ownerUsername, 50);
 
     // 5. 将更新后的链表数据保存到文件
     rebuildDoctorFile(head);
@@ -233,6 +236,18 @@ Doctor* findDoctorsByDept(Doctor* head, char* dept) {
         d = d->next;
     }
     return resultHead;
+}
+//--------------------
+
+//--------------------
+// 按绑定账号查找医生
+Doctor* findDoctorByOwner(Doctor* head, const char* ownerUsername) {
+    Doctor* d = head;
+    while (d != NULL) {
+        if (strcmp(d->data.ownerUsername, ownerUsername) == 0) return d;
+        d = d->next;
+    }
+    return NULL;
 }
 //--------------------
 
