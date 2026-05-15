@@ -543,8 +543,8 @@ void rebuildHospitalizationFile(Hospitalization* head) {
 		fprintf(fp, "%s\n", p->data.patientCardNo);
 		fprintf(fp, "%s\n", p->data.patientName);
 		fprintf(fp, "%s\n", p->data.bedNo);
-		fprintf(fp, "%lf\n", p->data.prepay);
-		fprintf(fp, "%lf\n", p->data.totalCost);
+		fprintf(fp, "%.2f\n", p->data.prepay);
+		fprintf(fp, "%.2f\n", p->data.totalCost);
 		fprintf(fp, "%s\n", p->data.admissionDate);
 		fprintf(fp, "%s\n", p->data.status);
 

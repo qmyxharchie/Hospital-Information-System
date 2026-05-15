@@ -13,16 +13,26 @@ void checkLowStock(Medicine* head)
 {
 	Medicine* cur = head;
 	int n = 0;
-	while (cur != NULL)//遍历链表
+	printf("\n=== 库存预警 ===\n");
+	printPadded("药品编号", 16);   putchar(' ');
+	printPadded("通用名", 14);     putchar(' ');
+	printPadded("商品名", 16);     putchar(' ');
+	printPadded("当前库存", 10);   putchar(' ');
+	printPadded("最低库存", 10);   putchar('\n');
+	while (cur != NULL)
 	{
-		if (cur->data.stock <= cur->data.minStock)//判断库存小于是否小于最低库存
+		if (cur->data.stock <= cur->data.minStock)
 		{
 			n++;
-			printf("药品名：%s   当前库存：%d   最低库存：%d\n", cur->data.genericName, cur->data.stock, cur->data.minStock);//输出相关信息	
+			printPadded(cur->data.medNo, 16);       putchar(' ');
+			printPadded(cur->data.genericName, 14); putchar(' ');
+			printPadded(cur->data.brandName, 16);   putchar(' ');
+			printf("%-10d %-10d\n", cur->data.stock, cur->data.minStock);
 		}
 		cur = cur->next;
 	}
-	printf("预警药品数量  共 %d 种\n", n);//输出预警药品总数量
+	if (n == 0) printf("  所有药品库存正常\n");
+	else printf("预警药品数量  共 %d 种\n", n);
 }
 //-------------------------
 

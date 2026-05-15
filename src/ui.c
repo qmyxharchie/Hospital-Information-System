@@ -1124,6 +1124,7 @@ void showBedManagement(void) {
                 }
             }
             else if (choice == 2) {
+                safeReadString("请输入科室: ", ward, 30);
                 listBedsByWard(g_bedHead, ward);
             }
             else if (choice == 3) {
@@ -1499,6 +1500,7 @@ void showRegistrationManagement(void) {
             printPadded("挂号编号", 20); putchar(' ');
             printPadded("医生", 10);     putchar(' ');
             printPadded("科室", 10);     putchar(' ');
+            printPadded("预约日期", 12); putchar(' ');
             printPadded("预约时间", 12); putchar(' ');
             printPadded("方式", 8);      putchar('\n');
             Registration* cur = g_regHead;
@@ -1527,11 +1529,12 @@ void showRegistrationManagement(void) {
                     pendingArr[pCount] = cur;
                     char* mStr = (cur->data.createdBy == PATIENT) ? "预约" : "现场";
                     printf("%-6d ", pCount + 1);
-                    printPadded(cur->data.regNo, 20);           putchar(' ');
-                    printPadded(cur->data.doctorName, 10);      putchar(' ');
-                    printPadded(cur->data.dept, 10);            putchar(' ');
-                    printPadded(cur->data.appointmentTime, 12); putchar(' ');
-                    printPadded(mStr, 8);                       putchar('\n');
+                    printPadded(cur->data.regNo, 20);              putchar(' ');
+                    printPadded(cur->data.doctorName, 10);         putchar(' ');
+                    printPadded(cur->data.dept, 10);               putchar(' ');
+                    printPadded(cur->data.appointmentDate, 12);    putchar(' ');
+                    printPadded(cur->data.appointmentTime, 12);    putchar(' ');
+                    printPadded(mStr, 8);                          putchar('\n');
                     pCount++;
                 }
                 cur = cur->next;
@@ -1707,13 +1710,57 @@ void showRegistrationManagement(void) {
 
         /* ──────────── 完成就诊 ──────────── */
         case 9: {
-            safeReadString("请输入挂号编号: ", regNo, 20);
-            Registration* r = findRegistrationByNo(g_regHead, regNo);
-            if (r) {
-                completeRegistration(r);
+            /* 获取医生工号 */
+            char myEmpNo[20] = "";
+            if (role == DOCTOR) {
+                Doctor* me = findDoctorByOwner(g_doctorHead, g_currentUsername);
+                if (me == NULL) {
+                    printf("[ERROR] 您的账号未绑定医生工号，请联系管理员\n");
+                    break;
+                }
+                strcpy(myEmpNo, me->data.empNo);
             } else {
-                printf("[ERROR] 未找到该挂号\n");
+                safeReadString("请输入医生工号: ", myEmpNo, 20);
             }
+
+            /* 列出该医生当天 IN_PROGRESS 的记录 */
+            int year9, month9, day9;
+            getCurrentTime(&year9, &month9, &day9);
+            char today9[20];
+            sprintf(today9, "%04d-%02d-%02d", year9, month9, day9);
+
+            Registration* cur9 = g_regHead;
+            Registration* inProgress[50] = {0};
+            int ipCount = 0;
+            while (cur9 != NULL) {
+                if (strcmp(cur9->data.doctorEmpNo, myEmpNo) == 0 &&
+                    strcmp(cur9->data.appointmentDate, today9) == 0 &&
+                    cur9->data.status == IN_PROGRESS) {
+                    inProgress[ipCount++] = cur9;
+                }
+                cur9 = cur9->next;
+            }
+
+            if (ipCount == 0) {
+                printf("[INFO] 当前无就诊中的患者\n");
+                break;
+            }
+
+            printf("\n当前就诊中的患者：\n");
+            printPadded("序号", 6); putchar(' ');
+            printPadded("挂号编号", 20); putchar(' ');
+            printPadded("患者姓名", 10); putchar(' ');
+            printPadded("预约时间", 12); putchar('\n');
+            for (int i = 0; i < ipCount; i++) {
+                printf("%-6d ", i + 1);
+                printPadded(inProgress[i]->data.regNo, 20); putchar(' ');
+                printPadded(inProgress[i]->data.patientName, 10); putchar(' ');
+                printPadded(inProgress[i]->data.appointmentTime, 12); putchar('\n');
+            }
+
+            int sel9 = safeReadInt("请选择要完成就诊的序号: ", 1, ipCount);
+            completeRegistration(inProgress[sel9 - 1]);
+            rebuildRegistrationFile(g_regHead);
             break;
         }
 
@@ -1747,9 +1794,10 @@ void showStatisticsMenu(void) {
         printf("4. 住院与床位统计\n");
         printf("5. 挂号统计\n");
         printf("6. 财务统计\n");
+        printf("7. 按日期范围查挂号统计\n");
         printf("0. 返回上级菜单\n");
 
-        choice = safeReadInt("请选择: ", 0, 6);
+        choice = safeReadInt("请选择: ", 0, 7);
 
         switch (choice) {
 
@@ -1962,6 +2010,46 @@ void showStatisticsMenu(void) {
             break;
         }
 
+        case 7: {
+            char startDate[20], endDate[20];
+            printf("\n--- 按日期范围查挂号统计 ---\n");
+            readDate("起始日期 (YYYY-MM-DD): ", startDate, 20);
+            readDate("结束日期 (YYYY-MM-DD): ", endDate, 20);
+
+            int total7 = 0, pending7 = 0, inProgress7 = 0;
+            int completed7 = 0, cancelled7 = 0;
+            int onsite7 = 0, online7 = 0;
+
+            Registration* r7 = g_regHead;
+            while (r7 != NULL) {
+                if (compareDateStr(r7->data.appointmentDate, startDate) >= 0 &&
+                    compareDateStr(r7->data.appointmentDate, endDate) <= 0) {
+                    total7++;
+                    if (r7->data.createdBy == NURSE) onsite7++;
+                    else online7++;
+                    switch (r7->data.status) {
+                    case 0: pending7++; break;
+                    case 1: inProgress7++; break;
+                    case 2: completed7++; break;
+                    case 3: cancelled7++; break;
+                    }
+                }
+                r7 = r7->next;
+            }
+
+            printf("\n========== 挂号统计（%s ~ %s）==========\n", startDate, endDate);
+            printf("  总挂号数:  %d\n", total7);
+            printf("  现场挂号:  %d\n", onsite7);
+            printf("  线上预约:  %d\n", online7);
+            printf("\n--- 状态分布 ---\n");
+            printf("  待就诊:  %d\n", pending7);
+            printf("  就诊中:  %d\n", inProgress7);
+            printf("  已完成:  %d\n", completed7);
+            printf("  已取消:  %d\n", cancelled7);
+            printf("==========================================\n");
+            break;
+        }
+
         case 0:
             return;
 
@@ -2062,13 +2150,49 @@ void showQueryMenu(void) {
 
               /* ──────────── 2. 按医生查挂号记录 ──────────── */
         case 2: {
-            safeReadString("请输入医生工号: ", cardNo, 20);
-
-            Doctor* d = findDoctorByEmpNo(g_doctorHead, cardNo);
-            if (d == NULL) {
-                printf("[ERROR] 未找到该医生\n");
-                break;
+            /* 先选科室 */
+            char qDeptList[20][50];
+            int qDeptCount = 0;
+            Doctor* qtmp = g_doctorHead;
+            while (qtmp != NULL) {
+                int qf = 0;
+                for (int i = 0; i < qDeptCount; i++) {
+                    if (strcmp(qDeptList[i], qtmp->data.dept) == 0) { qf = 1; break; }
+                }
+                if (!qf && qDeptCount < 20) {
+                    strcpy(qDeptList[qDeptCount], qtmp->data.dept);
+                    qDeptCount++;
+                }
+                qtmp = qtmp->next;
             }
+            if (qDeptCount == 0) { printf("[ERROR] 暂无医生\n"); break; }
+            printf("\n可选科室：\n");
+            for (int i = 0; i < qDeptCount; i++) {
+                printf("  %d. %s\n", i + 1, qDeptList[i]);
+            }
+            int qds = safeReadInt("请选择科室序号: ", 1, qDeptCount);
+
+            /* 再选该科室医生 */
+            printf("\n%s 医生列表：\n", qDeptList[qds - 1]);
+            printPadded("序号", 6); putchar(' ');
+            printPadded("工号", 20); putchar(' ');
+            printPadded("姓名", 10); putchar('\n');
+            Doctor* qdoc = g_doctorHead;
+            Doctor* qDocArr[50] = {0};
+            int qDocCount = 0;
+            while (qdoc != NULL) {
+                if (strcmp(qdoc->data.dept, qDeptList[qds - 1]) == 0) {
+                    qDocArr[qDocCount] = qdoc;
+                    printf("%-6d ", ++qDocCount);
+                    printPadded(qdoc->data.empNo, 20); putchar(' ');
+                    printPadded(qdoc->data.name, 10); putchar('\n');
+                }
+                qdoc = qdoc->next;
+            }
+            if (qDocCount == 0) { printf("[ERROR] 该科室暂无医生\n"); break; }
+            int qsel = safeReadInt("请选择医生序号: ", 1, qDocCount);
+            Doctor* d = qDocArr[qsel - 1];
+            strcpy(cardNo, d->data.empNo);
 
             printf("\n【%s（%s）的挂号记录】\n", d->data.name, d->data.dept);
             printPadded("挂号编号", 20); putchar(' ');
@@ -2169,12 +2293,16 @@ void showQueryMenu(void) {
             printf("\n【医生列表】\n");
             found = 0;
             Doctor* d = g_doctorHead;
+            printPadded("  工号", 22); putchar(' ');
+            printPadded("姓名", 10); putchar(' ');
+            printPadded("接诊", 12); putchar('\n');
             while (d != NULL) {
                 if (strcmp(d->data.dept, dept) == 0) {
                     found++;
-                    printf("  %s %s 接诊:%d/%d\n",
-                        d->data.empNo, d->data.name,
-                        d->data.currentPatients, d->data.maxPatients);
+                    printf("  ");
+                    printPadded(d->data.empNo, 20); putchar(' ');
+                    printPadded(d->data.name, 10);  putchar(' ');
+                    printf("%d/%d\n", d->data.currentPatients, d->data.maxPatients);
                 }
                 d = d->next;
             }
@@ -2183,12 +2311,18 @@ void showQueryMenu(void) {
             printf("\n【今日挂号患者】\n");
             found = 0;
             Registration* r = g_regHead;
+            printPadded("  患者卡号", 22); putchar(' ');
+            printPadded("姓名", 10); putchar(' ');
+            printPadded("预约日期", 12); putchar(' ');
+            printPadded("预约时间", 10); putchar('\n');
             while (r != NULL) {
                 if (strcmp(r->data.dept, dept) == 0 && r->data.status != 3) {
                     found++;
-                    printf("  %s %s %s %s\n",
-                        r->data.patientCardNo, r->data.patientName,
-                        r->data.appointmentDate, r->data.appointmentTime);
+                    printf("  ");
+                    printPadded(r->data.patientCardNo, 20);    putchar(' ');
+                    printPadded(r->data.patientName, 10);      putchar(' ');
+                    printPadded(r->data.appointmentDate, 12);  putchar(' ');
+                    printPadded(r->data.appointmentTime, 10);  putchar('\n');
                 }
                 r = r->next;
             }
