@@ -151,7 +151,7 @@ int modifyPatient(Patient* head, char* cardNo, PatientData newData){
     safeStringCopy(target->data.gender, newData.gender, 10);    // 安全复制性别
     safeStringCopy(target->data.idCard, newData.idCard, 20);    // 安全复制身份证号
     safeStringCopy(target->data.phone, newData.phone, 15);      // 安全复制电话号码
-    target->data.isActive = newData.isActive;                   // 更新住院状态
+    // 注意：isActive 是业务状态（由入院/出院操作控制），不由修改档案覆盖
     
     // 4. 显示更新后的病人信息
     printf("当前患者信息为：\n");
