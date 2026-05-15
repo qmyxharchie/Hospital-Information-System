@@ -317,30 +317,27 @@ int callNextPatient(Registration** head, Registration** tail, char* doctorEmpNo)
         return 0;
     }
 
-    // 1. 查找该医生的第一个 PENDING 状态挂号（按预约时间排序）
+    // 获取今天日期
+    int year, month, day;
+    getCurrentTime(&year, &month, &day);
+    char today[20];
+    sprintf(today, "%04d-%02d-%02d", year, month, day);
+
+    // 1. 查找该医生今天的第一个 PENDING 状态挂号（按预约时间排序）
     Registration* current = *head;
     Registration* target = NULL;
 
     while (current != NULL) {
         if (strcmp(current->data.doctorEmpNo, doctorEmpNo) == 0 &&
+            strcmp(current->data.appointmentDate, today) == 0 &&
             current->data.status == PENDING) {
-            // 找到第一个匹配的后，与 target 比较预约时间，取更早的
             if (target == NULL) {
                 target = current;
             }
             else {
-                // 比较 appointmentDate，更早的优先
-                int cmpDate = compareDateStr(current->data.appointmentDate,
-                    target->data.appointmentDate);
-                if (cmpDate < 0) {
+                if (strcmp(current->data.appointmentTime,
+                    target->data.appointmentTime) < 0) {
                     target = current;
-                }
-                else if (cmpDate == 0) {
-                    // 日期相同则比较 appointmentTime
-                    if (strcmp(current->data.appointmentTime,
-                        target->data.appointmentTime) < 0) {
-                        target = current;
-                    }
                 }
             }
         }

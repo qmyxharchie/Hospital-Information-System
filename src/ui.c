@@ -2245,9 +2245,10 @@ void showQueryMenu(void) {
             while (pur != NULL) {
                 if (strcmp(pur->data.patientCardNo, cardNo) == 0) {
                     found++;
-                    printf(" 药品:%s 数量:%d 费用:%.2f %s\n",
-                   pur->data.medNo,
-                        pur->data.quantity, pur->data.totalCost,
+                    Medicine* med = findMedicineByNo(g_medHead, pur->data.medNo);
+                    char* medName = med ? med->data.genericName : pur->data.medNo;
+                    printf("  药品:%s  数量:%d  费用:%.2f元  日期:%s\n",
+                        medName, pur->data.quantity, pur->data.totalCost,
                         pur->data.date);
                 }
                 pur = pur->next;
