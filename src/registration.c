@@ -363,8 +363,11 @@ int callNextPatient(Registration** head, Registration** tail, char* doctorEmpNo)
     printf("\n╔══════════════════════════════════════════════════╗\n");
     printf("║           叫 号 通 知                            ║\n");
     printf("╠══════════════════════════════════════════════════╣\n");
-    printf("║  请患者 %-20s 到 %-10s 诊室  ║\n",
-        target->data.patientName, target->data.doctorName);
+    printf("║  请患者 ");
+    printPadded(target->data.patientName, 20);
+    printf("到 ");
+    printPadded(target->data.doctorName, 10);
+    printf("诊室    ║\n");
     printf("║  挂号编号：%-30s        ║\n", target->data.regNo);
     printf("╚══════════════════════════════════════════════════╝\n");
 
