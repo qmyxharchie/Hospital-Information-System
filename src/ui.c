@@ -1376,7 +1376,7 @@ void showRegistrationManagement(void) {
             if (choice == 3) action = 5;      /* 查看挂号 → 统一编号 */
         }
         else if (role == NURSE) {
-            if (choice == 1) action = 3;
+            if (choice == 1) action = 3;      /* 现场挂号 */
             if (choice == 2) action = 6;      /* 候诊队列 */
             if (choice == 3) action = 2;      /* 取消挂号 */
         }
@@ -2221,6 +2221,9 @@ void showQueryMenu(void) {
                     printf("  %s %s %s %s %s\n",
                         r->data.regNo, r->data.doctorName,
                         r->data.dept, r->data.appointmentDate, st);
+                    if (r->data.remarks[0] != '\0') {
+                        printf("    医嘱: %s\n", r->data.remarks);
+                    }
                 }
                 r = r->next;
             }

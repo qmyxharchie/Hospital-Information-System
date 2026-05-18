@@ -185,7 +185,8 @@ void patientViewOwnRegistrations(Registration* regHead,
     printPadded("科室", 10);     putchar(' ');
     printPadded("预约时间", 12); putchar(' ');
     printPadded("状态", 10);     putchar(' ');
-    printPadded("方式", 8);      putchar('\n');
+    printPadded("方式", 8);      putchar(' ');
+    printPadded("医嘱", 30);     putchar('\n');
     printf("──────────────────────────────────────────────────────\n");
 
     Registration* cur = regHead;
@@ -207,7 +208,10 @@ void patientViewOwnRegistrations(Registration* regHead,
             printPadded(cur->data.dept, 10);            putchar(' ');
             printPadded(cur->data.appointmentTime, 12); putchar(' ');
             printPadded(statusStr, 10);                 putchar(' ');
-            printPadded(methodStr, 8);                  putchar('\n');
+            printPadded(methodStr, 8);                  putchar(' ');
+            const char* rm = (cur->data.status == COMPLETED && cur->data.remarks[0] != '\0')
+                             ? cur->data.remarks : "-";
+            printPadded(rm, 30);                        putchar('\n');
             count++;
         }
         cur = cur->next;

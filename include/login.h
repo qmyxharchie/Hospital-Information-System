@@ -41,12 +41,6 @@ typedef enum {
     LOGIN_REGISTERED = 4
 } LoginStatus;                    // 登录状态
 
-typedef struct {
-    int loginStatus;
-    UserRole userRole;
-    char username[50];
-} LoginResult;
-
 extern char g_currentUsername[50];        // 当前登录用户名
 extern UserRole g_currentUserRole;        // 当前用户角色：0=用户, 1=护士, 2=医生, 3=管理员
 extern bool g_isLoggedIn;                 // 是否已登录
@@ -62,11 +56,5 @@ int deleteUser(const char* username);                                 // 删除�
 User* findUserByName(User* head, char* username);                     // 用户查询
 User* getCurrentUser(void);                                           // 获取当前登录用户
 UserRole getUserRoleByUsername(const char* username);
-int hasPermission(UserRole role, const char* operation);
-int isPatient(UserRole role);
-int isNurse(UserRole role);
-int isDoctor(UserRole role);
-int isAdmin(UserRole role);
-LoginResult loginWithRole(char* username, char* password);
 
 #endif /* _LOGIN_H_ */
