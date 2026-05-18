@@ -191,6 +191,7 @@ void dischargePatient(Hospitalization* h, double totalCost)
 		returnCost);
 	Bed* b = findBedByNo(g_bedHead, h->data.bedNo);
 	freeBed(b);
+	rebuildHospitalizationFile(g_hosHead);
 	return;
 }
 //-------------------------
