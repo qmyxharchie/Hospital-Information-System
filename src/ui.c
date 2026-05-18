@@ -115,11 +115,11 @@ static Patient* promptFindPatient(const char* purpose) {
     return p;
 }
 
-/* 二次确认 y/N，默认 N
+/* 二次确认 Y/N，默认 N
  * 返回 1=确认执行，0=取消 */
 static int confirmYesNo(const char* msg) {
     char buf[10] = {0};
-    printf("%s [y/N]: ", msg);
+    printf("%s [Y/N]: ", msg);
     safeReadString("", buf, 10);
     return (buf[0] == 'y' || buf[0] == 'Y');
 }
@@ -1376,6 +1376,7 @@ void showRegistrationManagement(void) {
             if (choice == 3) action = 5;      /* 查看挂号 → 统一编号 */
         }
         else if (role == NURSE) {
+            if (choice == 1) action = 3;
             if (choice == 2) action = 6;      /* 候诊队列 */
             if (choice == 3) action = 2;      /* 取消挂号 */
         }
