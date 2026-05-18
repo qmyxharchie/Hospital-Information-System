@@ -135,7 +135,7 @@ int safeReadInt(const char* prompt, int minVal, int maxVal) {
             printf("[ERROR] 输入无效，请输入数字！\n");
             continue;
         }
-        flushStdin();
+		flushStdin();//清空多余输入，防止下次 scanf 读到
         if (choice < minVal || choice > maxVal) {
             printf("[ERROR] 请输入 %d~%d 之间的数字\n", minVal, maxVal);
             continue;
@@ -168,7 +168,7 @@ void safeReadString(const char* prompt, char* buf, int maxLen) {
     if (scanf(fmt, buf) != 1) {
         buf[0] = '\0';
     }
-    flushStdin();
+    flushStdin();//清空多余输入，防止下次 scanf 读到
 }
 
 //------------------------
