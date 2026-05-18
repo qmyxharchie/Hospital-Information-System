@@ -940,7 +940,8 @@ void showHospitalizationManagement(void) {
                 }
             }
             else if (choice == 3) {
-                listAllHospitalizations(g_hosHead);
+                h = findCurrentHospitalizations(g_hosHead);
+                listAllHospitalizations(h);
             }
             else if (choice == 4) {
                 listAllHospitalizations(g_hosHead);
@@ -971,6 +972,15 @@ void showHospitalizationManagement(void) {
                                patientCardNo, patientName, prepay);
             printf("住院单号为：%20s\n", g_hosTail->data.recordNo);
             printf("床位号为：%20s", g_hosTail->data.bedNo);
+            strcpy(pp->data.isActive, "住院");
+
+            rebuildPatientFile(g_patientHead);
+
+            printf("住院单号为：%20s\n",
+                g_hosTail->data.recordNo);
+
+            printf("床位号为：%20s",
+                g_hosTail->data.bedNo);
 
             break;
         }
