@@ -191,6 +191,11 @@ void dischargePatient(Hospitalization* h, double totalCost)
 		returnCost);
 	Bed* b = findBedByNo(g_bedHead, h->data.bedNo);
 	freeBed(b);
+	Patient* p = findPatientByCardNo(g_patientHead, h->data.patientCardNo);
+	if (p) {
+		p->data.isActive = 0;
+		rebuildPatientFile(g_patientHead);
+	}
 	rebuildHospitalizationFile(g_hosHead);
 	return;
 }

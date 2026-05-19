@@ -970,18 +970,10 @@ void showHospitalizationManagement(void) {
             prepay = safeReadDouble("\n预交金额: ");
             addHospitalization(&g_hosHead, &g_hosTail,
                                patientCardNo, patientName, prepay);
-            printf("住院单号为：%20s\n", g_hosTail->data.recordNo);
-            printf("床位号为：%20s", g_hosTail->data.bedNo);
-            strcpy(pp->data.isActive, "住院");
-
+            pp->data.isActive = 1;
             rebuildPatientFile(g_patientHead);
-
-            printf("住院单号为：%20s\n",
-                g_hosTail->data.recordNo);
-
-            printf("床位号为：%20s",
-                g_hosTail->data.bedNo);
-
+            printf("住院单号为：%20s\n", g_hosTail->data.recordNo);
+            printf("床位号为：%20s\n", g_hosTail->data.bedNo);
             break;
         }
         case 2: {
